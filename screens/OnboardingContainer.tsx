@@ -81,30 +81,32 @@ const OnboardingContainer: React.FC<OnboardingContainerProps> = ({
   );
 
   return (
-    <View style={styles.container}>
+    <View style={styles.screen}>
       <StatusBar
         translucent
         backgroundColor="transparent"
-        barStyle="light-content"
+        barStyle="dark-content"
       />
-      <FlatList
-        ref={flatListRef}
-        data={onboardingData}
-        keyExtractor={(_, index) => index.toString()}
-        renderItem={renderItem}
-        horizontal
-        pagingEnabled
-        snapToInterval={width}
-        decelerationRate="fast"
-        showsHorizontalScrollIndicator={false}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-        contentContainerStyle={{ flexGrow: 1 }}
-      />
-      <OnboardingDots
-        total={onboardingData.length}
-        activeIndex={currentIndex}
-      />
+      <View style={styles.container}>
+        <FlatList
+          ref={flatListRef}
+          data={onboardingData}
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={renderItem}
+          horizontal
+          pagingEnabled
+          snapToInterval={width}
+          decelerationRate="fast"
+          showsHorizontalScrollIndicator={false}
+          onScroll={handleScroll}
+          scrollEventThrottle={16}
+          contentContainerStyle={{ flexGrow: 1 }}
+        />
+        <OnboardingDots
+          total={onboardingData.length}
+          activeIndex={currentIndex}
+        />
+      </View>
       <TouchableOpacity
         style={styles.button}
         onPress={handleNext}
@@ -125,33 +127,40 @@ const OnboardingContainer: React.FC<OnboardingContainerProps> = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
+  screen: {
     flex: 1,
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "center",
     backgroundColor: "white",
   },
-
+  container: {},
   button: {
+    position: "absolute",
+    bottom: 20,
+    left: "20%",
+    right: "20%",
     backgroundColor: "#D0EE30",
     paddingVertical: 15,
     paddingHorizontal: 25,
     borderRadius: 10,
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 40,
-    width: "60%",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 3, // For Android shadow
   },
-
   buttonText: {
     color: "#000",
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: "bold",
   },
-
   icon: {
     backgroundColor: "#000",
     borderRadius: 50,
-    padding: 2,
+    padding: 5,
   },
 });
 

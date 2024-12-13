@@ -1,12 +1,15 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import React from "react";
+import { View, StyleSheet } from "react-native";
 
 interface OnboardingDotsProps {
   total: number;
   activeIndex: number;
 }
 
-const OnboardingDots: React.FC<OnboardingDotsProps> = ({ total, activeIndex }) => {
+const OnboardingDots: React.FC<OnboardingDotsProps> = ({
+  total,
+  activeIndex,
+}) => {
   return (
     <View style={styles.dotsContainer}>
       {Array.from({ length: total }).map((_, index) => (
@@ -24,10 +27,14 @@ const OnboardingDots: React.FC<OnboardingDotsProps> = ({ total, activeIndex }) =
 
 const styles = StyleSheet.create({
   dotsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 30,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 30,
+    position: "absolute",
+    right: "20%",
+    left: "20%",
+    bottom: 120,
   },
   dot: {
     width: 10,
@@ -36,10 +43,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   activeDot: {
-    backgroundColor: '#5d1889',
+    backgroundColor: "#5d1889",
   },
   inactiveDot: {
-    backgroundColor: '#ccc',
+    backgroundColor: "#ccc",
   },
 });
 

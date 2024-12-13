@@ -102,10 +102,10 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
   },
   button: {
-    position: "absolute", // Positioning for absolute placement
-    bottom: 20, // Position the button 20px from the bottom
-    left: "20%", // Center it horizontally (adjust as needed)
-    right: "20%", // Center it horizontally
+    position: "absolute",
+    bottom: 20,
+    left: "20%",
+    right: "20%",
     backgroundColor: "#D0EE30",
     paddingVertical: 15,
     paddingHorizontal: 25,

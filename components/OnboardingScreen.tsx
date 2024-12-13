@@ -37,15 +37,16 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: "70%",
+    height: "65%",
     resizeMode: "cover",
+    marginTop: -30,
   },
   textContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
-    marginTop: 30,
+    marginBottom: 100,
   },
   title: {
     fontSize: 24,

@@ -32,9 +32,9 @@ const App: React.FC = () => {
   }
 
   return isOnboardingComplete ? (
-    <Welcome />
-  ) : (
     <OnboardingContainer onFinish={handleOnboardingFinish} />
+  ) : (
+    <Welcome />
   );
 };
 
