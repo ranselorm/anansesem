@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import OnboardingContainer from '../screens/OnboardingContainer';
-import Welcome from '../screens/Welcome';
+import React, { useEffect, useState } from "react";
+import { View, ActivityIndicator, StyleSheet } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import OnboardingContainer from "../screens/OnboardingContainer";
+import Welcome from "../screens/Welcome";
 
 const App: React.FC = () => {
   const [isOnboardingComplete, setIsOnboardingComplete] = useState(false);
@@ -10,7 +10,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const checkOnboardingStatus = async () => {
-      const status = await AsyncStorage.getItem('onboardingComplete');
+      const status = await AsyncStorage.getItem("onboardingComplete");
       setIsOnboardingComplete(!!status);
       setLoading(false);
     };
@@ -19,7 +19,7 @@ const App: React.FC = () => {
   }, []);
 
   const handleOnboardingFinish = async () => {
-    await AsyncStorage.setItem('onboardingComplete', 'true');
+    await AsyncStorage.setItem("onboardingComplete", "true");
     setIsOnboardingComplete(true);
   };
 
@@ -32,18 +32,17 @@ const App: React.FC = () => {
   }
 
   return isOnboardingComplete ? (
-    <OnboardingContainer onFinish={handleOnboardingFinish} />
+    <Welcome />
   ) : (
-      <Welcome />
-
+    <OnboardingContainer onFinish={handleOnboardingFinish} />
   );
 };
 
 const styles = StyleSheet.create({
   loaderContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
