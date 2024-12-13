@@ -7,19 +7,34 @@ import Welcome from "../screens/Welcome";
 const App: React.FC = () => {
   const [isOnboardingComplete, setIsOnboardingComplete] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [onBoarded, setOnboarded] = useState(false);
 
+  // useEffect(() => {
+  //   const checkOnboardingStatus = async () => {
+  //     const status = await AsyncStorage.getItem("onboardingComplete");
+  //     setIsOnboardingComplete(!!status);
+  //     setLoading(false);
+  //   };
+  //   checkOnboardingStatus();
+  // }, []);
+
+  //DELETE!!!
   useEffect(() => {
     const checkOnboardingStatus = async () => {
-      const status = await AsyncStorage.getItem("onboardingComplete");
-      setIsOnboardingComplete(!!status);
+      // const status = await AsyncStorage.getItem("onboardingComplete");
+      setIsOnboardingComplete(false);
       setLoading(false);
     };
-
     checkOnboardingStatus();
   }, []);
 
+  // const handleOnboardingFinish = async () => {
+  //   await AsyncStorage.setItem("onboardingComplete", "true");
+  //   setIsOnboardingComplete(true);
+  // };
+
   const handleOnboardingFinish = async () => {
-    await AsyncStorage.setItem("onboardingComplete", "true");
+    // await AsyncStorage.setItem("onboardingComplete", "true");
     setIsOnboardingComplete(true);
   };
 
@@ -31,10 +46,16 @@ const App: React.FC = () => {
     );
   }
 
+  // return isOnboardingComplete ? (
+  //   <OnboardingContainer onFinish={handleOnboardingFinish} />
+  // ) : (
+  //   <Welcome />
+  // );
+
   return isOnboardingComplete ? (
-    <OnboardingContainer onFinish={handleOnboardingFinish} />
-  ) : (
     <Welcome />
+  ) : (
+    <OnboardingContainer onFinish={handleOnboardingFinish} />
   );
 };
 
