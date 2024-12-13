@@ -19,8 +19,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
       {/* Transparent StatusBar */}
       {/* <StatusBar translucent backgroundColor="transparent" barStyle="light-content" /> */}
 
-      {/* Top Section: Image */}
-      <Image source={require('../assets/images/onboarding1.png')} style={styles.image} />
+      <Image source={image} style={styles.image} />
 
       {/* Middle Section: Title and Description */}
       <View style={styles.textContainer}>
