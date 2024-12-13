@@ -1,6 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -9,8 +9,10 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
+import BottomSheet, { BottomSheetMethods } from "@devvie/bottom-sheet";
 
 const Welcome: React.FC = () => {
+  const sheetRef = useRef<BottomSheetMethods>(null);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -39,12 +41,20 @@ const Welcome: React.FC = () => {
             By clicking “I Agree”, you are certifying that you read our user
             agreement and give all required permissions to Anansesem.
           </Text>
-          <TouchableOpacity activeOpacity={1.2}>
+          <TouchableOpacity
+            activeOpacity={1.2}
+            onPress={() => sheetRef.current?.open()}
+          >
             <Text style={styles.textSmall2}>Read our user agreement</Text>
           </TouchableOpacity>
         </View>
       </View>
-      <TouchableOpacity style={styles.button} onPress={() => {}}>
+      <BottomSheet ref={sheetRef}>
+        <Text>
+          The smart 😎, tiny 📦, and flexible 🎗 bottom sheet your app craves 🚀
+        </Text>
+      </BottomSheet>
+      <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>I Agree</Text>
         <MaterialIcons
           name="arrow-forward"
