@@ -17,43 +17,53 @@ const GetStarted: React.FC = () => {
   };
 
   return (
-    <MainLayout title="Let’s get started">
-      <View style={styles.content}>
-        <View style={styles.imageContainer}>
-          <Image
-            source={require("../assets/images/logo-icon.png")}
-            style={styles.image}
+    <View style={styles.screen}>
+      <MainLayout title="Let’s get started">
+        <View style={styles.content}>
+          <View style={styles.imageContainer}>
+            <Image
+              source={require("../assets/images/logo-icon.png")}
+              style={styles.image}
+            />
+          </View>
+          <Text style={styles.description}>
+            Anansesem is designed for both parent-supervised learning and
+            independent exploration. Please select one of the options below.
+          </Text>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={selectedRole}
+              onValueChange={(itemValue) => setSelectedRole(itemValue)}
+              style={styles.picker}
+            >
+              <Picker.Item label="Select your role" value={null} />
+              <Picker.Item label="Parent" value="parent" />
+              <Picker.Item label="Child" value="child" />
+            </Picker>
+          </View>
+        </View>
+        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+          <Text style={styles.buttonText}>Submit</Text>
+          <MaterialIcons
+            name="arrow-forward"
+            size={22}
+            color="white"
+            style={styles.icon}
           />
-        </View>
-        <Text style={styles.description}>
-          Anansesem is designed for both parent-supervised learning and
-          independent exploration. Please select one of the options below.
-        </Text>
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={selectedRole}
-            onValueChange={(itemValue) => setSelectedRole(itemValue)}
-            style={styles.picker}
-          >
-            <Picker.Item label="Select your role" value={null} />
-            <Picker.Item label="Parent" value="parent" />
-            <Picker.Item label="Child" value="child" />
-          </Picker>
-        </View>
-        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-          <Text style={styles.submitButtonText}>Submit</Text>
-          <MaterialIcons name="arrow-forward" size={22} color="white" />
         </TouchableOpacity>
-      </View>
-    </MainLayout>
+      </MainLayout>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+  },
   content: {
     flex: 1,
     justifyContent: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: 30,
   },
 
   imageContainer: {
@@ -64,6 +74,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: "100%",
     alignSelf: "center",
+    marginTop: -60,
   },
   image: {
     height: "100%",
@@ -74,38 +85,51 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
     color: "#000",
-    marginBottom: 30,
+    marginTop: 40,
   },
   pickerContainer: {
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: "#000",
-    borderRadius: 16,
+    borderRadius: 50,
     marginBottom: 20,
     overflow: "hidden",
-    backgroundColor: "#FFF",
+    backgroundColor: "#FBCB46",
+    marginTop: 40,
+    width: "90%",
+    alignSelf: "center",
   },
   picker: {
     height: 50,
     color: "#000",
   },
-  submitButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+
+  button: {
+    position: "absolute",
+    bottom: 20,
+    left: "20%",
+    right: "20%",
     backgroundColor: "#D0EE30",
     paddingVertical: 15,
+    paddingHorizontal: 25,
     borderRadius: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 5,
-    elevation: 3, // For Android shadow
+    elevation: 3,
   },
-  submitButtonText: {
-    fontSize: 16,
-    fontWeight: "bold",
+  buttonText: {
     color: "#000",
-    marginRight: 10,
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  icon: {
+    backgroundColor: "#000",
+    borderRadius: 50,
+    padding: 5,
   },
 });
 
