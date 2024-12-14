@@ -9,11 +9,13 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import MainLayout from "../../shared/MainLayout";
+import HomeLayout from "@/shared/HomeLayout";
 
 const categories = [
   { label: "History", color: "#3C9C27", icon: "book" },
-  { label: "Science", color: "#85B7EA", icon: "science" },
-  { label: "Folklore", color: "#FBCB46", icon: "local-library" },
+  { label: "Science", color: "#09A4B2", icon: "science" },
+  { label: "Folklore", color: "#FF8D6A", icon: "local-library" },
+  { label: "Technology", color: "#000", icon: "science" },
 ];
 
 const featuredStories = [
@@ -33,6 +35,7 @@ const Home: React.FC = () => {
   const renderCategory = ({ item }: { item: (typeof categories)[0] }) => (
     <TouchableOpacity
       style={[styles.categoryCard, { backgroundColor: item.color }]}
+      activeOpacity={1.2}
     >
       <MaterialIcons name={`science`} size={30} color="#FFF" />
       <Text style={styles.categoryText}>{item.label}</Text>
@@ -54,7 +57,7 @@ const Home: React.FC = () => {
   );
 
   return (
-    <MainLayout title="Hi, Elorm">
+    <HomeLayout title="Hi, Elorm">
       <View style={styles.container}>
         {/* Categories */}
         <Text style={styles.sectionTitle}>Categories</Text>
@@ -103,14 +106,14 @@ const Home: React.FC = () => {
           </TouchableOpacity>
         </View>
       </View>
-    </MainLayout>
+    </HomeLayout>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   sectionTitle: {
     fontSize: 18,
@@ -118,9 +121,11 @@ const styles = StyleSheet.create({
     color: "#000",
     marginVertical: 10,
   },
+
   categoryList: {
     paddingBottom: 10,
   },
+
   categoryCard: {
     height: 100,
     width: 100,
