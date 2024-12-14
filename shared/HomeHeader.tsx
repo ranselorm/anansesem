@@ -11,7 +11,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
 interface HeaderProps {
-  title: string;
+  title?: string;
   isIcon?: boolean;
 }
 
@@ -22,12 +22,9 @@ const HomeHeader: React.FC<HeaderProps> = ({ title, isIcon = true }) => {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         {isIcon && (
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <MaterialIcons name="arrow-back" size={24} color="#000" />
-          </TouchableOpacity>
+          <View style={styles.placeholder}>
+            <MaterialIcons name="person" size={30} color="#FFBB00" />
+          </View>
         )}
         <Text style={styles.title}>{title}</Text>
         {/* Optional right icon or actions can be added here */}
@@ -56,6 +53,15 @@ const styles = StyleSheet.create({
     color: "#5D1889",
     textAlign: "center",
     flex: 1,
+  },
+
+  placeholder: {
+    height: 40,
+    width: 40,
+    borderRadius: 75,
+    backgroundColor: "#FF8D6A",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

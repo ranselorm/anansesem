@@ -57,67 +57,85 @@ const Home: React.FC = () => {
   );
 
   return (
-    <HomeLayout title="Hi, Elorm">
-      <View style={styles.container}>
-        {/* Categories */}
-        <Text style={styles.sectionTitle}>Categories</Text>
-        <FlatList
-          data={categories}
-          renderItem={renderCategory}
-          keyExtractor={(item) => item.label}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.categoryList}
-        />
+    <View style={styles.screen}>
+      <HomeLayout isIcon>
+        <View style={styles.container}>
+          <View style={{ marginTop: -15, marginBottom: 30 }}>
+            <Text style={styles.title}>Hi, Elorm</Text>
+            <Text style={{ fontSize: 16 }}>
+              Let&apos;s learn something new today
+            </Text>
+          </View>
+          {/* Categories */}
+          <Text style={styles.sectionTitle}>Categories</Text>
+          <FlatList
+            data={categories}
+            renderItem={renderCategory}
+            keyExtractor={(item) => item.label}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.categoryList}
+          />
 
-        {/* Featured Stories */}
-        <View style={styles.featuredSection}>
-          <Text style={styles.sectionTitle}>Featured Stories</Text>
-          <TouchableOpacity>
-            <Text style={styles.seeAllText}>See all</Text>
-          </TouchableOpacity>
-        </View>
-        <FlatList
-          data={featuredStories}
-          renderItem={renderStory}
-          keyExtractor={(item) => item.title}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.featuredList}
-        />
+          {/* Featured Stories */}
+          <View style={styles.featuredSection}>
+            <Text style={styles.sectionTitle}>Featured Stories</Text>
+            <TouchableOpacity>
+              <Text style={styles.seeAllText}>See all</Text>
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            data={featuredStories}
+            renderItem={renderStory}
+            keyExtractor={(item) => item.title}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.featuredList}
+          />
 
-        {/* Bottom Navigation Placeholder */}
-        <View style={styles.bottomNav}>
-          <TouchableOpacity>
-            <MaterialIcons name="leaderboard" size={28} color="#000" />
-            <Text style={styles.navText}>Leaderboard</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <MaterialIcons name="favorite" size={28} color="#000" />
-            <Text style={styles.navText}>For You</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <MaterialIcons name="create" size={28} color="#000" />
-            <Text style={styles.navText}>AI Story Creator</Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <MaterialIcons name="library-books" size={28} color="#000" />
-            <Text style={styles.navText}>Library</Text>
-          </TouchableOpacity>
+          {/* Bottom Navigation Placeholder */}
+          <View style={styles.bottomNav}>
+            <TouchableOpacity>
+              <MaterialIcons name="leaderboard" size={28} color="#000" />
+              <Text style={styles.navText}>Leaderboard</Text>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <MaterialIcons name="favorite" size={28} color="#000" />
+              <Text style={styles.navText}>For You</Text>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <MaterialIcons name="create" size={28} color="#000" />
+              <Text style={styles.navText}>AI Story Creator</Text>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <MaterialIcons name="library-books" size={28} color="#000" />
+              <Text style={styles.navText}>Library</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </HomeLayout>
+      </HomeLayout>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+  },
+
+  title: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#5D1889",
+    marginBottom: 10,
+  },
   container: {
     flex: 1,
     paddingHorizontal: 10,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: "bold",
+    // fontWeight: "bold",
     color: "#000",
     marginVertical: 10,
   },
@@ -149,8 +167,6 @@ const styles = StyleSheet.create({
   },
   seeAllText: {
     fontSize: 14,
-    color: "#5D1889",
-    fontWeight: "bold",
   },
   featuredList: {
     paddingBottom: 10,

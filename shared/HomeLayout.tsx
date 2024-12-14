@@ -1,18 +1,12 @@
 // shared/HomeLayout.tsx
 import React from "react";
-import {
-  View,
-  StyleSheet,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-} from "react-native";
+import { StyleSheet, SafeAreaView, ScrollView, StatusBar } from "react-native";
 import Header from "./Header";
 import { MaterialIcons } from "@expo/vector-icons";
 import HomeHeader from "./HomeHeader";
 
 interface HomeLayoutProps {
-  title: string;
+  title?: string;
   isIcon?: boolean;
   children: React.ReactNode;
 }
