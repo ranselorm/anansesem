@@ -32,4 +32,12 @@ export const terms = [
     number: 8,
     text: "Limitation of Liability: In no event shall we be liable for any damages, including direct, indirect, incidental, special, or consequential damages, arising out of or in connection with your use of the app.",
   },
+  {
+    number: 9,
+    text: "Changes to Terms and Conditions: We reserve the right to modify these Terms and Conditions at any time. Any changes will be effective immediately upon posting on the app.",
+  },
+  {
+    number: 10,
+    text: "Termination: We may terminate your access to the app at any time, without notice, for any reason.",
+  },
 ];

@@ -1,40 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { View, ActivityIndicator, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createStackNavigator } from "@react-navigation/stack";
 import OnboardingContainer from "../screens/OnboardingContainer";
 import Welcome from "../screens/Welcome";
+import Signup from "../screens/Signup";
+import GetStarted from "@/screens/GetStarted";
+
+const Stack = createStackNavigator();
+
+export type RootStackParamList = {
+  Welcome: undefined;
+  SignUp: undefined;
+};
 
 const App: React.FC = () => {
-  const [isOnboardingComplete, setIsOnboardingComplete] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [onBoarded, setOnboarded] = useState(false);
+  const [isOnboardingComplete, setIsOnboardingComplete] = useState(false);
 
-  // useEffect(() => {
-  //   const checkOnboardingStatus = async () => {
-  //     const status = await AsyncStorage.getItem("onboardingComplete");
-  //     setIsOnboardingComplete(!!status);
-  //     setLoading(false);
-  //   };
-  //   checkOnboardingStatus();
-  // }, []);
-
-  //DELETE!!!
   useEffect(() => {
     const checkOnboardingStatus = async () => {
-      // const status = await AsyncStorage.getItem("onboardingComplete");
-      setIsOnboardingComplete(false);
+      const status = await AsyncStorage.getItem("onboardingComplete");
+      setIsOnboardingComplete(!!status);
       setLoading(false);
     };
     checkOnboardingStatus();
   }, []);
 
-  // const handleOnboardingFinish = async () => {
-  //   await AsyncStorage.setItem("onboardingComplete", "true");
-  //   setIsOnboardingComplete(true);
-  // };
-
   const handleOnboardingFinish = async () => {
-    // await AsyncStorage.setItem("onboardingComplete", "true");
+    await AsyncStorage.setItem("onboardingComplete", "true");
     setIsOnboardingComplete(true);
   };
 
@@ -46,16 +40,23 @@ const App: React.FC = () => {
     );
   }
 
-  // return isOnboardingComplete ? (
-  //   <OnboardingContainer onFinish={handleOnboardingFinish} />
-  // ) : (
-  //   <Welcome />
-  // );
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {!isOnboardingComplete ? (
+        // Onboarding flow
+        <Stack.Screen name="Onboarding" options={{ headerShown: false }}>
+          {() => <OnboardingContainer onFinish={handleOnboardingFinish} />}
+        </Stack.Screen>
+      ) : (
+        // Welcome and Signup flow
+        <>
+          <Stack.Screen name="Welcome" component={Welcome} />
 
-  return isOnboardingComplete ? (
-    <Welcome />
-  ) : (
-    <OnboardingContainer onFinish={handleOnboardingFinish} />
+          {/* CHANGE THIS SCREEN LATER */}
+          <Stack.Screen name="SignUp" component={GetStarted} />
+        </>
+      )}
+    </Stack.Navigator>
   );
 };
 

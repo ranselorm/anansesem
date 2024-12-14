@@ -1,6 +1,5 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { useNavigation } from "expo-router";
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import {
   View,
   Text,
@@ -12,14 +11,24 @@ import {
 } from "react-native";
 import BottomSheet, { BottomSheetMethods } from "@devvie/bottom-sheet";
 import { terms } from "@/constants";
+import ResetOnboarding from "@/components/Reset";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+import { RootStackParamList } from "../app/index";
+
+type WelcomeScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "Welcome"
+>;
 
 const Welcome: React.FC = () => {
   const sheetRef = useRef<BottomSheetMethods>(null);
-  const navigation = useNavigation();
+  const navigation = useNavigation<WelcomeScreenNavigationProp>();
 
-  useEffect(() => {
-    navigation.setOptions({ headerShown: false });
-  }, [navigation]);
+  const handleAgree = () => {
+    navigation.navigate("SignUp");
+  };
 
   return (
     <View style={styles.screen}>
@@ -30,6 +39,7 @@ const Welcome: React.FC = () => {
       />
       <View style={styles.container}>
         <View style={styles.textContainer}>
+          {/* <ResetOnboarding /> */}
           <Image source={require("../assets/images/logo-icon.png")} />
           <Text style={styles.title}>Welcome to Anansesem</Text>
           <Text style={styles.text}>
@@ -52,7 +62,11 @@ const Welcome: React.FC = () => {
         </View>
       </View>
 
-      <TouchableOpacity style={styles.button} activeOpacity={1.2}>
+      <TouchableOpacity
+        style={styles.button}
+        activeOpacity={1.2}
+        onPress={handleAgree}
+      >
         <Text style={styles.buttonText}>I Agree</Text>
         <MaterialIcons
           name="arrow-forward"
@@ -79,6 +93,10 @@ const Welcome: React.FC = () => {
               {term.text}
             </Text>
           ))}
+          <Text style={styles.content}>
+            By using the Anansesem app, you agree to these Terms and Conditions.
+            If you have any questions, please contact us.
+          </Text>
         </ScrollView>
       </BottomSheet>
     </View>
