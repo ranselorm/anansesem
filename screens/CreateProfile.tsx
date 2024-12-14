@@ -67,7 +67,7 @@ const CreateProfile: React.FC = () => {
               onValueChange={(itemValue) => setLanguage(itemValue)}
               style={styles.picker}
             >
-              <Picker.Item label="Select a Language" value={null} />
+              <Picker.Item label="Select a language" value={null} />
               <Picker.Item label="English" value="english" />
               <Picker.Item label="French" value="french" />
               <Picker.Item label="Spanish" value="spanish" />
@@ -79,7 +79,7 @@ const CreateProfile: React.FC = () => {
               onValueChange={(itemValue) => setCountry(itemValue)}
               style={styles.picker}
             >
-              <Picker.Item label="Select a Country" value={null} />
+              <Picker.Item label="Select a country" value={null} />
               <Picker.Item label="United States" value="us" />
               <Picker.Item label="Canada" value="ca" />
               <Picker.Item label="United Kingdom" value="uk" />
