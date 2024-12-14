@@ -8,6 +8,8 @@ import Signup from "../screens/Signup";
 import GetStarted from "@/screens/GetStarted";
 import CreateProfile from "@/screens/CreateProfile";
 import GetToKnowYou from "@/screens/GetToKnowYou";
+import UploadProfilePicture from "@/screens/UploadProfilePicture";
+import Home from "@/screens/TabScreens/Home";
 
 const Stack = createStackNavigator();
 
@@ -55,7 +57,7 @@ const App: React.FC = () => {
           <Stack.Screen name="Welcome" component={Welcome} />
 
           {/* CHANGE THIS SCREEN LATER */}
-          <Stack.Screen name="SignUp" component={GetToKnowYou} />
+          <Stack.Screen name="SignUp" component={Home} />
         </>
       )}
     </Stack.Navigator>
