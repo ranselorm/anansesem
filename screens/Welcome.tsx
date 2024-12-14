@@ -8,8 +8,10 @@ import {
   StatusBar,
   Image,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import BottomSheet, { BottomSheetMethods } from "@devvie/bottom-sheet";
+import { terms } from "@/constants";
 
 const Welcome: React.FC = () => {
   const sheetRef = useRef<BottomSheetMethods>(null);
@@ -49,12 +51,8 @@ const Welcome: React.FC = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <BottomSheet ref={sheetRef}>
-        <Text>
-          The smart 😎, tiny 📦, and flexible 🎗 bottom sheet your app craves 🚀
-        </Text>
-      </BottomSheet>
-      <TouchableOpacity style={styles.button}>
+
+      <TouchableOpacity style={styles.button} activeOpacity={1.2}>
         <Text style={styles.buttonText}>I Agree</Text>
         <MaterialIcons
           name="arrow-forward"
@@ -63,6 +61,26 @@ const Welcome: React.FC = () => {
           style={styles.icon}
         />
       </TouchableOpacity>
+      <BottomSheet ref={sheetRef} style={styles.bottomSheet}>
+        <ScrollView
+          // contentContainerStyle={styles.scrollViewContent}
+          showsVerticalScrollIndicator={true}
+          indicatorStyle="white"
+          style={{ paddingHorizontal: 20 }}
+        >
+          <Text style={styles.heading}>Anansesem Terms and Conditions</Text>
+          <Text style={styles.content}>
+            Please read these Terms and Conditions carefully before using the
+            Anansesem app.
+          </Text>
+          {terms.map((term, index) => (
+            <Text style={styles.content} key={index}>
+              <Text>{term.number}. </Text>
+              {term.text}
+            </Text>
+          ))}
+        </ScrollView>
+      </BottomSheet>
     </View>
   );
 };
@@ -73,7 +91,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#c4a1ff",
   },
-
   container: {
     alignItems: "center",
     justifyContent: "center",
@@ -81,7 +98,7 @@ const styles = StyleSheet.create({
   textContainer: {
     alignItems: "center",
     gap: 20,
-    marginTop: 20, // Add space from the top
+    marginTop: 20,
   },
   title: {
     fontSize: 24,
@@ -111,6 +128,24 @@ const styles = StyleSheet.create({
     marginTop: 20,
     textDecorationLine: "underline",
   },
+  bottomSheet: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    height: "60%",
+    backgroundColor: "white",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+    padding: 20,
+    zIndex: 10,
+    paddingHorizontal: 30,
+    paddingBottom: 60,
+  },
   button: {
     position: "absolute",
     bottom: 20,
@@ -127,7 +162,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 5,
-    elevation: 3, // For Android shadow
+    elevation: 3,
   },
   buttonText: {
     color: "#000",
@@ -138,6 +173,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     borderRadius: 50,
     padding: 5,
+  },
+  heading: {
+    fontSize: 18,
+    color: "#5d1889",
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  content: {
+    fontSize: 16,
+    marginBottom: 15,
   },
 });
 
