@@ -11,6 +11,7 @@ import GetToKnowYou from "@/screens/GetToKnowYou";
 import UploadProfilePicture from "@/screens/UploadProfilePicture";
 import Home from "@/screens/TabScreens/Home";
 import Login from "@/screens/Login";
+import SelectProfile from "@/screens/SelectProfile";
 
 const Stack = createStackNavigator();
 
@@ -58,7 +59,7 @@ const App: React.FC = () => {
           <Stack.Screen name="Welcome" component={Welcome} />
 
           {/* CHANGE THIS SCREEN LATER */}
-          <Stack.Screen name="SignUp" component={Login} />
+          <Stack.Screen name="SignUp" component={SelectProfile} />
         </>
       )}
     </Stack.Navigator>
