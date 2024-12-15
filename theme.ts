@@ -4,7 +4,7 @@ export const Fonts = {
 };
 
 export const FontSizes = {
-  small: 12,
+  small: 14,
   medium: 16,
   large: 24,
 };
@@ -12,4 +12,6 @@ export const FontSizes = {
 export const Colors = {
   primary: "#3498db",
   secondary: "#2ecc71",
+  pink: "#FF8D6A",
+  yellow: "#FBCB46",
 };

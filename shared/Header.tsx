@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { Fonts, FontSizes } from "@/theme";
 
 interface HeaderProps {
   title: string;
@@ -51,12 +52,12 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   title: {
-    fontSize: 18,
+    fontSize: FontSizes.large,
     fontWeight: "bold",
     color: "#5D1889",
     textAlign: "center",
     flex: 1,
-    fontFamily: "Caprasimo",
+    fontFamily: Fonts.heading,
   },
 });
 

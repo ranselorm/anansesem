@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import HomeLayout from "@/shared/HomeLayout";
+import { Colors } from "@/theme";
 
 const categories = [
   { label: "History", color: "#3C9C27", icon: "book" },
@@ -48,8 +49,13 @@ const Home: React.FC = () => {
         <Text style={styles.storyTitle}>{item.title}</Text>
         <View style={styles.storyFooter}>
           <TouchableOpacity style={styles.playButton}>
-            <MaterialIcons name="play-arrow" size={18} color="#FFF" />
             <Text style={styles.playButtonText}>Play</Text>
+            <MaterialIcons
+              name="play-arrow"
+              size={18}
+              color="#FFF"
+              style={styles.icon}
+            />
           </TouchableOpacity>
           <Text style={styles.storyDuration}>{item.duration}</Text>
         </View>
@@ -82,7 +88,7 @@ const Home: React.FC = () => {
           {/* Featured Stories */}
           <View style={styles.featuredSection}>
             <Text style={styles.sectionTitle}>Featured Stories</Text>
-            <TouchableOpacity>
+            <TouchableOpacity activeOpacity={1.2}>
               <Text style={styles.seeAllText}>See all</Text>
             </TouchableOpacity>
           </View>
@@ -146,6 +152,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginVertical: 15,
+    marginTop: -20,
   },
   seeAllText: {
     fontSize: 14,
@@ -172,11 +179,14 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.6)",
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 15,
   },
   storyTitle: {
     fontSize: 14,
     fontWeight: "bold",
     color: "#FFF",
+    marginBottom: 10,
   },
   storyFooter: {
     flexDirection: "row",
@@ -187,19 +197,31 @@ const styles = StyleSheet.create({
   playButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#5D1889",
+    backgroundColor: Colors.pink,
     borderRadius: 5,
     paddingHorizontal: 8,
     paddingVertical: 4,
   },
   playButtonText: {
-    color: "#FFF",
+    color: "#000",
     marginLeft: 5,
     fontSize: 12,
+  },
+
+  icon: {
+    backgroundColor: "black",
+    marginLeft: 10,
+    borderRadius: 50,
+    padding: 2,
   },
   storyDuration: {
     fontSize: 12,
     color: "#FFF",
+    borderWidth: 1,
+    borderColor: "#fff",
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 6,
   },
 });
 
