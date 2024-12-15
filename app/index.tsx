@@ -16,6 +16,8 @@ import Library from "@/screens/TabScreens/Library";
 import StoryCreator from "@/screens/TabScreens/StoryCreator";
 import Percentage from "@/components/Percentage";
 import StoryPlayback from "@/screens/TabScreens/StoryPlayback";
+import RibbonBanner from "@/components/RibbonBanner";
+import LeaderBoard from "@/screens/TabScreens/LeaderBoard";
 
 const Stack = createStackNavigator();
 
@@ -63,7 +65,7 @@ const App: React.FC = () => {
           <Stack.Screen name="Welcome" component={Welcome} />
 
           {/* CHANGE THIS SCREEN LATER */}
-          <Stack.Screen name="SignUp" component={StoryPlayback} />
+          <Stack.Screen name="SignUp" component={LeaderBoard} />
         </>
       )}
     </Stack.Navigator>
