@@ -14,6 +14,7 @@ import { terms } from "@/constants";
 import ResetOnboarding from "@/components/Reset";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Fonts, FontSizes, Colors } from "../theme";
 
 import { RootStackParamList } from "../app/index";
 
@@ -119,12 +120,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   title: {
-    fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
     alignSelf: "center",
-    color: "#000",
     maxWidth: 150,
+    fontSize: FontSizes.large,
+    fontFamily: Fonts.heading,
   },
   text: {
     fontSize: 16,

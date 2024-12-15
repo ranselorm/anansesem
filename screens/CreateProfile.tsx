@@ -86,16 +86,16 @@ const CreateProfile: React.FC = () => {
             </Picker>
           </View>
         </View>
-        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>Submit</Text>
-          <MaterialIcons
-            name="arrow-forward"
-            size={22}
-            color="white"
-            style={styles.icon}
-          />
-        </TouchableOpacity>
       </MainLayout>
+      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+        <Text style={styles.buttonText}>Submit</Text>
+        <MaterialIcons
+          name="arrow-forward"
+          size={22}
+          color="white"
+          style={styles.icon}
+        />
+      </TouchableOpacity>
     </View>
   );
 };

@@ -8,7 +8,6 @@ import {
   Image,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import MainLayout from "../../shared/MainLayout";
 import HomeLayout from "@/shared/HomeLayout";
 
 const categories = [
@@ -37,7 +36,7 @@ const Home: React.FC = () => {
       style={[styles.categoryCard, { backgroundColor: item.color }]}
       activeOpacity={1.2}
     >
-      <MaterialIcons name={`science`} size={30} color="#FFF" />
+      <MaterialIcons name={"book"} size={30} color="#FFF" />
       <Text style={styles.categoryText}>{item.label}</Text>
     </TouchableOpacity>
   );
@@ -45,13 +44,15 @@ const Home: React.FC = () => {
   const renderStory = ({ item }: { item: (typeof featuredStories)[0] }) => (
     <View style={styles.storyCard}>
       <Image source={item.image} style={styles.storyImage} />
-      <Text style={styles.storyTitle}>{item.title}</Text>
-      <View style={styles.storyFooter}>
-        <TouchableOpacity style={styles.playButton}>
-          <MaterialIcons name="play-arrow" size={18} color="#FFF" />
-          <Text style={styles.playButtonText}>Play</Text>
-        </TouchableOpacity>
-        <Text style={styles.storyDuration}>{item.duration}</Text>
+      <View style={styles.overlay}>
+        <Text style={styles.storyTitle}>{item.title}</Text>
+        <View style={styles.storyFooter}>
+          <TouchableOpacity style={styles.playButton}>
+            <MaterialIcons name="play-arrow" size={18} color="#FFF" />
+            <Text style={styles.playButtonText}>Play</Text>
+          </TouchableOpacity>
+          <Text style={styles.storyDuration}>{item.duration}</Text>
+        </View>
       </View>
     </View>
   );
@@ -66,6 +67,7 @@ const Home: React.FC = () => {
               Let&apos;s learn something new today
             </Text>
           </View>
+
           {/* Categories */}
           <Text style={styles.sectionTitle}>Categories</Text>
           <FlatList
@@ -92,26 +94,6 @@ const Home: React.FC = () => {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.featuredList}
           />
-
-          {/* Bottom Navigation Placeholder */}
-          <View style={styles.bottomNav}>
-            <TouchableOpacity>
-              <MaterialIcons name="leaderboard" size={28} color="#000" />
-              <Text style={styles.navText}>Leaderboard</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <MaterialIcons name="favorite" size={28} color="#000" />
-              <Text style={styles.navText}>For You</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <MaterialIcons name="create" size={28} color="#000" />
-              <Text style={styles.navText}>AI Story Creator</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <MaterialIcons name="library-books" size={28} color="#000" />
-              <Text style={styles.navText}>Library</Text>
-            </TouchableOpacity>
-          </View>
         </View>
       </HomeLayout>
     </View>
@@ -124,10 +106,11 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: "bold",
     color: "#5D1889",
     marginBottom: 10,
+    fontFamily: "heading",
   },
   container: {
     flex: 1,
@@ -135,7 +118,6 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    // fontWeight: "bold",
     color: "#000",
     marginVertical: 10,
   },
@@ -172,19 +154,29 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   storyCard: {
-    width: 150,
+    width: 180,
+    height: 180,
     marginRight: 15,
+    borderRadius: 10,
+    overflow: "hidden",
   },
   storyImage: {
-    height: 100,
-    borderRadius: 10,
+    height: "100%",
     width: "100%",
+  },
+  overlay: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    padding: 10,
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
   },
   storyTitle: {
     fontSize: 14,
     fontWeight: "bold",
-    color: "#000",
-    marginTop: 5,
+    color: "#FFF",
   },
   storyFooter: {
     flexDirection: "row",
@@ -207,20 +199,7 @@ const styles = StyleSheet.create({
   },
   storyDuration: {
     fontSize: 12,
-    color: "#888",
-  },
-  bottomNav: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    paddingVertical: 10,
-    borderTopWidth: 1,
-    borderColor: "#ccc",
-  },
-  navText: {
-    fontSize: 12,
-    color: "#000",
-    marginTop: 5,
-    textAlign: "center",
+    color: "#FFF",
   },
 });
 

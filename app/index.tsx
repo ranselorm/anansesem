@@ -57,7 +57,7 @@ const App: React.FC = () => {
           <Stack.Screen name="Welcome" component={Welcome} />
 
           {/* CHANGE THIS SCREEN LATER */}
-          <Stack.Screen name="SignUp" component={Home} />
+          <Stack.Screen name="SignUp" component={CreateProfile} />
         </>
       )}
     </Stack.Navigator>

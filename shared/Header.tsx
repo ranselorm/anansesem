@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
     color: "#5D1889",
     textAlign: "center",
     flex: 1,
+    fontFamily: "Caprasimo",
   },
 });
 
