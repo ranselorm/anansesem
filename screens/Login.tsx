@@ -13,6 +13,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import BottomSheet, { BottomSheetMethods } from "@devvie/bottom-sheet";
 import { OtpInput } from "react-native-otp-entry";
 import { Colors, FontSizes } from "@/theme";
+import Socials from "@/components/Socials";
 
 const Login: React.FC = () => {
   const sheetRef = useRef<BottomSheetMethods>(null);
@@ -21,6 +22,10 @@ const Login: React.FC = () => {
     <View style={styles.screen}>
       <MainLayout title="Welcome back">
         <View style={styles.container}>
+          <View style={styles.placeholder}>
+            <MaterialIcons name="person" size={30} color="#FFBB00" />
+          </View>
+          <Text style={styles.text}>Login</Text>
           <View>
             <TextInput style={styles.input} placeholder="Email/Phone number" />
             <TextInput
@@ -31,22 +36,7 @@ const Login: React.FC = () => {
           </View>
         </View>
       </MainLayout>
-      <View style={styles.socialIconsContainer}>
-        <Text style={styles.signInText}>Sign In</Text>
-        <View style={styles.socialIcons}>
-          <TouchableOpacity style={styles.iconWrapper}>
-            <FontAwesome name="facebook" size={40} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconWrapper}>
-            <Text>
-              <AntDesign name="google" size={40} color="black" />{" "}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconWrapper}>
-            <FontAwesome name="apple" size={40} color="#000000" />
-          </TouchableOpacity>
-        </View>
-      </View>
+      <Socials />
     </View>
   );
 };
@@ -55,16 +45,30 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
   },
-
   container: {
     flex: 1,
     marginTop: 20,
     paddingHorizontal: 30,
-    justifyContent: "center",
-    // backgroundColor: "red",
-    // paddingBottom: 40,
+    // justifyContent: "center",
     gap: 40,
   },
+
+  placeholder: {
+    height: 40,
+    width: 40,
+    borderRadius: 75,
+    backgroundColor: "#FF8D6A",
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+  },
+
+  text: {
+    fontSize: FontSizes.small,
+    marginTop: -30,
+    textAlign: "center",
+  },
+
   input: {
     backgroundColor: Colors.yellow,
     borderRadius: 50,
@@ -99,34 +103,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     borderRadius: 50,
     padding: 5,
-  },
-  signInText: {
-    textAlign: "center",
-    marginTop: 15,
-    fontSize: FontSizes.small,
-    color: "#000",
-    marginBottom: 20,
-  },
-
-  socialIconsContainer: {
-    position: "absolute",
-    bottom: 30,
-    alignSelf: "center",
-  },
-  socialIcons: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignSelf: "center",
-  },
-  iconWrapper: {
-    marginHorizontal: 10,
-    backgroundColor: "#C4A1FF",
-    width: 60,
-    height: 60,
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    textAlign: "center",
   },
 });
 
