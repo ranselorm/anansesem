@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
     borderRadius: 50,
     paddingHorizontal: 20,
-    paddingVertical: 3,
+    paddingVertical: 10,
     marginBottom: 20,
   },
   searchInput: {
@@ -236,8 +236,8 @@ const styles = StyleSheet.create({
   storyDuration: {
     fontSize: 12,
     color: "#FFF",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
     borderWidth: 1,
     borderColor: "#FFF",
     borderRadius: 4,

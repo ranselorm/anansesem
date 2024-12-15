@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flexGrow: 1,
-    paddingHorizontal: 10,
+    paddingHorizontal: 30,
     paddingTop: 20,
     paddingBottom: 60,
     justifyContent: "flex-start",

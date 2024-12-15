@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   title: {
-    fontSize: FontSizes.large,
+    fontSize: FontSizes.title,
     fontWeight: "bold",
     color: "#5D1889",
     textAlign: "center",

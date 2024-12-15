@@ -128,10 +128,10 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.heading,
   },
   text: {
-    fontSize: 16,
+    fontSize: FontSizes.medium,
     paddingHorizontal: 40,
     textAlign: "center",
-    lineHeight: 22,
+    lineHeight: 25,
   },
   agreementContainer: {
     paddingHorizontal: 40,

@@ -13,6 +13,9 @@ import Home from "@/screens/TabScreens/Home";
 import Login from "@/screens/Login";
 import SelectProfile from "@/screens/SelectProfile";
 import Library from "@/screens/TabScreens/Library";
+import StoryCreator from "@/screens/TabScreens/StoryCreator";
+import Percentage from "@/components/Percentage";
+import StoryPlayback from "@/screens/TabScreens/StoryPlayback";
 
 const Stack = createStackNavigator();
 
@@ -60,7 +63,7 @@ const App: React.FC = () => {
           <Stack.Screen name="Welcome" component={Welcome} />
 
           {/* CHANGE THIS SCREEN LATER */}
-          <Stack.Screen name="SignUp" component={Library} />
+          <Stack.Screen name="SignUp" component={StoryPlayback} />
         </>
       )}
     </Stack.Navigator>
