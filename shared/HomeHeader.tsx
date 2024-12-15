@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { FontSizes } from "@/theme";
 
 interface HeaderProps {
   title?: string;
@@ -28,6 +29,7 @@ const HomeHeader: React.FC<HeaderProps> = ({ title, isIcon = true }) => {
         )}
         <Text style={styles.title}>{title}</Text>
         {/* Optional right icon or actions can be added here */}
+        <Text style={{ opacity: 0 }}>hello</Text>
       </View>
     </SafeAreaView>
   );
@@ -44,11 +46,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderBottomColor: "#ccc",
   },
-  backButton: {
-    marginRight: 10,
-  },
+
   title: {
-    fontSize: 18,
+    fontSize: FontSizes.large,
     fontWeight: "bold",
     color: "#5D1889",
     textAlign: "center",

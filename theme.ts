@@ -10,7 +10,7 @@ export const FontSizes = {
 };
 
 export const Colors = {
-  primary: "#3498db",
+  primary: "#C4A1FF",
   secondary: "#2ecc71",
   pink: "#FF8D6A",
   yellow: "#FBCB46",
