@@ -32,13 +32,13 @@ const HomeHeader: React.FC<HeaderProps> = ({
             <MaterialIcons name="person" size={30} color="#FFBB00" />
           </View>
         ) : (
-          <Text style={{ opacity: 0 }}>hello</Text>
+          <Text style={{ opacity: 1 }}>Cancel</Text>
         )}
         <Text style={styles.title}>{title}</Text>
         {isIconLeft ? (
           <MaterialIcons name="settings" size={24} />
         ) : (
-          <Text style={{ opacity: 0 }}>hello</Text>
+          <Text style={{ opacity: 1 }}>Done</Text>
         )}
       </View>
     </SafeAreaView>
@@ -48,6 +48,7 @@ const HomeHeader: React.FC<HeaderProps> = ({
 const styles = StyleSheet.create({
   safeArea: {
     backgroundColor: "transparent",
+    zIndex: 99999,
   },
   container: {
     height: 60,
