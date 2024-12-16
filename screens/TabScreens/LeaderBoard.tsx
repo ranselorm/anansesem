@@ -88,10 +88,35 @@ const LeaderBoard: React.FC = () => {
                     Condition to Unlock this Badge
                   </Text>
                   <Text style={styles.points2}>
-                    <Image source={require("../../assets/icons/star.png")} />
-                    <Text>10</Text>
+                    <Image source={require("../../assets/icons/star2.png")} />
+                    <Text>15</Text>
                   </Text>
                 </View>
+              </View>
+            </View>
+            <View style={styles.achievementCard3}>
+              <View style={styles.textContainer3}>
+                <Text style={styles.achievementTitle3}>
+                  Master of Imagination
+                </Text>
+                <Text style={styles.description3}>
+                  Condition to Unlock this Badge
+                </Text>
+              </View>
+              <View style={styles.footer}>
+                <View style={styles.iconContainer3}>
+                  <Image
+                    source={require("../../assets/icons/imagination.png")}
+                    style={styles.badgeIcon3}
+                  />
+                </View>
+                <Text style={styles.points3}>
+                  <Image
+                    source={require("../../assets/icons/star2.png")}
+                    style={{ width: 20, height: 20 }}
+                  />
+                  <Text>200</Text>
+                </Text>
               </View>
             </View>
           </View>
@@ -230,7 +255,7 @@ const styles = StyleSheet.create({
   },
   achievementContainer: {
     flex: 1,
-    backgroundColor: "red",
+    // backgroundColor: "red",
     width: "100%",
     height: 500,
     marginTop: 30,
@@ -248,11 +273,6 @@ const styles = StyleSheet.create({
     height: 151,
     borderRadius: 10,
     padding: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 5,
   },
 
   textContainer: {
@@ -300,10 +320,12 @@ const styles = StyleSheet.create({
     borderRadius: 13,
     padding: 10,
   },
+
   iconContainer2: {
     width: 105,
     height: 30,
   },
+
   badgeIcon2: {
     width: "100%",
     height: "100%",
@@ -330,6 +352,59 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "bold",
     fontFamily: Fonts.heading,
+  },
+
+  achievementCard3: {
+    backgroundColor: "#D9D9D9",
+    width: "100%",
+    height: 151,
+    borderRadius: 13,
+    padding: 10,
+    marginTop: 12,
+  },
+
+  textContainer3: {
+    alignItems: "center",
+    marginBottom: 10,
+  },
+
+  achievementTitle3: {
+    fontFamily: Fonts.heading,
+    fontSize: 20,
+    color: "#000",
+    fontWeight: 900,
+    textAlign: "center",
+  },
+
+  description3: {
+    fontSize: 12,
+    color: "#000",
+    textAlign: "center",
+  },
+
+  footer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+  },
+
+  iconContainer3: {
+    width: 73,
+    height: 83,
+  },
+
+  badgeIcon3: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "contain",
+  },
+
+  points3: {
+    marginLeft: 5,
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "#000",
   },
 });
 
