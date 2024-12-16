@@ -38,7 +38,7 @@ const HomeHeader: React.FC<HeaderProps> = ({
         {isIconLeft ? (
           <MaterialIcons name="settings" size={24} />
         ) : (
-          <Text style={{ opacity: 1 }}>Done</Text>
+          <Text style={{ opacity: 0 }}>Done</Text>
         )}
       </View>
     </SafeAreaView>

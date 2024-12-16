@@ -8,6 +8,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  Pressable,
 } from "react-native";
 import BottomSheet, { BottomSheetMethods } from "@devvie/bottom-sheet";
 import { terms } from "@/constants";
@@ -15,6 +16,7 @@ import ResetOnboarding from "@/components/Reset";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Fonts, FontSizes, Colors } from "../theme";
+import { router, Link } from "expo-router";
 
 const Welcome: React.FC = () => {
   const sheetRef = useRef<BottomSheetMethods>(null);
@@ -51,7 +53,11 @@ const Welcome: React.FC = () => {
         </View>
       </View>
 
-      <TouchableOpacity style={styles.button} activeOpacity={1.2}>
+      <TouchableOpacity
+        style={styles.button}
+        activeOpacity={1.2}
+        onPress={() => router.push("/register")}
+      >
         <Text style={styles.buttonText}>I Agree</Text>
         <MaterialIcons
           name="arrow-forward"
@@ -60,6 +66,7 @@ const Welcome: React.FC = () => {
           style={styles.icon}
         />
       </TouchableOpacity>
+
       <BottomSheet ref={sheetRef} style={styles.bottomSheet}>
         <ScrollView
           // contentContainerStyle={styles.scrollViewContent}
