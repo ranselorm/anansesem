@@ -119,6 +119,48 @@ const LeaderBoard: React.FC = () => {
                 </Text>
               </View>
             </View>
+
+            <View style={styles.wrapper}>
+              {/* fourth */}
+              <View style={styles.achievementCard4}>
+                <View style={styles.iconContainer4}>
+                  <Image
+                    source={require("../../assets/images/writer1.png")}
+                    style={styles.badgeIcon4}
+                  />
+                </View>
+                <View style={styles.textContainer4}>
+                  <Text style={styles.achievementTitle4}>Daily Writer</Text>
+                  <Text style={styles.description4}>
+                    Condition to Unlock this Badge
+                  </Text>
+                  <Text style={styles.points4}>
+                    <Image source={require("../../assets/icons/star2.png")} />
+                    <Text>15</Text>
+                  </Text>
+                </View>
+              </View>
+              {/* fith */}
+
+              <View style={styles.achievementCard5}>
+                <View style={styles.iconContainer4}>
+                  <Image
+                    source={require("../../assets/images/seeker.png")}
+                    style={styles.badgeIcon4}
+                  />
+                </View>
+                <View style={styles.textContainer4}>
+                  <Text style={styles.achievementTitle4}>Knowledge Seeker</Text>
+                  <Text style={styles.description4}>
+                    Condition to Unlock this Badge
+                  </Text>
+                  <Text style={styles.points4}>
+                    <Image source={require("../../assets/icons/star2.png")} />
+                    <Text>20</Text>
+                  </Text>
+                </View>
+              </View>
+            </View>
           </View>
         );
       default:
@@ -405,6 +447,65 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     color: "#000",
+  },
+
+  achievementCard4: {
+    flexDirection: "row",
+    backgroundColor: "#C4A1FF",
+    width: 168,
+    height: 151,
+    borderRadius: 10,
+    padding: 10,
+    marginTop: 10,
+  },
+
+  textContainer4: {
+    width: "100%",
+    justifyContent: "space-evenly",
+  },
+
+  iconContainer4: {
+    flex: 1,
+    position: "absolute",
+    bottom: 7,
+    right: 10,
+  },
+
+  badgeIcon4: {
+    width: 51,
+    height: 93,
+  },
+
+  achievementTitle4: {
+    fontFamily: Fonts.heading,
+    fontSize: 22,
+    color: "#000",
+    fontWeight: 900,
+  },
+
+  description4: {
+    fontSize: 12,
+    color: "#000",
+    width: "70%",
+  },
+
+  points4: {
+    flexDirection: "row",
+    alignItems: "center",
+    color: "#000",
+    fontSize: 22,
+    fontWeight: "bold",
+    fontFamily: Fonts.heading,
+  },
+
+  achievementCard5: {
+    flexDirection: "row",
+    backgroundColor: "#FF8D6A",
+    width: 168,
+    height: 151,
+    borderRadius: 10,
+    padding: 10,
+    marginTop: 10,
   },
 });
 
