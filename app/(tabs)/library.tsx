@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
     borderRadius: 50,
     paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingVertical: 4,
     marginBottom: 20,
   },
   searchInput: {
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   flatListContent: {
-    paddingHorizontal: 16,
+    // paddingHorizontal: 16,
     paddingBottom: 20,
   },
   storyCard: {

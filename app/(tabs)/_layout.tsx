@@ -2,6 +2,7 @@ import { Tabs } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Colors } from "@/theme";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { KeyboardAvoidingView, Platform } from "react-native";
 
 export default function TabLayout() {
   return (
@@ -10,13 +11,13 @@ export default function TabLayout() {
         tabBarInactiveTintColor: "#000",
         tabBarActiveTintColor: "#000",
         tabBarStyle: {
-          backgroundColor: "#b2ff59",
+          backgroundColor: Colors.purple,
           borderWidth: 2,
-          borderColor: "#000",
-          borderRadius: 20,
-          marginHorizontal: 10,
-          marginBottom: 10,
-          height: 70,
+          borderColor: Colors.main,
+          borderRadius: 7,
+          marginHorizontal: 2,
+          marginBottom: 1,
+          height: 60,
         },
         headerShown: false,
       }}
@@ -52,16 +53,7 @@ export default function TabLayout() {
         options={{
           title: "AI Story Creator",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person" color={Colors.main} size={size} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="libray"
-        options={{
-          title: "Library",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="sparkles-outline" size={24} color={Colors.main} />
+            <Ionicons name="sparkles-outline" color={Colors.main} size={size} />
           ),
         }}
       />

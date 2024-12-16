@@ -253,6 +253,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
     gap: 15,
+    marginTop: 30,
   },
 
   scoreCard: {
