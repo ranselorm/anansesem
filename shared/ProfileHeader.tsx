@@ -1,4 +1,4 @@
-// shared/HomeHeader.tsx
+// shared/ProfileHeader.tsx
 import React from "react";
 import {
   View,
@@ -17,7 +17,7 @@ interface HeaderProps {
   isIconLeft?: boolean;
 }
 
-const HomeHeader: React.FC<HeaderProps> = ({
+const ProfileHeader: React.FC<HeaderProps> = ({
   title,
   isIcon = true,
   isIconLeft,
@@ -75,4 +75,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeHeader;
+export default ProfileHeader;

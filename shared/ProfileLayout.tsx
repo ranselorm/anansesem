@@ -4,7 +4,7 @@ import Header from "./Header";
 import { MaterialIcons } from "@expo/vector-icons";
 import HomeHeader from "./HomeHeader";
 
-interface HomeLayoutProps {
+interface ProfileLayoutProps {
   title?: string;
   isIcon?: boolean;
   isIconLeft?: boolean;
@@ -12,7 +12,7 @@ interface HomeLayoutProps {
   bgColor?: string;
 }
 
-const HomeLayout: React.FC<HomeLayoutProps> = ({
+const ProfileLayout: React.FC<ProfileLayoutProps> = ({
   title,
   isIcon = false,
   isIconLeft = false,
@@ -48,11 +48,10 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flexGrow: 1,
-    paddingHorizontal: 30,
     paddingTop: 20,
     paddingBottom: 60,
     justifyContent: "flex-start",
   },
 });
 
-export default HomeLayout;
+export default ProfileLayout;

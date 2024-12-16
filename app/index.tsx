@@ -18,6 +18,7 @@ import Percentage from "@/components/Percentage";
 import StoryPlayback from "@/screens/TabScreens/StoryPlayback";
 import RibbonBanner from "@/components/RibbonBanner";
 import LeaderBoard from "@/screens/TabScreens/LeaderBoard";
+import Profile from "@/screens/TabScreens/Profile";
 
 const Stack = createStackNavigator();
 
@@ -65,7 +66,7 @@ const App: React.FC = () => {
           <Stack.Screen name="Welcome" component={Welcome} />
 
           {/* CHANGE THIS SCREEN LATER */}
-          <Stack.Screen name="SignUp" component={LeaderBoard} />
+          <Stack.Screen name="SignUp" component={Profile} />
         </>
       )}
     </Stack.Navigator>
