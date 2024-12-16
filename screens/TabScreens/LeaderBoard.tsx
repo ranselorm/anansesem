@@ -6,11 +6,10 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
-  TextInput,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import HomeLayout from "@/shared/HomeLayout";
-import { Colors, FontSizes } from "@/theme";
+import { Colors, Fonts, FontSizes } from "@/theme";
 
 type Score = {
   id: number;
@@ -40,7 +39,7 @@ const LeaderBoard: React.FC = () => {
           <View style={styles.scoreContainer}>
             {scores &&
               scores.map((score) => (
-                <View style={styles.scoreCard}>
+                <View style={styles.scoreCard} key={score.id}>
                   <Text style={styles.rankText}>{score.id}</Text>
                   <View style={styles.placeholder}>
                     <MaterialIcons name="person" size={20} color="#FFBB00" />
@@ -55,7 +54,48 @@ const LeaderBoard: React.FC = () => {
           </View>
         );
       case "Achievements":
-        return <Text>This is the Achievements content.</Text>;
+        return (
+          <View style={styles.achievementContainer}>
+            <View style={styles.wrapper}>
+              <View style={styles.achievementCard}>
+                <View style={styles.iconContainer}>
+                  <Image
+                    source={require("../../assets/images/wizard1.png")}
+                    style={styles.badgeIcon}
+                  />
+                </View>
+                <View style={styles.textContainer}>
+                  <Text style={styles.achievementTitle}>Word Wizard</Text>
+                  <Text style={styles.description}>
+                    Condition to Unlock this Badge
+                  </Text>
+                  <Text style={styles.points}>
+                    <Image source={require("../../assets/icons/star.png")} />
+                    <Text>10</Text>
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.achievementCard2}>
+                <View style={styles.iconContainer2}>
+                  <Image
+                    source={require("../../assets/images/wizard2.png")}
+                    style={styles.badgeIcon2}
+                  />
+                </View>
+                <View style={styles.textContainer2}>
+                  <Text style={styles.achievementTitle2}>Quiz Wiz</Text>
+                  <Text style={styles.description2}>
+                    Condition to Unlock this Badge
+                  </Text>
+                  <Text style={styles.points2}>
+                    <Image source={require("../../assets/icons/star.png")} />
+                    <Text>10</Text>
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        );
       default:
         return null;
     }
@@ -106,9 +146,7 @@ const styles = StyleSheet.create({
   tabContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    // backgroundColor: "#e0e0e0",
     borderRadius: 8,
-    margin: 16,
     overflow: "hidden",
   },
   tab: {
@@ -129,13 +167,11 @@ const styles = StyleSheet.create({
   },
   activeTabText: {
     color: "#000",
-    // fontWeight: "bold",
   },
   contentContainer: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 10,
   },
   contentText: {
     fontSize: 18,
@@ -159,7 +195,6 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: "center",
     borderRadius: 50,
-    // marginVertical: 8,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
@@ -192,6 +227,109 @@ const styles = StyleSheet.create({
   scoreText: {
     fontSize: 16,
     marginLeft: 8,
+  },
+  achievementContainer: {
+    flex: 1,
+    backgroundColor: "red",
+    width: "100%",
+    height: 500,
+    marginTop: 30,
+  },
+
+  wrapper: {
+    flexDirection: "row",
+    gap: 10,
+  },
+
+  achievementCard: {
+    flexDirection: "row",
+    backgroundColor: "#44C077",
+    width: 197,
+    height: 151,
+    borderRadius: 10,
+    padding: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 5,
+  },
+
+  textContainer: {
+    width: "70%",
+    justifyContent: "space-evenly",
+  },
+
+  iconContainer: {
+    flex: 1,
+    position: "absolute",
+    top: 7,
+    right: 0,
+  },
+
+  badgeIcon: {
+    width: 80,
+    height: 80,
+  },
+
+  achievementTitle: {
+    fontFamily: Fonts.heading,
+    fontSize: 22,
+    color: "#fff",
+    fontWeight: 900,
+  },
+
+  description: {
+    fontSize: 12,
+    color: "#FFFFFF",
+  },
+
+  points: {
+    flexDirection: "row",
+    alignItems: "center",
+    color: "#fff",
+    fontSize: 22,
+    fontWeight: "bold",
+    fontFamily: Fonts.heading,
+  },
+
+  achievementCard2: {
+    backgroundColor: "#D9D9D9",
+    width: 127,
+    height: 151,
+    borderRadius: 13,
+    padding: 10,
+  },
+  iconContainer2: {
+    width: 105,
+    height: 30,
+  },
+  badgeIcon2: {
+    width: "100%",
+    height: "100%",
+  },
+  achievementTitle2: {
+    fontFamily: Fonts.heading,
+    fontSize: 20,
+    color: "#000",
+    fontWeight: 900,
+  },
+  textContainer2: {
+    width: "100%",
+    justifyContent: "space-evenly",
+  },
+  description2: {
+    fontSize: 12,
+    color: "#000",
+    marginVertical: 5,
+  },
+  points2: {
+    flexDirection: "row",
+    alignItems: "center",
+    color: "#000",
+    fontSize: 22,
+    fontWeight: "bold",
+    fontFamily: Fonts.heading,
   },
 });
 
