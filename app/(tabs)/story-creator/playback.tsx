@@ -14,8 +14,12 @@ import {
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { Colors, Fonts, FontSizes } from "@/theme";
+import { router } from "expo-router";
 
 const StoryPlayback: React.FC = () => {
+  const handlePress = () => {
+    router.push("/(tabs)/story-creator/quiz");
+  };
   return (
     <View style={styles.screen}>
       <StatusBar backgroundColor="transparent" barStyle="dark-content" />
@@ -47,7 +51,7 @@ const StoryPlayback: React.FC = () => {
         <TouchableOpacity
           activeOpacity={1.0}
           style={styles.button}
-          onPress={() => Alert.alert("Download button pressed")}
+          onPress={handlePress}
         >
           <AntDesign name="download" size={20} color="black" />
           <Text style={styles.buttonText}>Download and save offline</Text>

@@ -158,7 +158,7 @@ const StoryCreator: React.FC = () => {
           style={styles.icon}
         />
       </TouchableOpacity>
-      {!isGenerating && (
+      {isGenerating && (
         <View style={StyleSheet.absoluteFillObject}>
           <View style={styles.overlay}>
             <View
@@ -187,7 +187,7 @@ const StoryCreator: React.FC = () => {
               <ActivityIndicator
                 size="large"
                 color="#000"
-                // style={{ marginTop: 50 }}
+                style={{ marginTop: 10 }}
               />
             </View>
           </View>

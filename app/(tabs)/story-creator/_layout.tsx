@@ -5,6 +5,7 @@ export default function StoryLayout() {
     <Stack screenOptions={{ headerShown: false }}>
       {/* <Stack.Screen name="story-generator" /> */}
       <Stack.Screen name="playback" />
+      <Stack.Screen name="quiz" />
     </Stack>
   );
 }
