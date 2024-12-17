@@ -1,10 +1,11 @@
-import { Tabs } from "expo-router";
+import { router, Tabs, usePathname } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Colors } from "@/theme";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { KeyboardAvoidingView, Platform } from "react-native";
 
 export default function TabLayout() {
+  const pathname = usePathname();
+
   return (
     <Tabs
       screenOptions={{
@@ -54,6 +55,24 @@ export default function TabLayout() {
           title: "AI Story Creator",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="sparkles-outline" color={Colors.main} size={size} />
+          ),
+        }}
+        // listeners={{
+        //   tabPress: (e) => {
+        //     // Check if already on the story-creator index screen
+        //     if (pathname !== "/(tabs)/story-creator") {
+        //       router.replace("/(tabs)/story-creator");
+        //     }
+        //     console.log("Story Creator tab pressed");
+        //   },
+        // }}
+      />
+      <Tabs.Screen
+        name="library"
+        options={{
+          title: "Library",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="library-books" size={24} color={Colors.main} />
           ),
         }}
       />

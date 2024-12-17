@@ -8,12 +8,15 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { MaterialIcons } from "@expo/vector-icons";
 import Entypo from "@expo/vector-icons/Entypo";
-import HomeLayout from "../../shared/HomeLayout";
+import HomeLayout from "../../../shared/HomeLayout";
 import { Colors, FontSizes } from "@/theme";
+import { router } from "expo-router";
+import { Image } from "react-native";
 
 const StoryCreator: React.FC = () => {
   const [characters, setCharacters] = useState<string | null>("one");
@@ -21,12 +24,13 @@ const StoryCreator: React.FC = () => {
   const [duration, setDuration] = useState<string | null>("5mins");
   const [genre, setGenre] = useState<string | null>("Science");
   const [title, setTitle] = useState<string>("");
+  const [isGenerating, setIsGenerating] = useState(false); // Overlay state
 
   const handleGenerateStory = () => {
-    if (!title) {
-      alert("Please provide a story title!");
-      return;
-    }
+    // if (!title) {
+    //   alert("Please provide a story title!");
+    //   return;
+    // }
     console.log({
       characters,
       voice,
@@ -35,23 +39,11 @@ const StoryCreator: React.FC = () => {
       title,
     });
     // Proceed with the story generation logic
-  };
-
-  const [visible, setVisible] = useState(false);
-  const [percentage, setPercentage] = useState(0);
-
-  const startLoading = () => {
-    setVisible(true);
-    let progress = 0;
-    const interval = setInterval(() => {
-      if (progress >= 100) {
-        clearInterval(interval);
-        setVisible(false);
-      } else {
-        progress += 10;
-        setPercentage(progress);
-      }
-    }, 500);
+    setIsGenerating(true);
+    setTimeout(() => {
+      setIsGenerating(false);
+      router.push("/(tabs)/story-creator/playback");
+    }, 3000);
   };
 
   return (
@@ -158,7 +150,7 @@ const StoryCreator: React.FC = () => {
         </ScrollView>
       </KeyboardAvoidingView>
       <TouchableOpacity style={styles.button} onPress={handleGenerateStory}>
-        <Text style={styles.buttonText}>Submit</Text>
+        <Text style={styles.buttonText}>Generate</Text>
         <MaterialIcons
           name="arrow-forward"
           size={22}
@@ -166,6 +158,41 @@ const StoryCreator: React.FC = () => {
           style={styles.icon}
         />
       </TouchableOpacity>
+      {!isGenerating && (
+        <View style={StyleSheet.absoluteFillObject}>
+          <View style={styles.overlay}>
+            <View
+              style={{
+                backgroundColor: "white",
+                width: 300,
+                height: 200,
+                justifyContent: "center",
+                alignItems: "center",
+                padding: 20,
+                borderRadius: 10,
+              }}
+            >
+              <Text style={styles.overlayText}>
+                Hang tight, while our magical AI weaves a tale just for you!
+              </Text>
+              <Image
+                source={require("../../../assets/images/logo-icon.png")}
+                style={{
+                  position: "absolute",
+                  width: 100,
+                  height: 100,
+                  top: -40,
+                }}
+              />
+              <ActivityIndicator
+                size="large"
+                color="#000"
+                // style={{ marginTop: 50 }}
+              />
+            </View>
+          </View>
+        </View>
+      )}
     </>
   );
 };
@@ -256,6 +283,24 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     borderRadius: 50,
     padding: 5,
+  },
+
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.7)", // Semi-transparent black
+    zIndex: 1, // Ensure it appears above everything
+  },
+  overlayText: {
+    marginTop: 50,
+    color: "#000",
+    fontSize: 18,
+    textAlign: "center",
   },
 });
 

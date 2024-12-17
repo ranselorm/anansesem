@@ -59,7 +59,9 @@ const Register: React.FC = () => {
 
             <Text style={styles.signInText}>
               Already have an account?
-              <Text style={styles.signInLink}>Sign in</Text>
+              <TouchableOpacity onPress={() => router.replace("/auth/login")}>
+                <Text style={styles.signInLink}>Sign in</Text>
+              </TouchableOpacity>
             </Text>
 
             <Text style={{ textAlign: "center", marginTop: 8 }}>Sign in</Text>
