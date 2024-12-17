@@ -9,7 +9,7 @@ import {
   Image,
 } from "react-native";
 import { MaterialIcons, Entypo } from "@expo/vector-icons";
-import { Colors, Fonts } from "@/theme";
+import { Colors, Fonts, FontSizes } from "@/theme";
 
 const questions = [
   {
@@ -90,11 +90,26 @@ export default function QuizScreen() {
     setIsQuizCompleted(false);
   };
 
-  if (isQuizCompleted) {
+  const renderScore = () => {
     return (
       <View style={styles.content}>
-        <Text style={styles.resultText}>Congratulations! You scored</Text>
-        <Text style={styles.score}>{score}</Text>
+        <Text style={styles.resultText}>Congratulations!</Text>
+        <Text style={styles.resultText}>You scored</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 10,
+            marginBottom: 10,
+          }}
+        >
+          <Image
+            source={require("../../../assets/icons/star8.png")}
+            style={{ width: 50, height: 50 }}
+          />
+          <Text style={styles.score}>10</Text>
+        </View>
         <Text style={styles.badge}>
           {score === questions.length
             ? "You unlocked the Science Genius Badge!"
@@ -108,18 +123,10 @@ export default function QuizScreen() {
         </TouchableOpacity>
       </View>
     );
-  }
+  };
 
-  const currentQuestion = questions[currentQuestionIndex];
-
-  return (
-    <View style={styles.screen}>
-      <View style={styles.media}>
-        <Image
-          source={require("../../../assets/images/story.png")}
-          style={styles.image}
-        />
-      </View>
+  const renderQuestions = () => {
+    return (
       <View style={styles.content}>
         <Text style={styles.question}>{currentQuestion.question}</Text>
         <FlatList
@@ -160,6 +167,21 @@ export default function QuizScreen() {
           </Text>
         </TouchableOpacity>
       </View>
+    );
+  };
+
+  const currentQuestion = questions[currentQuestionIndex];
+
+  return (
+    <View style={styles.screen}>
+      <View style={styles.media}>
+        <Image
+          source={require("../../../assets/images/story.png")}
+          style={styles.image}
+        />
+      </View>
+
+      {isQuizCompleted ? renderScore() : renderQuestions()}
     </View>
   );
 }
@@ -180,10 +202,10 @@ const styles = StyleSheet.create({
   },
   content: {
     height: 420,
-    backgroundColor: "#fff",
+    backgroundColor: "#FFF3E0",
     marginTop: -30,
     borderRadius: 40,
-    paddingVertical: 20,
+    paddingVertical: 30,
     // alignItems: "",
     paddingHorizontal: 50,
   },
@@ -246,23 +268,24 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: 16,
+    padding: 26,
   },
   resultText: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 16,
+    // marginBottom: 16,
+    fontFamily: Fonts.heading,
+    textAlign: "center",
   },
   score: {
-    fontSize: 48,
+    fontSize: 70,
     fontWeight: "bold",
-    color: "#FFD700",
-    marginBottom: 16,
+    color: "#442359",
   },
   badge: {
-    fontSize: 16,
+    fontSize: FontSizes.medium,
     textAlign: "center",
-    marginBottom: 20,
+    marginBottom: 30,
   },
   restartButton: {
     padding: 16,
