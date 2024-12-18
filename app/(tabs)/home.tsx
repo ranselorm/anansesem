@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -112,6 +112,16 @@ const Home: React.FC = () => {
           />
         </View>
       </HomeLayout>
+
+      {/* <BottomSheet ref={sheetRef} styles={{ zIndex: 9999 }}>
+        <View>
+          <Text>Anansesem Terms and Conditions</Text>
+          <Text>
+            Please read these Terms and Conditions carefully before using the
+            Anansesem app.
+          </Text>
+        </View>
+      </BottomSheet> */}
     </View>
   );
 };
