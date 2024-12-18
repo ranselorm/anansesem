@@ -29,7 +29,7 @@ const Welcome: React.FC = () => {
       <View style={styles.container}>
         <View style={styles.textContainer}>
           {/* <ResetOnboarding /> */}
-          <Image source={require("../assets/images/logo-icon.png")} />
+          <Image source={require("../assets/icon/app-icon.png")} />
           <Text style={styles.title}>Welcome to Anansesem</Text>
           <Text style={styles.text}>
             Discover a world of imagination and learning! Create your own

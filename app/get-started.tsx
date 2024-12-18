@@ -23,7 +23,7 @@ const GetStarted: React.FC = () => {
         <View style={styles.content}>
           <View style={styles.imageContainer}>
             <Image
-              source={require("../assets/images/logo-icon.png")}
+              source={require("../assets/icons/app-icon.png")}
               style={styles.image}
             />
           </View>
@@ -63,14 +63,14 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    justifyContent: "center",
+    // justifyContent: "center",
     paddingHorizontal: 30,
+    marginTop: 70,
   },
 
   imageContainer: {
-    backgroundColor: "#C4A1FF",
-    height: 200,
-    width: 200,
+    height: 170,
+    width: 170,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: "100%",
@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#000",
     marginTop: 40,
+    lineHeight: 24,
   },
   pickerContainer: {
     borderWidth: 1,

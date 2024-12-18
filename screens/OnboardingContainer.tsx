@@ -9,6 +9,8 @@ import {
   StatusBar,
 } from "react-native";
 
+import Button from "@/components/ui/Button";
+
 import { useNavigation } from "expo-router";
 import OnboardingScreen from "../components/OnboardingScreen";
 import OnboardingDots from "../components/OnboardingDots";

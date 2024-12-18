@@ -31,7 +31,10 @@ const Welcome: React.FC = () => {
       <View style={styles.container}>
         <View style={styles.textContainer}>
           {/* <ResetOnboarding /> */}
-          <Image source={require("../assets/images/logo-icon.png")} />
+          <Image
+            source={require("../assets/icons/app-icon.png")}
+            style={styles.image}
+          />
           <Text style={styles.title}>Welcome to Anansesem</Text>
           <Text style={styles.text}>
             Discover a world of imagination and learning! Create your own
@@ -98,17 +101,23 @@ const Welcome: React.FC = () => {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    justifyContent: "center",
+    // justifyContent: "center",
     backgroundColor: "#c4a1ff",
   },
   container: {
     alignItems: "center",
     justifyContent: "center",
+    marginTop: 70,
   },
+
   textContainer: {
     alignItems: "center",
     gap: 20,
     marginTop: 20,
+  },
+  image: {
+    width: 170,
+    height: 170,
   },
   title: {
     fontWeight: "bold",

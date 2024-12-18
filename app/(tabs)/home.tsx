@@ -29,6 +29,16 @@ const featuredStories = [
     duration: "20mins",
     image: require("../../assets/images/home2.png"),
   },
+  {
+    title: "Kiivu in the Moonlight",
+    duration: "20mins",
+    image: require("../../assets/images/home2.png"),
+  },
+  {
+    title: "Kivu5 in the Moonlight",
+    duration: "20mins",
+    image: require("../../assets/images/home2.png"),
+  },
 ];
 
 const Home: React.FC = () => {

@@ -13,6 +13,7 @@ import { Link, router, useNavigation } from "expo-router";
 import OnboardingScreen from "../components/OnboardingScreen";
 import OnboardingDots from "../components/OnboardingDots";
 import { MaterialIcons } from "@expo/vector-icons";
+import Button from "@/components/ui/Button";
 
 const { width } = Dimensions.get("window");
 
@@ -116,6 +117,7 @@ const OnboardingContainer: React.FC = ({}) => {
           style={styles.icon}
         />
       </TouchableOpacity>
+      {/* <Button text="Next" subtext="Get" /> */}
     </View>
   );
 };

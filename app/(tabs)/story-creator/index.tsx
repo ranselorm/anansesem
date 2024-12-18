@@ -176,7 +176,7 @@ const StoryCreator: React.FC = () => {
                 Hang tight, while our magical AI weaves a tale just for you!
               </Text>
               <Image
-                source={require("../../../assets/images/logo-icon.png")}
+                source={require("../../../assets/icons/app-icon.png")}
                 style={{
                   position: "absolute",
                   width: 100,
