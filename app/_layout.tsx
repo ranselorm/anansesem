@@ -10,6 +10,8 @@ export default function RootLayout() {
       <Stack.Screen name="create-profile" />
       <Stack.Screen name="know-you" />
       <Stack.Screen name="upload-picture" />
+      <Stack.Screen name="profile" />
+      <Stack.Screen name="settings" />
 
       {/* Tab layout for authenticated users */}
       <Stack.Screen name="(tabs)" />

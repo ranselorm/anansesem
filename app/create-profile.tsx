@@ -10,6 +10,7 @@ import { Picker } from "@react-native-picker/picker";
 import { MaterialIcons } from "@expo/vector-icons";
 import MainLayout from "../shared/MainLayout";
 import { router } from "expo-router";
+import Button from "@/components/ui/Button";
 
 const CreateProfile: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -89,7 +90,7 @@ const CreateProfile: React.FC = () => {
           </View>
         </View>
       </MainLayout>
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+      {/* <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Submit</Text>
         <MaterialIcons
           name="arrow-forward"
@@ -97,7 +98,8 @@ const CreateProfile: React.FC = () => {
           color="white"
           style={styles.icon}
         />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+      <Button text="Submit" onPress={handleSubmit} absolute />
     </View>
   );
 };

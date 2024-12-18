@@ -13,12 +13,13 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import BottomSheet, { BottomSheetMethods } from "@devvie/bottom-sheet";
 import { OtpInput } from "react-native-otp-entry";
 import { router } from "expo-router";
+import Button from "@/components/ui/Button";
 
 const Register: React.FC = () => {
   const sheetRef = useRef<BottomSheetMethods>(null);
 
   const handlePress = () => {
-    sheetRef.current?.close();
+    // sheetRef.current?.close();
     router.push("/get-started");
   };
   return (
@@ -43,7 +44,7 @@ const Register: React.FC = () => {
             />
           </View>
           <View>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.button}
               activeOpacity={1.2}
               onPress={() => sheetRef.current?.open()}
@@ -55,7 +56,9 @@ const Register: React.FC = () => {
                 color="white"
                 style={styles.icon}
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+
+            <Button text="Next" onPress={() => sheetRef.current?.open()} />
 
             <Text style={styles.signInText}>
               Already have an account?
@@ -107,7 +110,7 @@ const Register: React.FC = () => {
             containerStyle: styles.otpContainer,
           }}
         />
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.button}
           activeOpacity={1.2}
           onPress={handlePress}
@@ -119,7 +122,8 @@ const Register: React.FC = () => {
             color="white"
             style={styles.icon}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <Button text="Submit" onPress={handlePress} />
       </BottomSheet>
     </View>
   );
@@ -212,6 +216,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "80%",
     height: 50,
+    marginBottom: 80,
   },
 });
 

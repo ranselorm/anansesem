@@ -7,15 +7,26 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import {
+  MaterialIcons,
+  FontAwesome6,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import HomeLayout from "@/shared/HomeLayout";
 import { Colors } from "@/theme";
+import { router } from "expo-router";
 
-const categories = [
-  { label: "History", color: "#3C9C27", icon: "book" },
-  { label: "Science", color: "#09A4B2", icon: "science" },
-  { label: "Folklore", color: "#FF8D6A", icon: "local-library" },
-  { label: "Technology", color: "#000", icon: "science" },
+type IconName = "scroll" | "atom" | "book-alphabet" | "filter";
+
+const categories: {
+  label: string;
+  icon: IconName;
+  color: any;
+}[] = [
+  { label: "History", color: "#3C9C27", icon: "scroll" },
+  { label: "Science", color: "#09A4B2", icon: "atom" },
+  { label: "Folklore", color: "#FF8D6A", icon: "book-alphabet" },
+  // { label: "Technology", color: Colors.purple, icon: "scroll" },
 ];
 
 const featuredStories = [
@@ -47,7 +58,13 @@ const Home: React.FC = () => {
       style={[styles.categoryCard, { backgroundColor: item.color }]}
       activeOpacity={1.2}
     >
-      <MaterialIcons name={"book"} size={30} color="#FFF" />
+      {item.label === "History" ? (
+        <FontAwesome6 name={item.icon} size={35} color="#000" />
+      ) : (
+        // <MaterialIcons name={item.icon} size={40} color="#000" />
+        <MaterialCommunityIcons name={item.icon} size={40} color="black" />
+      )}
+      {/* <MaterialIcons name={item.icon} size={40} color="#FFF" /> */}
       <Text style={styles.categoryText}>{item.label}</Text>
     </TouchableOpacity>
   );
@@ -98,7 +115,10 @@ const Home: React.FC = () => {
           {/* Featured Stories */}
           <View style={styles.featuredSection}>
             <Text style={styles.sectionTitle}>Featured Stories</Text>
-            <TouchableOpacity activeOpacity={1.2}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => router.push("/(tabs)/library")}
+            >
               <Text style={styles.seeAllText}>See all</Text>
             </TouchableOpacity>
           </View>
@@ -161,9 +181,9 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   categoryText: {
-    color: "#FFF",
-    fontSize: 14,
-    fontWeight: "bold",
+    color: "#000",
+    fontSize: 16,
+    // fontWeight: "bold",
     marginTop: 5,
     textAlign: "center",
   },

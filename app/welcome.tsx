@@ -17,6 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Fonts, FontSizes, Colors } from "../theme";
 import { router, Link } from "expo-router";
+import Button from "@/components/ui/Button";
 
 const Welcome: React.FC = () => {
   const sheetRef = useRef<BottomSheetMethods>(null);
@@ -56,7 +57,7 @@ const Welcome: React.FC = () => {
         </View>
       </View>
 
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles.button}
         activeOpacity={1.2}
         onPress={() => router.push("/register")}
@@ -68,7 +69,12 @@ const Welcome: React.FC = () => {
           color="white"
           style={styles.icon}
         />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+      <Button
+        text="I Agree"
+        onPress={() => router.push("/register")}
+        absolute
+      />
 
       <BottomSheet ref={sheetRef} style={styles.bottomSheet}>
         <ScrollView

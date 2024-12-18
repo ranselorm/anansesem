@@ -10,6 +10,8 @@ import {
 } from "react-native";
 import { MaterialIcons, Entypo } from "@expo/vector-icons";
 import { Colors, Fonts, FontSizes } from "@/theme";
+import Button from "@/components/ui/Button";
+import { router } from "expo-router";
 
 const questions = [
   {
@@ -83,12 +85,16 @@ export default function QuizScreen() {
     }
   };
 
-  const handleRestartQuiz = () => {
-    setCurrentQuestionIndex(0);
-    setSelectedOption(null);
-    setScore(0);
-    setIsQuizCompleted(false);
+  const handleDismiss = () => {
+    router.push("/(tabs)/story-creator");
   };
+
+  // const handleRestartQuiz = () => {
+  //   setCurrentQuestionIndex(0);
+  //   setSelectedOption(null);
+  //   setScore(0);
+  //   setIsQuizCompleted(false);
+  // };
 
   const renderScore = () => {
     return (
@@ -106,21 +112,22 @@ export default function QuizScreen() {
         >
           <Image
             source={require("../../../assets/icons/star8.png")}
-            style={{ width: 50, height: 50 }}
+            style={{ width: 40, height: 40 }}
           />
-          <Text style={styles.score}>10</Text>
+          <Text style={styles.score}>{score}</Text>
         </View>
         <Text style={styles.badge}>
           {score === questions.length
             ? "You unlocked the Science Genius Badge!"
             : "Great effort! Try again to unlock the badge!"}
         </Text>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.restartButton}
           onPress={handleRestartQuiz}
         >
           <Text style={styles.restartButtonText}>Restart Quiz</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <Button text="Dismiss" absolute onPress={handleDismiss} />
       </View>
     );
   };
@@ -157,7 +164,7 @@ export default function QuizScreen() {
           )}
           keyExtractor={(item, index) => index.toString()}
         />
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.nextButton}
           onPress={handleNextOrSubmit}
           disabled={selectedOption === null}
@@ -165,7 +172,13 @@ export default function QuizScreen() {
           <Text style={styles.nextButtonText}>
             {currentQuestionIndex === questions.length - 1 ? "Submit" : "Next"}
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <Button
+          text={
+            currentQuestionIndex === questions.length - 1 ? "Submit" : "Next"
+          }
+          onPress={handleNextOrSubmit}
+        />
       </View>
     );
   };
@@ -278,7 +291,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   score: {
-    fontSize: 70,
+    fontSize: 60,
     fontWeight: "bold",
     color: "#442359",
   },

@@ -11,6 +11,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import MainLayout from "../shared/MainLayout";
 import { router } from "expo-router";
+import Button from "@/components/ui/Button";
 
 const UploadProfilePicture: React.FC = () => {
   const [profileImage, setProfileImage] = useState<string | null>(null);
@@ -68,7 +69,7 @@ const UploadProfilePicture: React.FC = () => {
             </TouchableOpacity>
           </View>
         </View>
-        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+        {/* <TouchableOpacity style={styles.button} onPress={handleSubmit}>
           <Text style={styles.buttonText}>Submit</Text>
           <MaterialIcons
             name="arrow-forward"
@@ -76,7 +77,8 @@ const UploadProfilePicture: React.FC = () => {
             color="white"
             style={styles.icon}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <Button text="Submit" absolute onPress={handleSubmit} />
       </MainLayout>
     </View>
   );

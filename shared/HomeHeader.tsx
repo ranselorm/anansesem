@@ -10,6 +10,7 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { FontSizes } from "@/theme";
+import { router } from "expo-router";
 
 interface HeaderProps {
   title?: string;
@@ -22,23 +23,44 @@ const HomeHeader: React.FC<HeaderProps> = ({
   isIcon = true,
   isIconLeft,
 }) => {
-  // const navigation = useNavigation();
+  const handlePress = () => {
+    router.push("/profile");
+  };
+
+  const handleBackPress = () => {
+    router.push("/(tabs)/home");
+  };
+
+  const handleSettingsPress = () => {
+    router.push("/settings");
+  };
+  const handleDonePress = () => {
+    router.push("/profile");
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         {isIcon ? (
-          <View style={styles.placeholder}>
-            <MaterialIcons name="person" size={30} color="#FFBB00" />
-          </View>
+          <TouchableOpacity onPress={handlePress} activeOpacity={0.9}>
+            <View style={styles.placeholder}>
+              <MaterialIcons name="person" size={30} color="#FFBB00" />
+            </View>
+          </TouchableOpacity>
         ) : (
-          <Text style={{ opacity: 1 }}>Cancel</Text>
+          <TouchableOpacity activeOpacity={0.9} onPress={handleBackPress}>
+            <Text style={{ opacity: 1, fontSize: 16 }}>Cancel</Text>
+          </TouchableOpacity>
         )}
         <Text style={styles.title}>{title}</Text>
         {isIconLeft ? (
-          <MaterialIcons name="settings" size={24} />
+          <TouchableOpacity onPress={handleSettingsPress}>
+            <MaterialIcons name="settings" size={25} />
+          </TouchableOpacity>
         ) : (
-          <Text style={{ opacity: 0 }}>Done</Text>
+          <TouchableOpacity>
+            <Text style={{ opacity: 0 }}>Done</Text>
+          </TouchableOpacity>
         )}
       </View>
     </SafeAreaView>

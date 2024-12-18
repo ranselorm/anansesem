@@ -102,7 +102,7 @@ const OnboardingContainer: React.FC = ({}) => {
           activeIndex={currentIndex}
         />
       </View>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles.button}
         onPress={handleNext}
         activeOpacity={1.2}
@@ -116,8 +116,14 @@ const OnboardingContainer: React.FC = ({}) => {
           color="white"
           style={styles.icon}
         />
-      </TouchableOpacity>
-      {/* <Button text="Next" subtext="Get" /> */}
+      </TouchableOpacity> */}
+      <Button
+        text={
+          currentIndex === onboardingData.length - 1 ? "Get Started" : "Next"
+        }
+        onPress={handleNext}
+        absolute
+      />
     </View>
   );
 };
@@ -125,7 +131,7 @@ const OnboardingContainer: React.FC = ({}) => {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    justifyContent: "center",
+    // justifyContent: "center",
     alignItems: "center",
     backgroundColor: "white",
   },
@@ -148,6 +154,7 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 3, // For Android shadow
   },
+
   buttonText: {
     color: "#000",
     fontSize: 18,

@@ -17,6 +17,7 @@ import HomeLayout from "../../../shared/HomeLayout";
 import { Colors, FontSizes } from "@/theme";
 import { router } from "expo-router";
 import { Image } from "react-native";
+import Button from "@/components/ui/Button";
 
 const StoryCreator: React.FC = () => {
   const [characters, setCharacters] = useState<string | null>("one");
@@ -149,7 +150,7 @@ const StoryCreator: React.FC = () => {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-      <TouchableOpacity style={styles.button} onPress={handleGenerateStory}>
+      {/* <TouchableOpacity style={styles.button} onPress={handleGenerateStory}>
         <Text style={styles.buttonText}>Generate</Text>
         <MaterialIcons
           name="arrow-forward"
@@ -157,7 +158,9 @@ const StoryCreator: React.FC = () => {
           color="white"
           style={styles.icon}
         />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+
+      <Button text="Generate" onPress={handleGenerateStory} absolute />
       {isGenerating && (
         <View style={StyleSheet.absoluteFillObject}>
           <View style={styles.overlay}>
@@ -204,6 +207,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     marginTop: 30,
+    paddingHorizontal: 10,
   },
   row: {
     flexDirection: "row",
