@@ -6,6 +6,7 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import {
   MaterialIcons,
@@ -26,7 +27,6 @@ const categories: {
   { label: "History", color: "#3C9C27", icon: "scroll" },
   { label: "Science", color: "#09A4B2", icon: "atom" },
   { label: "Folklore", color: "#FF8D6A", icon: "book-alphabet" },
-  // { label: "Technology", color: Colors.purple, icon: "scroll" },
 ];
 
 const featuredStories = [
@@ -58,18 +58,11 @@ const Home: React.FC = () => {
       style={[styles.categoryCard, { backgroundColor: item.color }]}
       activeOpacity={1.2}
     >
-      {item.label === "History" ? (
-        <FontAwesome6 name={item.icon} size={35} color="#000" />
-      ) : (
-        // <MaterialIcons name={item.icon} size={40} color="#000" />
-        <MaterialCommunityIcons name={item.icon} size={40} color="black" />
-      )}
-      {/* <MaterialIcons name={item.icon} size={40} color="#FFF" /> */}
       <Text style={styles.categoryText}>{item.label}</Text>
     </TouchableOpacity>
   );
 
-  const renderStory = ({ item }: { item: (typeof featuredStories)[0] }) => (
+  const renderStory = ({ item }: { item: any }) => (
     <View style={styles.storyCard}>
       <Image source={item.image} style={styles.storyImage} />
       <View style={styles.overlay}>

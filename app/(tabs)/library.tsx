@@ -7,10 +7,13 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import HomeLayout from "@/shared/HomeLayout";
 import { Colors } from "@/theme";
+import { useFetchData } from "../../hooks/usFetchData";
+import { router, Link } from "expo-router";
 
 interface Category {
   label: string;
@@ -19,50 +22,27 @@ interface Category {
 }
 
 interface Story {
+  id: string;
   title: string;
-  duration: string;
-  image: any;
+  description: string;
+  thumbnail: string;
+  duration?: string;
 }
 
 const categories: Category[] = [
-  { label: "Featured stories", color: "#FFD700", icon: "star" },
+  { label: "Featured Stories", color: "#FFD700", icon: "star" },
   { label: "Science", color: "#09A4B2", icon: "science" },
   { label: "Technology", color: "#09A4B2", icon: "science" },
   { label: "Folklore", color: "#FF8D6A", icon: "local-library" },
 ];
 
-const stories: Story[] = [
-  {
-    title: "Ananse and the pot of wisdom",
-    duration: "15mins",
-    image: require("../../assets/images/home1.png"),
-  },
-  {
-    title: "Araba's Dream",
-    duration: "15mins",
-    image: require("../../assets/images/home2.png"),
-  },
-  {
-    title: "The Man Whosd Never Lies",
-    duration: "15mins",
-    image: require("../../assets/images/home1.png"),
-  },
-  {
-    title: "The Man Who Nesvera Lies",
-    duration: "15mins",
-    image: require("../../assets/images/home1.png"),
-  },
-  {
-    title: "The Man Who Nesver Lies",
-    duration: "15mins",
-    image: require("../../assets/images/home1.png"),
-  },
-];
-
 const Library: React.FC = () => {
-  // Set the first category as selected by default
+  const { data: stories = [], isLoading, error } = useFetchData();
+
+  console.log("Fetched stories:", stories.data.library);
+
   const [selectedCategory, setSelectedCategory] = useState<string>(
-    categories[0].label
+    categories.length > 0 ? categories[0].label : ""
   );
 
   const handleCategoryPress = (label: string) => {
@@ -74,7 +54,7 @@ const Library: React.FC = () => {
 
     return (
       <TouchableOpacity
-        activeOpacity={1.2}
+        activeOpacity={0.9}
         style={[
           styles.categoryButton,
           {
@@ -97,28 +77,56 @@ const Library: React.FC = () => {
     );
   };
 
+  // Render a single story card
   const renderStoryCard = ({ item }: { item: Story }) => (
     <View style={styles.storyCard}>
-      <Image source={item.image} style={styles.storyImage} />
+      <Image
+        source={
+          item.thumbnail
+            ? { uri: item.thumbnail }
+            : require("../../assets/images/onboard2.png")
+        }
+        style={styles.storyImage}
+      />
       <View style={styles.storyOverlay}>
         <Text style={styles.storyTitle}>{item.title}</Text>
+        {/* <Text style={styles.storyDescription}>{item.description}</Text> */}
         <View style={styles.storyFooter}>
           <TouchableOpacity style={styles.playButton}>
             <MaterialIcons name="play-arrow" size={20} color="#FFF" />
             <Text style={styles.playButtonText}>Play</Text>
           </TouchableOpacity>
-          <Text style={styles.storyDuration}>{item.duration}</Text>
+          <Text style={styles.storyDuration}>{item.duration || "N/A"}</Text>
         </View>
       </View>
     </View>
   );
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <Text style={{ color: "red", textAlign: "center" }}>
+        Error fetching library data! {error.message}
+      </Text>
+    );
+  }
+
+  // Main component
   return (
     <HomeLayout title="Library" isIcon>
       <FlatList
-        data={stories}
+        data={stories?.data?.library}
         renderItem={renderStoryCard}
-        keyExtractor={(item) => item.title}
+        keyExtractor={(item) => item.id.toString()}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.flatListContent}
         ListHeaderComponent={
@@ -151,10 +159,6 @@ const Library: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#FFF",
-  },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -187,7 +191,6 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   flatListContent: {
-    // paddingHorizontal: 16,
     paddingBottom: 20,
   },
   storyCard: {
@@ -200,33 +203,38 @@ const styles = StyleSheet.create({
     height: 150,
   },
   storyOverlay: {
+    padding: 10,
+    backgroundColor: "rgba(0, 0, 0, 0.6)", // Semi-transparent black background
     position: "absolute",
-    bottom: 0,
     top: 0,
-    width: "65%",
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
-    padding: 20,
+    bottom: 0,
+    width: "75%",
     justifyContent: "center",
   },
   storyTitle: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#FFF",
     marginBottom: 20,
+    color: "#fff",
+  },
+  storyDescription: {
+    fontSize: 14,
+    color: "#666",
+    marginBottom: 8,
   },
   storyFooter: {
     flexDirection: "row",
-    // justifyContent: "",
     alignItems: "center",
     gap: 20,
   },
   playButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FF6F61",
+    backgroundColor: "#FF8D6A",
     borderRadius: 6,
     paddingHorizontal: 10,
     paddingVertical: 5,
+    borderBlockColor: "#000",
   },
   playButtonText: {
     color: "#FFF",
