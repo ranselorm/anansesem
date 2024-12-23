@@ -11,41 +11,60 @@ import {
   StatusBar,
   Button,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { Colors, Fonts, FontSizes } from "@/theme";
 import { useLocalSearchParams } from "expo-router";
+import { useFetchDetails } from "@/hooks/useFetchDetails";
 
 const StoryPlayback: React.FC = () => {
   const { id } = useLocalSearchParams();
-  console.log(id);
+
+  const { data, isLoading, error } = useFetchDetails(id as string);
+  const item = data?.data || [];
+
+  // console.log(data.data);
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <Text style={{ color: "red", textAlign: "center" }}>
+        Error fetching library data! {error.message}
+      </Text>
+    );
+  }
 
   return (
     <View style={styles.screen}>
       <StatusBar backgroundColor="transparent" barStyle="dark-content" />
       <View style={styles.media}>
-        <Image
-          source={require("../../../assets/images/story.png")}
-          style={styles.image}
-        />
+        <Image source={{ uri: item?.thumbnail }} style={styles.image} />
       </View>
       <View style={styles.content}>
-        <Text style={styles.title}>Ananse and the pot of wisdom</Text>
+        <Text style={styles.title}>{item?.title}</Text>
         <View style={styles.info}>
           <Text style={styles.infoTime}>15mins</Text>
           <TouchableOpacity style={styles.infoSave}>
             <Text>Save to library</Text>
           </TouchableOpacity>
-          <Text style={styles.category}>African forklore</Text>
-          <Text style={styles.category2}>Egyptian tales</Text>
+          {item.category.map((cat: any, index: number) => (
+            <Text style={styles.category} key={index}>
+              {cat?.name}
+            </Text>
+          ))}
         </View>
         <View style={styles.body}>
           <Text style={styles.bodyText}>
-            Ananse, the trickster spider, is always on the hunt for knowledge
-            and power. When he hears of a magical pot filled with infinite
-            wisdom, he sets out on a perilous quest. But the path to the pot is
-            fraught with dangers and riddles. Can Ananse outwit his foes and
-            claim the prize, or will his greed and cunning lead to his downfall?
+            {item?.description && item.description}
           </Text>
         </View>
         <TouchableOpacity activeOpacity={1.0} style={styles.button}>
