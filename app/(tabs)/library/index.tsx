@@ -12,7 +12,7 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 import HomeLayout from "@/shared/HomeLayout";
 import { Colors } from "@/theme";
-import { useFetchData } from "../../hooks/usFetchData";
+import { useFetchData } from "../../../hooks/usFetchData";
 import { router, Link } from "expo-router";
 
 interface Category {
@@ -24,6 +24,7 @@ interface Category {
 interface Story {
   id: string;
   title: string;
+  reference: string;
   description: string;
   thumbnail: string;
   duration?: string;
@@ -39,7 +40,7 @@ const categories: Category[] = [
 const Library: React.FC = () => {
   const { data: stories = [], isLoading, error } = useFetchData();
 
-  console.log("Fetched stories:", stories.data.library);
+  console.log("Fetched stories:", stories?.data?.library || []);
 
   const [selectedCategory, setSelectedCategory] = useState<string>(
     categories.length > 0 ? categories[0].label : ""
@@ -77,14 +78,13 @@ const Library: React.FC = () => {
     );
   };
 
-  // Render a single story card
   const renderStoryCard = ({ item }: { item: Story }) => (
     <View style={styles.storyCard}>
       <Image
         source={
           item.thumbnail
             ? { uri: item.thumbnail }
-            : require("../../assets/images/onboard2.png")
+            : require("../../../assets/images/onboard2.png")
         }
         style={styles.storyImage}
       />
@@ -92,7 +92,10 @@ const Library: React.FC = () => {
         <Text style={styles.storyTitle}>{item.title}</Text>
         {/* <Text style={styles.storyDescription}>{item.description}</Text> */}
         <View style={styles.storyFooter}>
-          <TouchableOpacity style={styles.playButton}>
+          <TouchableOpacity
+            style={styles.playButton}
+            onPress={() => router.push(`/library/${item.reference}`)}
+          >
             <MaterialIcons name="play-arrow" size={20} color="#FFF" />
             <Text style={styles.playButtonText}>Play</Text>
           </TouchableOpacity>
@@ -124,7 +127,7 @@ const Library: React.FC = () => {
   return (
     <HomeLayout title="Library" isIcon>
       <FlatList
-        data={stories?.data?.library}
+        data={stories?.data?.library || []}
         renderItem={renderStoryCard}
         keyExtractor={(item) => item.id.toString()}
         showsVerticalScrollIndicator={false}

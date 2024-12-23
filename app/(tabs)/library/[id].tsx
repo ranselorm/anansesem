@@ -14,12 +14,12 @@ import {
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { Colors, Fonts, FontSizes } from "@/theme";
-import { router } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 
 const StoryPlayback: React.FC = () => {
-  const handlePress = () => {
-    router.push("/(tabs)/story-creator/quiz");
-  };
+  const { id } = useLocalSearchParams();
+  console.log(id);
+
   return (
     <View style={styles.screen}>
       <StatusBar backgroundColor="transparent" barStyle="dark-content" />
@@ -48,11 +48,7 @@ const StoryPlayback: React.FC = () => {
             claim the prize, or will his greed and cunning lead to his downfall?
           </Text>
         </View>
-        <TouchableOpacity
-          activeOpacity={1.0}
-          style={styles.button}
-          onPress={handlePress}
-        >
+        <TouchableOpacity activeOpacity={1.0} style={styles.button}>
           <AntDesign name="download" size={20} color="black" />
           <Text style={styles.buttonText}>Download and save offline</Text>
         </TouchableOpacity>
