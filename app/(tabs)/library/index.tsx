@@ -13,7 +13,8 @@ import { MaterialIcons } from "@expo/vector-icons";
 import HomeLayout from "@/shared/HomeLayout";
 import { Colors } from "@/theme";
 import { useFetchData } from "../../../hooks/usFetchData";
-import { router, Link } from "expo-router";
+import { router } from "expo-router";
+import Spinner from "react-native-loading-spinner-overlay";
 
 interface Category {
   label: string;
