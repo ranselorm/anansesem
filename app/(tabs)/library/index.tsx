@@ -105,12 +105,13 @@ const Library: React.FC = () => {
     </View>
   );
 
-  // Loading state
   if (isLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
-      </View>
+      <Spinner
+        visible={isLoading}
+        textContent={"Loading..."}
+        textStyle={{ color: "white" }}
+      />
     );
   }
 

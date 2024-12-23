@@ -1,6 +1,6 @@
 import { useEvent } from "expo";
 
-import React from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   Text,
@@ -17,24 +17,27 @@ import { AntDesign } from "@expo/vector-icons";
 import { Colors, Fonts, FontSizes } from "@/theme";
 import { useLocalSearchParams } from "expo-router";
 import { useFetchDetails } from "@/hooks/useFetchDetails";
+import { Video, ResizeMode, AVPlaybackStatus } from "expo-av";
+import Spinner from "react-native-loading-spinner-overlay";
 
 const StoryPlayback: React.FC = () => {
   const { id } = useLocalSearchParams();
+  const video = useRef<Video>(null);
+  const [status, setStatus] = useState<AVPlaybackStatus | null>(null);
 
   const { data, isLoading, error } = useFetchDetails(id as string);
   const item = data?.data || [];
 
-  // console.log(data.data);
-
   if (isLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
-      </View>
+      <Spinner
+        visible={isLoading}
+        textContent={"Loading..."}
+        textStyle={{ color: "white" }}
+      />
     );
   }
 
-  // Error state
   if (error) {
     return (
       <Text style={{ color: "red", textAlign: "center" }}>
@@ -43,12 +46,29 @@ const StoryPlayback: React.FC = () => {
     );
   }
 
+  const videoUrl =
+    item?.videoContent?.length > 0 ? item?.videoContent[0]?.url : null;
+
   return (
     <View style={styles.screen}>
       <StatusBar backgroundColor="transparent" barStyle="dark-content" />
+
       <View style={styles.media}>
-        <Image source={{ uri: item?.thumbnail }} style={styles.image} />
+        {/* <Image source={{ uri: item?.thumbnail }} style={styles.image} /> */}
+
+        <Video
+          ref={video}
+          style={styles.video}
+          source={{
+            uri: videoUrl,
+          }}
+          useNativeControls
+          resizeMode={ResizeMode.CONTAIN}
+          isLooping
+          onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+        />
       </View>
+
       <View style={styles.content}>
         <Text style={styles.title}>{item?.title}</Text>
         <View style={styles.info}>
@@ -84,6 +104,10 @@ const styles = StyleSheet.create({
   media: {
     height: 330,
     width: "100%",
+  },
+  video: {
+    width: "100%",
+    height: 300,
   },
   image: {
     height: "100%",
