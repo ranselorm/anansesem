@@ -41,8 +41,6 @@ const categories: Category[] = [
 const Library: React.FC = () => {
   const { data: stories = [], isLoading, error } = useFetchData();
 
-  // console.log("Fetched stories:", stories?.data?.library || []);
-
   const [selectedCategory, setSelectedCategory] = useState<string>(
     categories.length > 0 ? categories[0].label : ""
   );
@@ -116,7 +114,6 @@ const Library: React.FC = () => {
     );
   }
 
-  // Error state
   if (error) {
     return (
       <Text style={{ color: "red", textAlign: "center" }}>
@@ -125,7 +122,6 @@ const Library: React.FC = () => {
     );
   }
 
-  // Main component
   return (
     <HomeLayout title="Library" isIcon>
       <FlatList

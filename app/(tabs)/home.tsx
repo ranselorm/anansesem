@@ -6,27 +6,36 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
-  ActivityIndicator,
+  ImageSourcePropType,
 } from "react-native";
-import {
-  MaterialIcons,
-  FontAwesome6,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import HomeLayout from "@/shared/HomeLayout";
 import { Colors } from "@/theme";
 import { router } from "expo-router";
-
-type IconName = "scroll" | "atom" | "book-alphabet" | "filter";
+import { useQuery } from "@tanstack/react-query";
+import { useFetchData } from "@/hooks/usFetchData";
+import Spinner from "react-native-loading-spinner-overlay";
 
 const categories: {
   label: string;
-  icon: IconName;
+  icon?: ImageSourcePropType;
   color: any;
 }[] = [
-  { label: "History", color: "#3C9C27", icon: "scroll" },
-  { label: "Science", color: "#09A4B2", icon: "atom" },
-  { label: "Folklore", color: "#FF8D6A", icon: "book-alphabet" },
+  {
+    label: "History",
+    color: "#3C9C27",
+    icon: require("../../assets/icons/his1.png"),
+  },
+  {
+    label: "Science",
+    color: "#09A4B2",
+    icon: require("../../assets/icons/his2.png"),
+  },
+  {
+    label: "Folklore",
+    color: "#FF8D6A",
+    icon: require("../../assets/icons/his3.png"),
+  },
 ];
 
 const featuredStories = [
@@ -53,18 +62,21 @@ const featuredStories = [
 ];
 
 const Home: React.FC = () => {
+  const { data: stories = [], isLoading, error } = useFetchData();
+
   const renderCategory = ({ item }: { item: (typeof categories)[0] }) => (
     <TouchableOpacity
       style={[styles.categoryCard, { backgroundColor: item.color }]}
       activeOpacity={1.2}
     >
+      <Image source={item.icon} />
       <Text style={styles.categoryText}>{item.label}</Text>
     </TouchableOpacity>
   );
 
   const renderStory = ({ item }: { item: any }) => (
     <View style={styles.storyCard}>
-      <Image source={item.image} style={styles.storyImage} />
+      <Image source={{ uri: item?.thumbnail }} style={styles.storyImage} />
       <View style={styles.overlay}>
         <Text style={styles.storyTitle}>{item.title}</Text>
         <View style={styles.storyFooter}>
@@ -82,6 +94,24 @@ const Home: React.FC = () => {
       </View>
     </View>
   );
+
+  if (isLoading) {
+    return (
+      <Spinner
+        visible={isLoading}
+        textContent={"Loading..."}
+        textStyle={{ color: "white" }}
+      />
+    );
+  }
+
+  if (error) {
+    return (
+      <Text style={{ color: "red", textAlign: "center" }}>
+        Error fetching library data! {error.message}
+      </Text>
+    );
+  }
 
   return (
     <View style={styles.screen}>
@@ -116,7 +146,7 @@ const Home: React.FC = () => {
             </TouchableOpacity>
           </View>
           <FlatList
-            data={featuredStories}
+            data={stories?.data?.library}
             renderItem={renderStory}
             keyExtractor={(item) => item.title}
             horizontal
@@ -212,8 +242,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.6)",
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
-    paddingVertical: 8,
+    paddingVertical: 20,
     paddingHorizontal: 15,
+    height: 140,
   },
   storyTitle: {
     fontSize: 14,
