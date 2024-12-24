@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   Text,
@@ -6,22 +6,44 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import MainLayout from "../shared/MainLayout";
+import MainLayout from "../../shared/MainLayout";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import BottomSheet, { BottomSheetMethods } from "@devvie/bottom-sheet";
 import { OtpInput } from "react-native-otp-entry";
 import { router } from "expo-router";
+import { useDispatch } from "react-redux"; // Redux dispatch hook
+import { updateBio } from "@/store/userSlice"; // Redux action
 import Button from "@/components/ui/Button";
 
 const Register: React.FC = () => {
   const sheetRef = useRef<BottomSheetMethods>(null);
+  const dispatch = useDispatch();
+
+  // Local state for inputs
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [retypePassword, setRetypePassword] = useState("");
+  const [otp, setOtp] = useState("");
 
   const handlePress = () => {
-    // sheetRef.current?.close();
-    router.push("/get-started");
+    if (otp.length === 6) {
+      // Dispatch the final user data to Redux store
+      dispatch(
+        updateBio({
+          email,
+          phoneNumber: phone,
+          // password, // You may need to hash this before dispatching
+        })
+      );
+      router.push("/get-started");
+    } else {
+      console.log("Invalid OTP");
+    }
   };
+
   return (
     <View style={styles.screen}>
       <MainLayout title="Register">
@@ -30,34 +52,31 @@ const Register: React.FC = () => {
             <TextInput
               style={[styles.input, styles.emailInput]}
               placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
             />
-            <TextInput style={styles.input} placeholder="Phone Number" />
+            <TextInput
+              style={styles.input}
+              placeholder="Phone Number"
+              value={phone}
+              onChangeText={setPhone}
+            />
             <TextInput
               style={styles.input}
               placeholder="Password"
               secureTextEntry
+              value={password}
+              onChangeText={setPassword}
             />
             <TextInput
               style={styles.input}
               placeholder="Re-type Password"
               secureTextEntry
+              value={retypePassword}
+              onChangeText={setRetypePassword}
             />
           </View>
           <View>
-            {/* <TouchableOpacity
-              style={styles.button}
-              activeOpacity={1.2}
-              onPress={() => sheetRef.current?.open()}
-            >
-              <Text style={styles.buttonText}>Next</Text>
-              <MaterialIcons
-                name="arrow-forward"
-                size={22}
-                color="white"
-                style={styles.icon}
-              />
-            </TouchableOpacity> */}
-
             <Button text="Next" onPress={() => sheetRef.current?.open()} />
 
             <Text style={styles.signInText}>
@@ -101,8 +120,8 @@ const Register: React.FC = () => {
           focusStickBlinkingDuration={500}
           onFocus={() => console.log("Focused")}
           onBlur={() => console.log("Blurred")}
-          onTextChange={(text) => console.log(text)}
-          onFilled={(text) => console.log(`OTP is ${text}`)}
+          onTextChange={(text) => setOtp(text)}
+          onFilled={(text) => setOtp(text)}
           textInputProps={{
             accessibilityLabel: "One-Time Password",
           }}
@@ -110,19 +129,6 @@ const Register: React.FC = () => {
             containerStyle: styles.otpContainer,
           }}
         />
-        {/* <TouchableOpacity
-          style={styles.button}
-          activeOpacity={1.2}
-          onPress={handlePress}
-        >
-          <Text style={styles.buttonText}>Submit</Text>
-          <MaterialIcons
-            name="arrow-forward"
-            size={22}
-            color="white"
-            style={styles.icon}
-          />
-        </TouchableOpacity> */}
         <Button text="Submit" onPress={handlePress} />
       </BottomSheet>
     </View>
@@ -133,14 +139,11 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
   },
-
   container: {
     flex: 1,
     marginTop: 20,
     paddingHorizontal: 30,
     justifyContent: "center",
-    // backgroundColor: "red",
-    // paddingBottom: 40,
     gap: 40,
   },
   input: {
@@ -206,11 +209,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     textAlign: "center",
   },
-
   bottomSheet: {
     padding: 60,
   },
-
   otpContainer: {
     flexDirection: "row",
     justifyContent: "space-between",

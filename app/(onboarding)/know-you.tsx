@@ -7,7 +7,7 @@ import {
   ScrollView,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import MainLayout from "../shared/MainLayout";
+import MainLayout from "../../shared/MainLayout";
 import { router } from "expo-router";
 import Button from "@/components/ui/Button";
 

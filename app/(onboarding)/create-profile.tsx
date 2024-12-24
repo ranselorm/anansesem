@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { MaterialIcons } from "@expo/vector-icons";
-import MainLayout from "../shared/MainLayout";
+import MainLayout from "../../shared/MainLayout";
 import { router } from "expo-router";
 import Button from "@/components/ui/Button";
 

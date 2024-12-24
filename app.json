@@ -27,6 +27,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "android": {
+      "newArchEnabled": true
+    },
+    "ios": {
+      "newArchEnabled": true
     }
   }
 }

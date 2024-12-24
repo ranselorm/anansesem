@@ -15,7 +15,7 @@ import { terms } from "@/constants";
 import ResetOnboarding from "@/components/Reset";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { Fonts, FontSizes, Colors } from "../theme";
+import { Fonts, FontSizes, Colors } from "../../theme";
 import { router, Link } from "expo-router";
 import Button from "@/components/ui/Button";
 
@@ -33,7 +33,7 @@ const Welcome: React.FC = () => {
         <View style={styles.textContainer}>
           {/* <ResetOnboarding /> */}
           <Image
-            source={require("../assets/icons/app-icon.png")}
+            source={require("../../assets/icons/ananse-read.png")}
             style={styles.image}
           />
           <Text style={styles.title}>Welcome to Anansesem</Text>
@@ -122,11 +122,11 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   image: {
-    width: 170,
-    height: 170,
+    width: 300,
+    height: 140,
   },
   title: {
-    fontWeight: "bold",
+    fontWeight: 900,
     textAlign: "center",
     alignSelf: "center",
     maxWidth: 150,

@@ -80,7 +80,10 @@ const Home: React.FC = () => {
       <View style={styles.overlay}>
         <Text style={styles.storyTitle}>{item.title}</Text>
         <View style={styles.storyFooter}>
-          <TouchableOpacity style={styles.playButton}>
+          <TouchableOpacity
+            style={styles.playButton}
+            onPress={() => router.push(`/library/${item.reference}`)}
+          >
             <Text style={styles.playButtonText}>Play</Text>
             <MaterialIcons
               name="play-arrow"
