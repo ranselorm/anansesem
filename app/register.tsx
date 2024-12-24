@@ -29,12 +29,15 @@ const Register: React.FC = () => {
   const [retypePassword, setRetypePassword] = useState("");
   const [otp, setOtp] = useState("");
 
-  const handlePress = () => {
-    if (!email || !phone || !password || !retypePassword || !otp) {
-      Alert.alert("All fields are required");
-      return;
-    }
+  const handleValidation = () => {
+    // if (!email || !phone || !password || !retypePassword) {
+    //   Alert.alert("All fields are required");
+    //   return;
+    // }
+    sheetRef.current?.open();
+  };
 
+  const handlePress = () => {
     if (otp.length === 6) {
       dispatch(
         updateBio({
@@ -81,7 +84,7 @@ const Register: React.FC = () => {
             />
           </View>
           <View>
-            <Button text="Next" onPress={() => sheetRef.current?.open()} />
+            <Button text="Next" onPress={handleValidation} />
 
             <Text style={styles.signInText}>
               Already have an account?

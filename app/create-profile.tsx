@@ -6,6 +6,7 @@ import {
   TextInput,
   Platform,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import MainLayout from "../shared/MainLayout";
@@ -14,65 +15,67 @@ import { useDispatch } from "react-redux";
 import { updateBio } from "@/store/userSlice";
 import Button from "@/components/ui/Button";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { MaterialIcons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
+
+const TOKEN =
+  "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlZYYVpDdnozeEN2RXJwZFctQk5pNSJ9.eyJuYW1lIjoiR2lkZW9uIEJlZHpyYWgiLCJlbWFpbCI6ImdiZWR6cmFoMUBnbWFpbC5jb20iLCJpc3MiOiJodHRwczovL2FuYW5zZXNlbS51cy5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8Njc2MDI0ZDBhOTE1ZmQ5MGMwZmMwZDI5IiwiYXVkIjpbImh0dHBzOi8vYW5hbnNlc2VtLWRldi1hcGkuYXp1cmV3ZWJzaXRlcy5uZXQvIiwiaHR0cHM6Ly9hbmFuc2VzZW0udXMuYXV0aDAuY29tL3VzZXJpbmZvIl0sImlhdCI6MTczNTAzODM5NSwiZXhwIjoxNzM1MTI0Nzk1LCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIiwiYXpwIjoiaGZHaTJiWWdHeUxLSnBPSnFMT0hGNTl4c1FuMTdaTGEiLCJwZXJtaXNzaW9ucyI6WyJjcmVhdGU6Y29udGVudCIsImRlbGV0ZTpjb250ZW50IiwicmVhZDpjb250ZW50IiwicmVhZDp1c2VycyIsInVwZGF0ZTpjb250ZW50Il19.hykUgaIn0TUY-QjoR-IINratn-kjdqNAMgOwCv0xx8RQGfIP_pdzs9b3jYvi5TIugLxyVRzwyUiasHUq2rKTULDGyQGheH0nmAsoeozvhJ4dUCy68WzlUKMlZg8R5j03H_XhrTEjxNSxBCUce7cj_hRvm_PCGFBJpRz5hHStM7Mh3GHbrExNLXUdA56sBXpHMJ5VpaO5Co4TsgcNofy8YWy2xUHdoxKivSDkFV_Afq9SBYGMK41IcmfWMFb1yvcaLU0VMwTltll7ctfTOpMtcDvuRNGIm8gWZT3ol7GI3jwu3xyaPDvRwwPxOwZCU06IcW_ef5SUh0TNV74krOuF4w";
 
 const CreateProfile: React.FC = () => {
-  const [username, setUsername] = useState("");
+  const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [age, setAge] = useState("");
-  const [grade, setGrade] = useState("");
-  const [language, setLanguage] = useState<string | null>(null);
-  const [country, setCountry] = useState<string | null>(null);
+  const [gender, setGender] = useState("");
+  const [readingLevel, setReadingLevel] = useState("");
+  const [avatar, setAvatar] = useState("");
 
   const dispatch = useDispatch();
 
   const handleSubmit = () => {
     if (
-      !username ||
+      !fullname ||
       !email ||
       !phone ||
       !dateOfBirth ||
-      !age ||
-      !grade ||
-      !language ||
-      !country
+      !gender ||
+      !readingLevel
     ) {
       alert("Please fill out all fields!");
       return;
     }
 
-    // Dispatch data to Redux
     dispatch(
       updateBio({
-        fullName: username,
+        fullName: fullname,
         email,
         phoneNumber: phone,
-        dateOfBirth: dateOfBirth.toISOString(), // Convert Date object to ISO string
-        // language,
-        // country,
+        dateOfBirth: dateOfBirth.toISOString(),
+        gender,
+        readingLevel,
+        avatar:
+          "https://anansesemstoragedev.blob.core.windows.net/profile/random-string/ananse-read.png",
       })
     );
 
     console.log({
-      username,
+      fullname,
       email,
       phone,
       dateOfBirth: dateOfBirth.toISOString(),
-      age,
-      grade,
-      language,
-      country,
+      gender,
+      readingLevel,
     });
 
-    router.push("/know-you");
+    router.push("/interests");
   };
 
   const handleDateChange = (event: any, selectedDate?: Date) => {
-    setShowDatePicker(false); // Hide the date picker
+    setShowDatePicker(false);
     if (selectedDate) {
-      setDateOfBirth(selectedDate); // Update the state with selected date
+      setDateOfBirth(selectedDate);
     }
   };
 
@@ -82,7 +85,65 @@ const CreateProfile: React.FC = () => {
         month: "long",
         day: "numeric",
       })
-    : "Select Date of Birth";
+    : "dd/mm/yyyy";
+
+  const pickImageAsync = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        const imageUri = result.assets[0].uri;
+        console.log("Selected Image URI:", imageUri);
+
+        // Fetch the file to ensure it's valid
+        const response = await fetch(imageUri);
+        const blob = await response.blob();
+
+        // Prepare the FormData object
+        const formData = new FormData();
+        formData.append("containerName", "profile");
+        formData.append("reference", "random-string"); // Use a proper reference
+        formData.append("accessLevel", "blob");
+        formData.append("file", blob, "uploaded-image.jpg"); // Append Blob
+
+        console.log("FormData ready for upload.");
+
+        // Upload the file
+        const uploadResponse = await fetch(
+          "https://anansesem-dev-api.azurewebsites.net/api/upload",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${TOKEN}`, // Use your token
+            },
+            body: formData,
+          }
+        );
+
+        const uploadResult = await uploadResponse.json();
+
+        if (uploadResponse.ok) {
+          console.log("Upload successful:", uploadResult);
+          Alert.alert("Success", "Image uploaded successfully!");
+        } else {
+          console.error("Upload failed:", uploadResult);
+          Alert.alert(
+            "Error",
+            uploadResult.message || "Failed to upload the image."
+          );
+        }
+      } else {
+        Alert.alert("No Image Selected", "You did not select any image.");
+      }
+    } catch (error) {
+      console.error("Error during image upload:", error);
+      Alert.alert("Error", "Something went wrong during the upload.");
+    }
+  };
 
   return (
     <View style={styles.screen}>
@@ -91,13 +152,36 @@ const CreateProfile: React.FC = () => {
           <Text style={styles.description}>
             To customize your adventure, please tell us a little about yourself
           </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              // justifyContent: "center",
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
+            <View style={styles.imageContainer}>
+              <View style={styles.placeholder}>
+                <MaterialIcons name="person" size={40} color="#FFBB00" />
+              </View>
+
+              <TouchableOpacity
+                activeOpacity={1.2}
+                style={styles.addIconContainer}
+                onPress={pickImageAsync}
+              >
+                <MaterialIcons name="add" size={15} color="#FFF" />
+              </TouchableOpacity>
+            </View>
+            <Text>Upload profile picture</Text>
+          </View>
           <View>
             <Text style={styles.label}>Full name</Text>
             <TextInput
               style={styles.input}
               placeholder="e.g. Jeremiah Cook"
-              value={username}
-              onChangeText={setUsername}
+              value={fullname}
+              onChangeText={setFullname}
             />
           </View>
           <View>
@@ -132,62 +216,46 @@ const CreateProfile: React.FC = () => {
                 value={dateOfBirth || new Date()}
                 mode="date"
                 display={Platform.OS === "ios" ? "spinner" : "default"}
-                maximumDate={new Date()} // Prevent future dates
+                maximumDate={new Date()}
                 onChange={handleDateChange}
               />
             )}
           </View>
+          <Text style={styles.label}>Gender</Text>
           <View style={styles.pickerContainer}>
             <Picker
-              selectedValue={age}
-              onValueChange={(itemValue) => setAge(itemValue)}
+              selectedValue={gender}
+              onValueChange={(itemValue) => setGender(itemValue)}
               style={styles.picker}
             >
-              <Picker.Item label="What's your age?" value={null} />
-              <Picker.Item label="<12" value="12" />
-              <Picker.Item label="16-22" value="16-22" />
-              <Picker.Item label="23+" value="23+" />
+              <Picker.Item label="Select" value={null} />
+              <Picker.Item label="FEMALE" value="FEMALE" />
+              <Picker.Item label="MALE" value="MALE" />
             </Picker>
           </View>
+          <Text style={styles.label}>Reading Level</Text>
           <View style={styles.pickerContainer}>
             <Picker
-              selectedValue={grade}
-              onValueChange={(itemValue) => setGrade(itemValue)}
+              selectedValue={readingLevel}
+              onValueChange={(itemValue) => setReadingLevel(itemValue)}
               style={styles.picker}
             >
-              <Picker.Item label="What's your class/grade?" value={null} />
-              <Picker.Item label="Basic" value="basic" />
-              <Picker.Item label="Intermediate" value="intermediate" />
-              <Picker.Item label="Advanced" value="advanced" />
-            </Picker>
-          </View>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={language}
-              onValueChange={(itemValue) => setLanguage(itemValue)}
-              style={styles.picker}
-            >
-              <Picker.Item label="Select a language" value={null} />
-              <Picker.Item label="English" value="english" />
-              <Picker.Item label="French" value="french" />
-              <Picker.Item label="Spanish" value="spanish" />
-            </Picker>
-          </View>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={country}
-              onValueChange={(itemValue) => setCountry(itemValue)}
-              style={styles.picker}
-            >
-              <Picker.Item label="Select a country" value={null} />
-              <Picker.Item label="United States" value="us" />
-              <Picker.Item label="Canada" value="ca" />
-              <Picker.Item label="United Kingdom" value="uk" />
+              <Picker.Item label="Select" value={null} />
+              <Picker.Item label="Emergent" value="Emergent" />
+              <Picker.Item label="Early Reader" value="Early Reader" />
+              <Picker.Item label="Beginner" value="Beginner" />
+              <Picker.Item
+                label="Transitional Reader"
+                value="Transitional Reader"
+              />
+              <Picker.Item label="Intermediate" value="Intermediate" />
+              <Picker.Item label="Fluent Reader" value="Fluent Reader" />
+              <Picker.Item label="Advanced" value="Advanced" />
             </Picker>
           </View>
         </View>
       </MainLayout>
-      <Button text="Submit" onPress={handleSubmit} absolute />
+      <Button text="Next" onPress={handleSubmit} absolute />
     </View>
   );
 };
@@ -198,17 +266,52 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 30,
+    // paddingHorizontal: 30,
   },
   description: {
     fontSize: 16,
     textAlign: "left",
     color: "#000",
-    marginBottom: 50,
-    marginTop: 50,
+    marginBottom: 20,
+    // marginTop: 50,
+  },
+
+  imageContainer: {
+    height: 60,
+    width: 60,
+    borderRadius: 75,
+    backgroundColor: "#FBCB46",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  placeholder: {
+    height: "100%",
+    width: "100%",
+    borderRadius: 75,
+    backgroundColor: "#FF8D6A",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  profileImage: {
+    height: "100%",
+    width: "100%",
+    borderRadius: 75,
+    resizeMode: "cover",
+  },
+  addIconContainer: {
+    position: "absolute",
+    bottom: 4,
+    right: 2,
+    height: 20,
+    width: 20,
+    borderRadius: 20,
+    backgroundColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
   },
   label: {
-    marginBottom: 4,
+    marginBottom: 2,
   },
   input: {
     height: 40,
@@ -216,8 +319,9 @@ const styles = StyleSheet.create({
     borderColor: "#000",
     borderRadius: 8,
     paddingHorizontal: 15,
-    backgroundColor: "#C4A1FF",
-    marginBottom: 20,
+    backgroundColor: "#fff",
+    marginBottom: 10,
+    color: "black",
   },
   datePickerInput: {
     height: 40,
@@ -226,7 +330,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 15,
     justifyContent: "center",
-    backgroundColor: "#C4A1FF",
+    backgroundColor: "#fff",
     marginBottom: 20,
   },
   dateText: {
@@ -236,10 +340,12 @@ const styles = StyleSheet.create({
   pickerContainer: {
     borderWidth: 1,
     borderColor: "#000",
-    borderRadius: 50,
+    borderRadius: 8,
     marginBottom: 20,
     overflow: "hidden",
-    backgroundColor: "#FBCB46",
+    backgroundColor: "#fff",
+    height: 40,
+    justifyContent: "center",
   },
   picker: {
     height: 50,

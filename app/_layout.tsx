@@ -14,6 +14,7 @@ export default function RootLayout() {
           <Stack.Screen name="register" />
           <Stack.Screen name="get-started" />
           <Stack.Screen name="create-profile" />
+          <Stack.Screen name="interests" />
           <Stack.Screen name="know-you" />
           <Stack.Screen name="upload-picture" />
           <Stack.Screen name="profile" />

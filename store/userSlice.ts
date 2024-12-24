@@ -1,5 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+interface LanguageSkill {
+  language: string;
+  reading: string;
+  writing: string;
+  listening: string;
+  speaking: string;
+}
+
 interface UserState {
   bio: {
     fullName: string;
@@ -23,29 +31,22 @@ interface UserState {
     mood: string;
     themeOfInterest: string;
   };
-  languageSkills: Array<{
-    language: string;
-    reading: string;
-    writing: string;
-    listening: string;
-    speaking: string;
-  }>;
+  languageSkills: LanguageSkill[];
 }
 
 const initialState: UserState = {
-  // Same as above
   bio: {
     fullName: "",
-    nickName: "",
+    nickName: "selooo",
     email: "",
     dateOfBirth: "",
     gender: "",
-    preferredLanguage: "",
+    preferredLanguage: "ENGLISH",
     avatar: "",
     readingLevel: "",
     phoneNumber: "",
   },
-  reference: "",
+  reference: "testkskskluser2kksksksksjhfj2",
   interests: {
     favoriteStoryGenre: "",
     favoriteCharacter: "",
@@ -56,21 +57,50 @@ const initialState: UserState = {
     mood: "",
     themeOfInterest: "",
   },
-  languageSkills: [],
+  languageSkills: [
+    {
+      language: "English",
+      reading: "INTERMEDIATE",
+      writing: "INTERMEDIATE",
+      listening: "INTERMEDIATE",
+      speaking: "INTERMEDIATE",
+    },
+  ],
 };
 
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setUser(state, action: PayloadAction<UserState>) {
-      return action.payload;
-    },
     updateBio(state, action: PayloadAction<Partial<UserState["bio"]>>) {
       state.bio = { ...state.bio, ...action.payload };
+    },
+    updateInterests(
+      state,
+      action: PayloadAction<Partial<UserState["interests"]>>
+    ) {
+      state.interests = { ...state.interests, ...action.payload };
+    },
+    updateStoryPreferences(
+      state,
+      action: PayloadAction<Partial<UserState["storyPreferences"]>>
+    ) {
+      state.storyPreferences = { ...state.storyPreferences, ...action.payload };
+    },
+    updateLanguageSkills(
+      state,
+      action: PayloadAction<UserState["languageSkills"]>
+    ) {
+      state.languageSkills = action.payload;
     },
   },
 });
 
-export const { setUser, updateBio } = userSlice.actions;
+export const {
+  updateBio,
+  updateInterests,
+  updateStoryPreferences,
+  updateLanguageSkills,
+} = userSlice.actions;
+
 export default userSlice.reducer;
