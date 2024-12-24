@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import MainLayout from "../../shared/MainLayout";
+import MainLayout from "../shared/MainLayout";
 import { router } from "expo-router";
 import Button from "@/components/ui/Button";
 

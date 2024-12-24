@@ -3,20 +3,24 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   TextInput,
-  ScrollView,
+  Platform,
+  TouchableOpacity,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { MaterialIcons } from "@expo/vector-icons";
-import MainLayout from "../../shared/MainLayout";
+import MainLayout from "../shared/MainLayout";
 import { router } from "expo-router";
 import { useDispatch } from "react-redux";
 import { updateBio } from "@/store/userSlice";
 import Button from "@/components/ui/Button";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 const CreateProfile: React.FC = () => {
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [age, setAge] = useState("");
   const [grade, setGrade] = useState("");
   const [language, setLanguage] = useState<string | null>(null);
@@ -25,16 +29,27 @@ const CreateProfile: React.FC = () => {
   const dispatch = useDispatch();
 
   const handleSubmit = () => {
-    if (!username || !age || !grade || !language || !country) {
+    if (
+      !username ||
+      !email ||
+      !phone ||
+      !dateOfBirth ||
+      !age ||
+      !grade ||
+      !language ||
+      !country
+    ) {
       alert("Please fill out all fields!");
       return;
     }
 
+    // Dispatch data to Redux
     dispatch(
       updateBio({
         fullName: username,
-        // age,
-        // grade,
+        email,
+        phoneNumber: phone,
+        dateOfBirth: dateOfBirth.toISOString(), // Convert Date object to ISO string
         // language,
         // country,
       })
@@ -42,6 +57,9 @@ const CreateProfile: React.FC = () => {
 
     console.log({
       username,
+      email,
+      phone,
+      dateOfBirth: dateOfBirth.toISOString(),
       age,
       grade,
       language,
@@ -51,6 +69,21 @@ const CreateProfile: React.FC = () => {
     router.push("/know-you");
   };
 
+  const handleDateChange = (event: any, selectedDate?: Date) => {
+    setShowDatePicker(false); // Hide the date picker
+    if (selectedDate) {
+      setDateOfBirth(selectedDate); // Update the state with selected date
+    }
+  };
+
+  const formattedDate = dateOfBirth
+    ? dateOfBirth.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : "Select Date of Birth";
+
   return (
     <View style={styles.screen}>
       <MainLayout title="Create your profile">
@@ -58,13 +91,52 @@ const CreateProfile: React.FC = () => {
           <Text style={styles.description}>
             To customize your adventure, please tell us a little about yourself
           </Text>
-          <Text>Full name</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter your username"
-            value={username}
-            onChangeText={setUsername}
-          />
+          <View>
+            <Text style={styles.label}>Full name</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="e.g. Jeremiah Cook"
+              value={username}
+              onChangeText={setUsername}
+            />
+          </View>
+          <View>
+            <Text style={styles.label}>Email</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="e.g. jerry@example.com"
+              value={email}
+              onChangeText={setEmail}
+            />
+          </View>
+          <View>
+            <Text style={styles.label}>Phone number</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your number"
+              value={phone}
+              onChangeText={setPhone}
+              keyboardType="phone-pad"
+            />
+          </View>
+          <View>
+            <Text style={styles.label}>Date of birth</Text>
+            <TouchableOpacity
+              style={styles.datePickerInput}
+              onPress={() => setShowDatePicker(true)}
+            >
+              <Text style={styles.dateText}>{formattedDate}</Text>
+            </TouchableOpacity>
+            {showDatePicker && (
+              <DateTimePicker
+                value={dateOfBirth || new Date()}
+                mode="date"
+                display={Platform.OS === "ios" ? "spinner" : "default"}
+                maximumDate={new Date()} // Prevent future dates
+                onChange={handleDateChange}
+              />
+            )}
+          </View>
           <View style={styles.pickerContainer}>
             <Picker
               selectedValue={age}
@@ -135,14 +207,31 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     marginTop: 50,
   },
+  label: {
+    marginBottom: 4,
+  },
   input: {
-    height: 50,
+    height: 40,
     borderWidth: 1,
     borderColor: "#000",
     borderRadius: 8,
     paddingHorizontal: 15,
     backgroundColor: "#C4A1FF",
-    marginBottom: 30,
+    marginBottom: 20,
+  },
+  datePickerInput: {
+    height: 40,
+    borderWidth: 1,
+    borderColor: "#000",
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    justifyContent: "center",
+    backgroundColor: "#C4A1FF",
+    marginBottom: 20,
+  },
+  dateText: {
+    fontSize: 16,
+    color: "#000",
   },
   pickerContainer: {
     borderWidth: 1,
@@ -155,34 +244,6 @@ const styles = StyleSheet.create({
   picker: {
     height: 50,
     color: "#000",
-  },
-  button: {
-    position: "absolute",
-    bottom: 20,
-    left: "20%",
-    right: "20%",
-    backgroundColor: "#D0EE30",
-    paddingVertical: 15,
-    paddingHorizontal: 25,
-    borderRadius: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  buttonText: {
-    color: "#000",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  icon: {
-    backgroundColor: "#000",
-    borderRadius: 50,
-    padding: 5,
   },
 });
 

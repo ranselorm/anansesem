@@ -10,8 +10,8 @@ import {
 } from "react-native";
 
 import { Link, router, useNavigation } from "expo-router";
-import OnboardingScreen from "../../components/OnboardingScreen";
-import OnboardingDots from "../../components/OnboardingDots";
+import OnboardingScreen from "../components/OnboardingScreen";
+import OnboardingDots from "../components/OnboardingDots";
 import { MaterialIcons } from "@expo/vector-icons";
 import Button from "@/components/ui/Button";
 
@@ -19,22 +19,22 @@ const { width } = Dimensions.get("window");
 
 const onboardingData = [
   {
-    image: require("../../assets/images/onboarding1.png"),
+    image: require("../assets/images/onboarding1.png"),
     title: "Welcome to your storybook world",
     description: "Let's embark on a magical journey together!",
   },
   {
-    image: require("../../assets/images/onboard2.png"),
+    image: require("../assets/images/onboard2.png"),
     title: "Create your own adventures",
     description: "Unleash your creativity and create your own stories.",
   },
   {
-    image: require("../../assets/images/onboard3.png"),
+    image: require("../assets/images/onboard3.png"),
     title: "Learn while you play",
     description: "Fun educational stories to spark your curiosity.",
   },
   {
-    image: require("../../assets/images/onboard4.png"),
+    image: require("../assets/images/onboard4.png"),
     title: "A world of stories awaits you",
     description: "Dive into a vast library of exciting tales.",
   },

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import MainLayout from "../../shared/MainLayout";
+import MainLayout from "../shared/MainLayout";
 import { router } from "expo-router";
 import Button from "@/components/ui/Button";
 
@@ -23,7 +23,7 @@ const GetStarted: React.FC = () => {
         <View style={styles.content}>
           <View style={styles.imageContainer}>
             <Image
-              source={require("../../assets/icons/app-icon.png")}
+              source={require("../assets/icons/app-icon.png")}
               style={styles.image}
             />
           </View>
