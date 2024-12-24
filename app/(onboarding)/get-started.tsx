@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   image: {
-    height: "100%",
+    height: "92%",
     resizeMode: "contain",
     // marginTop: 30,
   },

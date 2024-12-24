@@ -5,11 +5,14 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
+  ScrollView,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { MaterialIcons } from "@expo/vector-icons";
 import MainLayout from "../../shared/MainLayout";
 import { router } from "expo-router";
+import { useDispatch } from "react-redux";
+import { updateBio } from "@/store/userSlice";
 import Button from "@/components/ui/Button";
 
 const CreateProfile: React.FC = () => {
@@ -19,11 +22,24 @@ const CreateProfile: React.FC = () => {
   const [language, setLanguage] = useState<string | null>(null);
   const [country, setCountry] = useState<string | null>(null);
 
+  const dispatch = useDispatch();
+
   const handleSubmit = () => {
-    // if (!username || !age || !grade || !language || !country) {
-    //   alert("Please fill out all fields!");
-    //   return;
-    // }
+    if (!username || !age || !grade || !language || !country) {
+      alert("Please fill out all fields!");
+      return;
+    }
+
+    dispatch(
+      updateBio({
+        fullName: username,
+        // age,
+        // grade,
+        // language,
+        // country,
+      })
+    );
+
     console.log({
       username,
       age,
@@ -31,7 +47,7 @@ const CreateProfile: React.FC = () => {
       language,
       country,
     });
-    // Proceed to the next screen or handle submission logic
+
     router.push("/know-you");
   };
 
@@ -42,6 +58,7 @@ const CreateProfile: React.FC = () => {
           <Text style={styles.description}>
             To customize your adventure, please tell us a little about yourself
           </Text>
+          <Text>Full name</Text>
           <TextInput
             style={styles.input}
             placeholder="Enter your username"
@@ -49,7 +66,11 @@ const CreateProfile: React.FC = () => {
             onChangeText={setUsername}
           />
           <View style={styles.pickerContainer}>
-            <Picker selectedValue={age} style={styles.picker}>
+            <Picker
+              selectedValue={age}
+              onValueChange={(itemValue) => setAge(itemValue)}
+              style={styles.picker}
+            >
               <Picker.Item label="What's your age?" value={null} />
               <Picker.Item label="<12" value="12" />
               <Picker.Item label="16-22" value="16-22" />
@@ -57,7 +78,11 @@ const CreateProfile: React.FC = () => {
             </Picker>
           </View>
           <View style={styles.pickerContainer}>
-            <Picker selectedValue={grade} style={styles.picker}>
+            <Picker
+              selectedValue={grade}
+              onValueChange={(itemValue) => setGrade(itemValue)}
+              style={styles.picker}
+            >
               <Picker.Item label="What's your class/grade?" value={null} />
               <Picker.Item label="Basic" value="basic" />
               <Picker.Item label="Intermediate" value="intermediate" />
@@ -90,15 +115,6 @@ const CreateProfile: React.FC = () => {
           </View>
         </View>
       </MainLayout>
-      {/* <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Submit</Text>
-        <MaterialIcons
-          name="arrow-forward"
-          size={22}
-          color="white"
-          style={styles.icon}
-        />
-      </TouchableOpacity> */}
       <Button text="Submit" onPress={handleSubmit} absolute />
     </View>
   );
@@ -110,7 +126,6 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    // justifyContent: "center",
     paddingHorizontal: 30,
   },
   description: {
@@ -124,7 +139,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderWidth: 1,
     borderColor: "#000",
-    borderRadius: 50,
+    borderRadius: 8,
     paddingHorizontal: 15,
     backgroundColor: "#C4A1FF",
     marginBottom: 30,

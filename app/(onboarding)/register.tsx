@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import MainLayout from "../../shared/MainLayout";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -28,6 +29,11 @@ const Register: React.FC = () => {
   const [retypePassword, setRetypePassword] = useState("");
   const [otp, setOtp] = useState("");
 
+  if (!email || !phone || !password || !retypePassword || !otp) {
+    Alert.alert("All fields are required");
+    return;
+  }
+
   const handlePress = () => {
     if (otp.length === 6) {
       // Dispatch the final user data to Redux store
@@ -35,7 +41,6 @@ const Register: React.FC = () => {
         updateBio({
           email,
           phoneNumber: phone,
-          // password, // You may need to hash this before dispatching
         })
       );
       router.push("/get-started");

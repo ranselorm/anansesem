@@ -12,7 +12,6 @@ import { MaterialIcons } from "@expo/vector-icons";
 import HomeLayout from "@/shared/HomeLayout";
 import { Colors } from "@/theme";
 import { router } from "expo-router";
-import { useQuery } from "@tanstack/react-query";
 import { useFetchData } from "@/hooks/usFetchData";
 import Spinner from "react-native-loading-spinner-overlay";
 
