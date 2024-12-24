@@ -29,14 +29,13 @@ const Register: React.FC = () => {
   const [retypePassword, setRetypePassword] = useState("");
   const [otp, setOtp] = useState("");
 
-  if (!email || !phone || !password || !retypePassword || !otp) {
-    Alert.alert("All fields are required");
-    return;
-  }
-
   const handlePress = () => {
+    if (!email || !phone || !password || !retypePassword || !otp) {
+      Alert.alert("All fields are required");
+      return;
+    }
+
     if (otp.length === 6) {
-      // Dispatch the final user data to Redux store
       dispatch(
         updateBio({
           email,
