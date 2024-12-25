@@ -7,6 +7,7 @@ import {
   Platform,
   TouchableOpacity,
   Alert,
+  ScrollView,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import MainLayout from "../shared/MainLayout";
@@ -15,10 +16,9 @@ import { useDispatch } from "react-redux";
 import { updateBio } from "@/store/userSlice";
 import Button from "@/components/ui/Button";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { MaterialIcons } from "@expo/vector-icons";
-import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
+import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/theme";
+import * as ImagePicker from "expo-image-picker";
 
 const CreateProfile: React.FC = () => {
   const [fullname, setFullname] = useState("");
@@ -31,6 +31,27 @@ const CreateProfile: React.FC = () => {
   const [avatar, setAvatar] = useState("");
 
   const dispatch = useDispatch();
+
+  const pickImageAsync = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ["images"],
+        allowsEditing: true,
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        const imageUri = result?.assets[0]?.uri;
+        console.log("Selected Image URI:", imageUri);
+        return imageUri;
+      } else {
+        alert("You did not select any image.");
+      }
+    } catch (error) {
+      console.error("Error during image picking:", error);
+      alert("An error occurred while selecting an image.");
+    }
+  };
 
   const handleSubmit = () => {
     if (
@@ -58,15 +79,6 @@ const CreateProfile: React.FC = () => {
       })
     );
 
-    console.log({
-      fullname,
-      email,
-      phone,
-      dateOfBirth: dateOfBirth.toISOString(),
-      gender,
-      readingLevel,
-    });
-
     router.push("/interests");
   };
 
@@ -88,111 +100,114 @@ const CreateProfile: React.FC = () => {
   return (
     <View style={styles.screen}>
       <MainLayout title="Create your profile">
-        <View style={styles.content}>
-          <Text style={styles.description}>
-            To customize your adventure, please tell us a little about yourself
-          </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              // justifyContent: "center",
-              alignItems: "center",
-              gap: 10,
-            }}
-          >
-            <View style={styles.imageContainer}>
-              <View style={styles.placeholder}>
-                <MaterialIcons name="person" size={40} color="#FFBB00" />
-              </View>
-
-              <TouchableOpacity
-                activeOpacity={1.2}
-                style={styles.addIconContainer}
-              >
-                <MaterialIcons name="add" size={15} color="#FFF" />
+        <ScrollView style={{ paddingBottom: 60 }}>
+          <View style={styles.content}>
+            <Text style={styles.description}>
+              To customize your adventure, please tell us a little about
+              yourself
+            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 10,
+              }}
+            >
+              <TouchableOpacity onPress={pickImageAsync}>
+                <View style={styles.imageContainer}>
+                  <View style={styles.placeholder}>
+                    <MaterialIcons name="person" size={40} color="#FFBB00" />
+                  </View>
+                  <Ionicons
+                    name="add-circle"
+                    size={30}
+                    color="black"
+                    style={styles.addIconContainer}
+                  />
+                </View>
               </TouchableOpacity>
+              <Text>Upload profile picture</Text>
             </View>
-            <Text>Upload profile picture</Text>
-          </View>
-          <View>
-            <Text style={styles.label}>Full name</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="e.g. Jeremiah Cook"
-              value={fullname}
-              onChangeText={setFullname}
-            />
-          </View>
-          <View>
-            <Text style={styles.label}>Email</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="e.g. jerry@example.com"
-              value={email}
-              onChangeText={setEmail}
-            />
-          </View>
-          <View>
-            <Text style={styles.label}>Phone number</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your number"
-              value={phone}
-              onChangeText={setPhone}
-              keyboardType="phone-pad"
-            />
-          </View>
-          <View>
-            <Text style={styles.label}>Date of birth</Text>
-            <TouchableOpacity
-              style={styles.datePickerInput}
-              onPress={() => setShowDatePicker(true)}
-            >
-              <Text style={styles.dateText}>{formattedDate}</Text>
-            </TouchableOpacity>
-            {showDatePicker && (
-              <DateTimePicker
-                value={dateOfBirth || new Date()}
-                mode="date"
-                display={Platform.OS === "ios" ? "spinner" : "default"}
-                maximumDate={new Date()}
-                onChange={handleDateChange}
+            <View style={{ marginTop: 20 }}>
+              <Text style={styles.label}>Full name</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="e.g. Jeremiah Cook"
+                value={fullname}
+                onChangeText={setFullname}
               />
-            )}
-          </View>
-          <Text style={styles.label}>Gender</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={gender}
-              onValueChange={(itemValue) => setGender(itemValue)}
-              style={styles.picker}
-            >
-              <Picker.Item label="Select" value={null} />
-              <Picker.Item label="FEMALE" value="FEMALE" />
-              <Picker.Item label="MALE" value="MALE" />
-            </Picker>
-          </View>
-          <Text style={styles.label}>Reading Level</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={readingLevel}
-              onValueChange={(itemValue) => setReadingLevel(itemValue)}
-              style={styles.picker}
-            >
-              <Picker.Item label="Select" value={null} />
-              <Picker.Item label="Emergent" value="Emergent" />
-              <Picker.Item label="Early Reader" value="Early Reader" />
-              <Picker.Item label="Beginner" value="Beginner" />
-              <Picker.Item
-                label="Transitional Reader"
-                value="Transitional Reader"
+            </View>
+            <View>
+              <Text style={styles.label}>Email</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="e.g. jerry@example.com"
+                value={email}
+                onChangeText={setEmail}
               />
-              <Picker.Item label="Intermediate" value="Intermediate" />
-              <Picker.Item label="Fluent Reader" value="Fluent Reader" />
-              <Picker.Item label="Advanced" value="Advanced" />
-            </Picker>
+            </View>
+            <View>
+              <Text style={styles.label}>Phone number</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your number"
+                value={phone}
+                onChangeText={setPhone}
+                keyboardType="phone-pad"
+              />
+            </View>
+            <View>
+              <Text style={styles.label}>Date of birth</Text>
+              <TouchableOpacity
+                style={styles.datePickerInput}
+                onPress={() => setShowDatePicker(true)}
+              >
+                <Text style={styles.dateText}>{formattedDate}</Text>
+              </TouchableOpacity>
+              {showDatePicker && (
+                <DateTimePicker
+                  value={dateOfBirth || new Date()}
+                  mode="date"
+                  display={Platform.OS === "ios" ? "spinner" : "default"}
+                  maximumDate={new Date()}
+                  onChange={handleDateChange}
+                />
+              )}
+            </View>
+            <Text style={styles.label}>Gender</Text>
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={gender}
+                onValueChange={(itemValue) => setGender(itemValue)}
+                style={styles.picker}
+              >
+                <Picker.Item label="Select" value={null} />
+                <Picker.Item label="FEMALE" value="FEMALE" />
+                <Picker.Item label="MALE" value="MALE" />
+              </Picker>
+            </View>
+            <Text style={styles.label}>Reading Level</Text>
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={readingLevel}
+                onValueChange={(itemValue) => setReadingLevel(itemValue)}
+                style={styles.picker}
+              >
+                <Picker.Item label="Select" value={null} />
+                <Picker.Item label="Emergent" value="Emergent" />
+                <Picker.Item label="Early Reader" value="Early Reader" />
+                <Picker.Item label="Beginner" value="Beginner" />
+                <Picker.Item
+                  label="Transitional Reader"
+                  value="Transitional Reader"
+                />
+                <Picker.Item label="Intermediate" value="Intermediate" />
+                <Picker.Item label="Fluent Reader" value="Fluent Reader" />
+                <Picker.Item label="Advanced" value="Advanced" />
+              </Picker>
+            </View>
           </View>
-        </View>
+        </ScrollView>
       </MainLayout>
       <Button text="Next" onPress={handleSubmit} absolute />
     </View>
@@ -218,11 +233,10 @@ const styles = StyleSheet.create({
   imageContainer: {
     height: 60,
     width: 60,
-    borderRadius: 75,
+    borderRadius: 50,
     backgroundColor: "#FBCB46",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 20,
   },
   placeholder: {
     height: "100%",
@@ -235,17 +249,13 @@ const styles = StyleSheet.create({
   profileImage: {
     height: "100%",
     width: "100%",
-    borderRadius: 75,
+    borderRadius: 50,
     resizeMode: "cover",
   },
   addIconContainer: {
     position: "absolute",
-    bottom: 4,
-    right: 2,
-    height: 20,
-    width: 20,
-    borderRadius: 20,
-    backgroundColor: "#000",
+    bottom: -2,
+    right: -4,
     justifyContent: "center",
     alignItems: "center",
   },

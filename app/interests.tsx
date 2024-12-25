@@ -18,12 +18,12 @@ import MainLayout from "@/shared/MainLayout";
 import Button from "@/components/ui/Button";
 import { RootState } from "@/store";
 import { router } from "expo-router";
+import { Colors } from "@/theme";
 
 const Interests: React.FC = () => {
   const dispatch = useDispatch();
   const userState = useSelector((state: RootState) => state.user);
 
-  // Local states for form fields
   const [favoriteStoryGenre, setFavoriteStoryGenre] = useState(
     userState.interests.favoriteStoryGenre || ""
   );
@@ -97,8 +97,9 @@ const Interests: React.FC = () => {
     <MainLayout title="Interests">
       <View style={styles.content}>
         <Text style={styles.description}>Tell us about your interests</Text>
-        <View style={styles.container}>
-          <Text style={styles.label}>Favorite Story Genre</Text>
+        <View>
+          <Text style={styles.label1}>Interests</Text>
+          <Text style={styles.label}>Favorite story genre</Text>
           <View style={styles.pickerContainer}>
             <Picker
               selectedValue={favoriteStoryGenre}
@@ -137,57 +138,62 @@ const Interests: React.FC = () => {
           </View>
 
           <Text style={styles.label}>Favorite Color</Text>
-          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 30 }}>
             {colors.map((color) => (
               <TouchableOpacity
                 key={color.name}
-                style={[
-                  styles.colorContainer,
-                  favoriteColor === color.name && styles.colorSelected,
-                ]}
+                style={[styles.colorContainer]}
                 onPress={() => selectColor(color.name)}
               >
                 <View
                   style={[styles.colorBlock, { backgroundColor: color.value }]}
                 />
-                <Text style={styles.colorName}>{color.name}</Text>
+                <Text
+                  style={[
+                    styles.colorName,
+                    favoriteColor === color.name && { fontWeight: 900 },
+                  ]}
+                >
+                  {color.name}
+                </Text>
               </TouchableOpacity>
             ))}
           </View>
         </View>
 
-        <View style={styles.container}>
-          <Text style={styles.label}>Mood</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={mood}
-              onValueChange={setMood}
-              style={styles.picker}
-            >
-              <Picker.Item label="Select" value="" />
-              <Picker.Item label="FUNNY" value="FUNNY" />
-              <Picker.Item label="SERIOUS" value="SERIOUS" />
-              <Picker.Item label="EDUCATION" value="EDUCATION" />
-              <Picker.Item label="LIGHT_HEARTED" value="LIGHT_HEARTED" />
-            </Picker>
-          </View>
+        <Text style={[styles.label1, { marginTop: 20 }]}>
+          Story preferences
+        </Text>
+        <Text style={styles.label}>Mood</Text>
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={mood}
+            onValueChange={setMood}
+            style={styles.picker}
+          >
+            <Picker.Item label="Select" value="" />
+            <Picker.Item label="FUNNY" value="FUNNY" />
+            <Picker.Item label="SERIOUS" value="SERIOUS" />
+            <Picker.Item label="EDUCATION" value="EDUCATION" />
+            <Picker.Item label="LIGHT_HEARTED" value="LIGHT_HEARTED" />
+          </Picker>
+        </View>
 
-          <Text style={styles.label}>Theme of Interest</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={themeOfInterest}
-              onValueChange={setThemeOfInterest}
-              style={styles.picker}
-            >
-              <Picker.Item label="Select" value="" />
-              <Picker.Item label="FRIENDSHIP" value="FRIENDSHIP" />
-              <Picker.Item label="MAGIC" value="MAGIC" />
-              <Picker.Item label="PROBLEM_SOLVING" value="PROBLEM_SOLVING" />
-              <Picker.Item label="CULTURE" value="CULTURE" />
-              <Picker.Item label="ANIMALS" value="ANIMALS" />
-              <Picker.Item label="OTHER" value="OTHER" />
-            </Picker>
-          </View>
+        <Text style={styles.label}>Theme of Interest</Text>
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={themeOfInterest}
+            onValueChange={setThemeOfInterest}
+            style={styles.picker}
+          >
+            <Picker.Item label="Select" value="" />
+            <Picker.Item label="FRIENDSHIP" value="FRIENDSHIP" />
+            <Picker.Item label="MAGIC" value="MAGIC" />
+            <Picker.Item label="PROBLEM_SOLVING" value="PROBLEM_SOLVING" />
+            <Picker.Item label="CULTURE" value="CULTURE" />
+            <Picker.Item label="ANIMALS" value="ANIMALS" />
+            <Picker.Item label="OTHER" value="OTHER" />
+          </Picker>
         </View>
 
         <Button text="Save Interests" onPress={handleSave} absolute />
@@ -197,12 +203,13 @@ const Interests: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  content: { flex: 1 },
+  content: { flex: 1, paddingHorizontal: 10 },
   description: {
     fontSize: 16,
     textAlign: "center",
     color: "#000",
     marginBottom: 20,
+    marginTop: -20,
   },
   container: {
     borderColor: "gray",
@@ -211,22 +218,25 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 10,
   },
+  label1: { marginBottom: 6, fontWeight: 500, fontSize: 17 },
   label: { marginBottom: 4 },
   input: {
     height: 40,
     borderWidth: 1,
     borderColor: "#000",
-    borderRadius: 8,
+    borderRadius: 40,
     paddingHorizontal: 15,
-    marginBottom: 10,
+    marginBottom: 20,
+    backgroundColor: Colors.yellow,
   },
   pickerContainer: {
     borderWidth: 0.5,
     borderColor: "#000",
-    borderRadius: 8,
+    borderRadius: 50,
     marginBottom: 10,
     height: 40,
     justifyContent: "center",
+    backgroundColor: Colors.yellow,
   },
   picker: { height: 50 },
   colorContainer: {
@@ -235,7 +245,7 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 10,
   },
-  colorBlock: { height: 24, width: 24, borderRadius: 12 },
+  colorBlock: { height: 24, width: 24, borderRadius: 3 },
   colorName: { fontSize: 12, color: "#000" },
   colorSelected: { borderWidth: 2, borderColor: "#FFD700", padding: 2 },
 });

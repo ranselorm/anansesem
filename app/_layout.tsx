@@ -17,7 +17,7 @@ export default function RootLayout() {
         router.replace("/(tabs)/home");
         console.log(user);
       } else {
-        router.replace("/auth/login");
+        router.replace("/welcome");
         console.log("user not found");
       }
       setIsLoading(false);

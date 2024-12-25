@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -8,11 +8,11 @@ import {
 } from "react-native";
 import MainLayout from "../../shared/MainLayout";
 import { MaterialIcons } from "@expo/vector-icons";
-import { FontAwesome } from "@expo/vector-icons";
-import AntDesign from "@expo/vector-icons/AntDesign";
+
 import { Colors, FontSizes } from "@/theme";
 import Socials from "@/components/Socials";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import Button from "@/components/ui/Button";
 
 const Login: React.FC = () => {
   const [isChecked, setIsChecked] = useState(false);
@@ -33,7 +33,7 @@ const Login: React.FC = () => {
               secureTextEntry
             />
           </View>
-          <View>
+          <View style={styles.row}>
             <TouchableOpacity
               style={styles.checkContainer}
               onPress={() => setIsChecked(!isChecked)}
@@ -46,7 +46,11 @@ const Login: React.FC = () => {
               </View>
               <Text style={styles.label}>Remember me</Text>
             </TouchableOpacity>
+            <TouchableOpacity activeOpacity={1.2}>
+              <Text style={styles.forgotPassword}>Forgot password?</Text>
+            </TouchableOpacity>
           </View>
+          <Button text="Login" />
         </View>
       </MainLayout>
       <Socials />
@@ -62,7 +66,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 20,
     paddingHorizontal: 30,
-    // justifyContent: "center",
     gap: 40,
   },
 
@@ -85,19 +88,27 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: Colors.yellow,
     borderRadius: 50,
-    marginBottom: 30,
-    padding: 15,
+    marginBottom: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
     fontSize: 16,
     borderWidth: 1,
     borderColor: "#000",
   },
 
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+
+    marginTop: -30,
+  },
+
   checkContainer: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 10,
-    marginTop: -60,
   },
+
   checkbox: {
     width: 18,
     height: 18,
@@ -108,38 +119,18 @@ const styles = StyleSheet.create({
     marginRight: 10,
     borderRadius: 4,
   },
+
   checked: {
     backgroundColor: Colors.main,
-    // borderColor: "#ffd33d",
-  },
-  label: {
-    fontSize: 15,
   },
 
-  button: {
-    backgroundColor: "#D0EE30",
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 3,
-    marginTop: 40,
+  label: {
+    fontSize: 14,
   },
-  buttonText: {
-    color: "#000",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  icon: {
-    backgroundColor: "#000",
-    borderRadius: 50,
-    padding: 5,
+
+  forgotPassword: {
+    fontSize: 14,
+    color: Colors.main,
   },
 });
 

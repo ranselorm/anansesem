@@ -23,7 +23,7 @@ const Button: React.FC<ButtonProps> = ({ text, onPress, absolute }) => {
         styles.buttonWrapper,
         {
           position: absolute ? "absolute" : "relative",
-          bottom: absolute ? 20 : 0,
+          bottom: absolute ? 5 : 0,
         },
       ]}
     >
@@ -52,14 +52,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#CCFF33",
     borderRadius: 15,
     width: 260,
-    height: 60,
+    height: 50,
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 4,
     // borderTopWidth: 2,
     borderWidth: 1,
     flexDirection: "row",
-    paddingHorizontal: 30,
+    paddingHorizontal: 20,
     alignSelf: "center",
   },
   buttonText: {
