@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Alert,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import MainLayout from "../shared/MainLayout";
@@ -19,6 +20,8 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/theme";
 import * as ImagePicker from "expo-image-picker";
+import mime from "mime";
+import { isPending } from "@reduxjs/toolkit";
 
 const CreateProfile: React.FC = () => {
   const [fullname, setFullname] = useState("");
@@ -29,8 +32,13 @@ const CreateProfile: React.FC = () => {
   const [gender, setGender] = useState("");
   const [readingLevel, setReadingLevel] = useState("");
   const [avatar, setAvatar] = useState("");
+  const [pending, setPending] = useState<boolean>(false);
+  console.log(pending);
 
   const dispatch = useDispatch();
+
+  const TOKEN =
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlZYYVpDdnozeEN2RXJwZFctQk5pNSJ9.eyJuYW1lIjoiR2lkZW9uIEJlZHpyYWgiLCJlbWFpbCI6ImdiZWR6cmFoMUBnbWFpbC5jb20iLCJpc3MiOiJodHRwczovL2FuYW5zZXNlbS51cy5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8Njc2MDI0ZDBhOTE1ZmQ5MGMwZmMwZDI5IiwiYXVkIjpbImh0dHBzOi8vYW5hbnNlc2VtLWRldi1hcGkuYXp1cmV3ZWJzaXRlcy5uZXQvIiwiaHR0cHM6Ly9hbmFuc2VzZW0udXMuYXV0aDAuY29tL3VzZXJpbmZvIl0sImlhdCI6MTczNTEyNDkwMywiZXhwIjoxNzM1MjExMzAzLCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIiwiYXpwIjoiaGZHaTJiWWdHeUxLSnBPSnFMT0hGNTl4c1FuMTdaTGEiLCJwZXJtaXNzaW9ucyI6WyJjcmVhdGU6Y29udGVudCIsImRlbGV0ZTpjb250ZW50IiwicmVhZDpjb250ZW50IiwicmVhZDp1c2VycyIsInVwZGF0ZTpjb250ZW50Il19.ijPx4s0nVMruCJ7WCH40Q9R63-brF8MpOias6Bs7E8ERbe1nfFga-QP612Ba-LUv2Vmn7fzBHmEVjbQDVZm_8MbrKG1img1v-htbXy0nw1ro4-gngMxSEvb-uy2E2EWS9z-vqpoefU-dY-AgcYLG9uDkw7OEn4C-gynualESOmMs-Ax3f6_NryYDqh3W9otkcwj78jdq0WaMMDu56lJCtI2chKa7f4QynJYPkpKHE67sViReLv03fTD03QOIkuQNIPj69mx5DRwtC9t5-ZadGFJDPXyldmhNQXh6E-tm97lDXu8_P6WKWvhGQQC3MoM8XeCWuz4L1tJ2ZNYp7ei9Iw";
 
   const pickImageAsync = async () => {
     try {
@@ -41,15 +49,54 @@ const CreateProfile: React.FC = () => {
       });
 
       if (!result.canceled) {
-        const imageUri = result?.assets[0]?.uri;
-        console.log("Selected Image URI:", imageUri);
-        return imageUri;
+        const image = result.assets[0];
+        const {
+          uri,
+          fileName = "default-image.jpg",
+          mimeType = "image/jpeg",
+        } = image;
+
+        // formdata
+        const formData = new FormData();
+        formData.append("containerName", "profile");
+        formData.append("reference", "random-string");
+        formData.append("accessLevel", "blob");
+        formData.append("file", {
+          uri: uri,
+          name: fileName,
+          type: mimeType,
+        } as any);
+
+        setPending(true);
+        const response = await fetch(
+          "https://anansesem-dev-api.azurewebsites.net/api/upload",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${TOKEN}`,
+            },
+            body: formData,
+          }
+        );
+
+        if (!response.ok) {
+          const errorMessage = await response.text();
+          throw new Error(
+            `Upload failed: ${response.status} - ${errorMessage}`
+          );
+        }
+
+        const { data } = await response?.json();
+        setAvatar(data.url);
+
+        console.log("Upload Successful:", data.url);
       } else {
-        alert("You did not select any image.");
+        Alert.alert("You did not select any image.");
       }
     } catch (error) {
-      console.error("Error during image picking:", error);
       alert("An error occurred while selecting an image.");
+    } finally {
+      setPending(false);
     }
   };
 
@@ -60,7 +107,8 @@ const CreateProfile: React.FC = () => {
       !phone ||
       !dateOfBirth ||
       !gender ||
-      !readingLevel
+      !readingLevel ||
+      !avatar
     ) {
       alert("Please fill out all fields!");
       return;
@@ -74,8 +122,7 @@ const CreateProfile: React.FC = () => {
         dateOfBirth: dateOfBirth.toISOString(),
         gender,
         readingLevel,
-        avatar:
-          "https://anansesemstoragedev.blob.core.windows.net/profile/random-string/ananse-read.png",
+        avatar,
       })
     );
 
@@ -113,20 +160,36 @@ const CreateProfile: React.FC = () => {
                 gap: 10,
               }}
             >
-              <TouchableOpacity onPress={pickImageAsync}>
+              <TouchableOpacity onPress={pickImageAsync} disabled={pending}>
                 <View style={styles.imageContainer}>
-                  <View style={styles.placeholder}>
-                    <MaterialIcons name="person" size={40} color="#FFBB00" />
-                  </View>
-                  <Ionicons
-                    name="add-circle"
-                    size={30}
-                    color="black"
-                    style={styles.addIconContainer}
-                  />
+                  <>
+                    <View style={styles.placeholder}>
+                      <MaterialIcons name="person" size={40} color="#FFBB00" />
+                    </View>
+                    {!avatar ? (
+                      <Ionicons
+                        name="add-circle"
+                        size={30}
+                        color="#5D1889"
+                        style={styles.addIconContainer}
+                      />
+                    ) : (
+                      <Ionicons
+                        name="checkmark-done-circle"
+                        size={30}
+                        color="green"
+                        style={styles.addIconContainer}
+                      />
+                    )}
+                  </>
                 </View>
               </TouchableOpacity>
-              <Text>Upload profile picture</Text>
+              <Text>
+                {!avatar
+                  ? "Upload profile picture"
+                  : "Profile picture uploaded!"}
+              </Text>
+              {pending && <ActivityIndicator size="small" color="#5D1889" />}
             </View>
             <View style={{ marginTop: 20 }}>
               <Text style={styles.label}>Full name</Text>

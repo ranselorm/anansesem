@@ -15,10 +15,8 @@ export default function RootLayout() {
       const user = await getUserData();
       if (user) {
         router.replace("/(tabs)/home");
-        console.log(user);
       } else {
         router.replace("/welcome");
-        console.log("user not found");
       }
       setIsLoading(false);
     };

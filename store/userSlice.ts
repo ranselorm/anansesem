@@ -58,7 +58,15 @@ const initialState: UserState = {
     mood: "",
     themeOfInterest: "",
   },
-  languageSkills: [],
+  languageSkills: [
+    {
+      language: "English",
+      reading: "INTERMEDIATE",
+      writing: "INTERMEDIATE",
+      listening: "INTERMEDIATE",
+      speaking: "INTERMEDIATE",
+    },
+  ],
   userResponse: null,
 };
 
