@@ -40,10 +40,18 @@ const UploadProfilePicture: React.FC = () => {
       favoriteColor: userState.interests.favoriteColor,
     },
     storyPreferences: {
-      mood: "FUNNY",
-      themeOfInterest: "PROBLEM_SOLVING",
+      mood: userState.storyPreferences.mood,
+      themeOfInterest: userState.storyPreferences.themeOfInterest,
     },
-    languageSkills: userState.languageSkills,
+    languageSkills: userState.languageSkills || [
+      {
+        language: "English",
+        reading: "INTERMEDIATE",
+        writing: "INTERMEDIATE",
+        listening: "INTERMEDIATE",
+        speaking: "INTERMEDIATE",
+      },
+    ],
   };
 
   // const dataToSubmit = {
