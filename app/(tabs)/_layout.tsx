@@ -1,9 +1,18 @@
-import { router, Tabs } from "expo-router";
+import { router, Tabs, Redirect } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Colors } from "@/theme";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 export default function TabLayout() {
+  const userState = useSelector((state: RootState) => state.user);
+  console.log("USERRRRR", userState?.bio?.fullName);
+
+  // if (!userState?.bio?.fullName) {
+  //   return <Redirect href="/auth/login" />;
+  // }
+
   return (
     <Tabs
       screenOptions={{

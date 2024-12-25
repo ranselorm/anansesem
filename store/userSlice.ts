@@ -32,7 +32,7 @@ interface UserState {
     themeOfInterest: string;
   };
   languageSkills: LanguageSkill[];
-  userResponse: any; // New state for storing user responses
+  userResponse: Record<string, any> | null; // Refined type
 }
 
 const initialState: UserState = {
@@ -58,15 +58,7 @@ const initialState: UserState = {
     mood: "",
     themeOfInterest: "",
   },
-  languageSkills: [
-    {
-      language: "English",
-      reading: "INTERMEDIATE",
-      writing: "INTERMEDIATE",
-      listening: "INTERMEDIATE",
-      speaking: "INTERMEDIATE",
-    },
-  ],
+  languageSkills: [],
   userResponse: null,
 };
 
@@ -87,20 +79,28 @@ const userSlice = createSlice({
       state,
       action: PayloadAction<Partial<UserState["storyPreferences"]>>
     ) {
-      state.storyPreferences = { ...state.storyPreferences, ...action.payload };
+      state.storyPreferences = {
+        ...state.storyPreferences,
+        ...action.payload,
+      };
     },
     updateLanguageSkills(
       state,
       action: PayloadAction<UserState["languageSkills"]>
     ) {
-      state.languageSkills = action.payload;
+      state.languageSkills = [...action.payload];
     },
-    storeUserResponse(state, action: PayloadAction<any>) {
+    storeUserResponse(
+      state,
+      action: PayloadAction<Record<string, any> | null>
+    ) {
       state.userResponse = action.payload;
     },
-
     updateReference(state, action: PayloadAction<string>) {
       state.reference = action.payload;
+    },
+    resetState() {
+      return initialState;
     },
   },
 });
@@ -112,6 +112,7 @@ export const {
   updateLanguageSkills,
   storeUserResponse,
   updateReference,
+  resetState,
 } = userSlice.actions;
 
 export default userSlice.reducer;

@@ -5,6 +5,8 @@ import HomeLayout from "@/shared/HomeLayout";
 import ProfileLayout from "@/shared/ProfileLayout";
 import { Colors, Fonts, FontSizes } from "@/theme";
 import { router } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { clearUserData } from "@/utils";
 
 const settingsData = [
   { id: 1, label: "Audio settings", icon: "settings-voice" },
@@ -34,7 +36,7 @@ const Profile: React.FC = () => {
           </View>
         </View>
       </ProfileLayout>
-      <TouchableOpacity style={styles.footerButton}>
+      <TouchableOpacity style={styles.footerButton} onPress={clearUserData}>
         <Text style={styles.footerText}>log out</Text>
       </TouchableOpacity>
     </View>

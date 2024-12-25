@@ -8,62 +8,10 @@ import {
   Alert,
   Image,
 } from "react-native";
-import { MaterialIcons, Entypo } from "@expo/vector-icons";
+import { MaterialIcons, Entypo, FontAwesome6 } from "@expo/vector-icons";
 import { Colors, Fonts, FontSizes } from "@/theme";
 import Button from "@/components/ui/Button";
-import { router } from "expo-router";
-
-const questions = [
-  {
-    id: 1,
-    question: "Who was the first person to talk to the forest oracle?",
-    options: [
-      { text: "Ananse's son", isCorrect: true, alphabet: "A" },
-      { text: "The hunter", isCorrect: false, alphabet: "B" },
-      { text: "Ananse", isCorrect: false, alphabet: "C" },
-    ],
-  },
-  {
-    id: 2,
-    question: "What object did Ananse keep all his wisdom in?",
-    options: [
-      { text: "A car", isCorrect: false, alphabet: "A" },
-      { text: "A pot", isCorrect: true, alphabet: "B" },
-      { text: "A dream catcher", isCorrect: false, alphabet: "C" },
-    ],
-  },
-  {
-    id: 3,
-    question: "Why did Ananse lose all his wisdom?",
-    options: [
-      {
-        text: "He spilled it",
-        isCorrect: true,
-        alphabet: "A",
-      },
-      { text: "He gave it away to his son", isCorrect: false, alphabet: "B" },
-      { text: "The pot broke", isCorrect: false, alphabet: "C" },
-    ],
-  },
-  {
-    id: 4,
-    question: "What was Ananse's primary motivation in his stories?",
-    options: [
-      { text: "To gain power", isCorrect: false, alphabet: "A" },
-      { text: "To outwit others", isCorrect: true, alphabet: "B" },
-      { text: "To spread knowledge", isCorrect: false, alphabet: "C" },
-    ],
-  },
-  {
-    id: 5,
-    question: "What did Ananse often use to solve problems?",
-    options: [
-      { text: "His strength", isCorrect: false, alphabet: "A" },
-      { text: "His cleverness", isCorrect: true, alphabet: "B" },
-      { text: "His wealth", isCorrect: false, alphabet: "C" },
-    ],
-  },
-];
+import { router, useLocalSearchParams } from "expo-router";
 
 export default function QuizScreen() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -71,13 +19,17 @@ export default function QuizScreen() {
   const [score, setScore] = useState(0);
   const [isQuizCompleted, setIsQuizCompleted] = useState(false);
 
+  // Fetching questions from route parameters
+  const { questions } = useLocalSearchParams<{ questions: string }>();
+  const parsedQuestions = questions ? JSON.parse(questions) : [];
+
   const handleOptionSelect = (index: number, isCorrect: boolean) => {
     setSelectedOption(index);
     if (isCorrect) setScore((prevScore) => prevScore + 1);
   };
 
   const handleNextOrSubmit = () => {
-    if (currentQuestionIndex < questions.length - 1) {
+    if (currentQuestionIndex < parsedQuestions.length - 1) {
       setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
       setSelectedOption(null); // Reset selected option
     } else {
@@ -86,21 +38,30 @@ export default function QuizScreen() {
   };
 
   const handleDismiss = () => {
-    router.push("/(tabs)/story-creator");
+    router.replace("/(tabs)/library");
   };
-
-  // const handleRestartQuiz = () => {
-  //   setCurrentQuestionIndex(0);
-  //   setSelectedOption(null);
-  //   setScore(0);
-  //   setIsQuizCompleted(false);
-  // };
 
   const renderScore = () => {
     return (
       <View style={styles.content}>
-        <Text style={styles.resultText}>Congratulations!</Text>
-        <Text style={styles.resultText}>You scored</Text>
+        <Text
+          style={{
+            textAlign: "center",
+            fontSize: FontSizes.large,
+            fontFamily: Fonts.heading,
+          }}
+        >
+          Congratulations!
+        </Text>
+        <Text
+          style={{
+            textAlign: "center",
+            fontSize: FontSizes.large,
+            fontFamily: Fonts.heading,
+          }}
+        >
+          You scored
+        </Text>
         <View
           style={{
             flexDirection: "row",
@@ -112,30 +73,25 @@ export default function QuizScreen() {
         >
           <Image
             source={require("../../../assets/icons/star8.png")}
-            style={{ width: 40, height: 40 }}
+            style={{ width: 40, height: 40, marginTop: 50 }}
           />
           <Text style={styles.score}>{score}</Text>
         </View>
         <Text style={styles.badge}>
-          {score === questions.length
+          {score === parsedQuestions.length
             ? "You unlocked the Science Genius Badge!"
             : "Great effort! Try again to unlock the badge!"}
         </Text>
-        {/* <TouchableOpacity
-          style={styles.restartButton}
-          onPress={handleRestartQuiz}
-        >
-          <Text style={styles.restartButtonText}>Restart Quiz</Text>
-        </TouchableOpacity> */}
         <Button text="Dismiss" absolute onPress={handleDismiss} />
       </View>
     );
   };
 
   const renderQuestions = () => {
+    const currentQuestion = parsedQuestions[currentQuestionIndex];
     return (
       <View style={styles.content}>
-        <Text style={styles.question}>{currentQuestion.question}</Text>
+        <Text style={styles.question}>{currentQuestion?.question}</Text>
         <FlatList
           data={currentQuestion.options}
           renderItem={({ item, index }) => (
@@ -144,10 +100,14 @@ export default function QuizScreen() {
                 styles.option,
                 selectedOption === index && styles.selectedOption,
               ]}
-              onPress={() => handleOptionSelect(index, item.isCorrect)}
+              onPress={() =>
+                handleOptionSelect(index, currentQuestion.answer === item.text)
+              }
             >
               <View style={styles.span}>
-                <Text style={styles.spanText}>{item.alphabet}</Text>
+                <Text style={styles.spanText}>
+                  {String.fromCharCode(65 + index)}
+                </Text>
               </View>
               <Text style={styles.optionText}>{item.text}</Text>
               {selectedOption === index ? (
@@ -164,26 +124,27 @@ export default function QuizScreen() {
           )}
           keyExtractor={(item, index) => index.toString()}
         />
-        {/* <TouchableOpacity
-          style={styles.nextButton}
-          onPress={handleNextOrSubmit}
-          disabled={selectedOption === null}
-        >
-          <Text style={styles.nextButtonText}>
-            {currentQuestionIndex === questions.length - 1 ? "Submit" : "Next"}
-          </Text>
-        </TouchableOpacity> */}
-        <Button
-          text={
-            currentQuestionIndex === questions.length - 1 ? "Submit" : "Next"
-          }
-          onPress={handleNextOrSubmit}
-        />
+        <View style={[styles.buttonWrapper]}>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              selectedOption === null && styles.disabledNextButton,
+            ]}
+            activeOpacity={0.9}
+            onPress={handleNextOrSubmit}
+            disabled={selectedOption === null} // Disable button if no option selected
+          >
+            <Text style={styles.buttonText}>
+              {currentQuestionIndex === parsedQuestions.length - 1
+                ? "Submit"
+                : "Next"}
+            </Text>
+            <FontAwesome6 name="circle-arrow-right" size={24} />
+          </TouchableOpacity>
+        </View>
       </View>
     );
   };
-
-  const currentQuestion = questions[currentQuestionIndex];
 
   return (
     <View style={styles.screen}>
@@ -218,21 +179,22 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF3E0",
     marginTop: -30,
     borderRadius: 40,
-    paddingVertical: 30,
-    // alignItems: "",
-    paddingHorizontal: 50,
+    paddingTop: 20,
+    paddingHorizontal: 10,
+    paddingBottom: 8,
   },
   question: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: "bold",
     marginBottom: 20,
     fontFamily: Fonts.heading,
+    textAlign: "center",
   },
   option: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 16,
+    paddingHorizontal: 7,
     paddingVertical: 10,
     marginVertical: 8,
     borderRadius: 50,
@@ -244,10 +206,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.purple,
   },
   optionText: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#000",
   },
-
   span: {
     backgroundColor: "#000",
     width: 25,
@@ -257,57 +218,49 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 50,
   },
-
   spanText: {
     color: "white",
   },
-
   checkIcon: {
     marginLeft: 8,
-  },
-  nextButton: {
-    marginTop: 20,
-    padding: 16,
-    borderRadius: 8,
-    backgroundColor: "#D0EE30",
-    alignItems: "center",
-  },
-  nextButtonText: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#000",
-  },
-  resultContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 26,
-  },
-  resultText: {
-    fontSize: 24,
-    fontWeight: "bold",
-    // marginBottom: 16,
-    fontFamily: Fonts.heading,
-    textAlign: "center",
   },
   score: {
     fontSize: 60,
     fontWeight: "bold",
     color: "#442359",
+    marginLeft: 15,
+    marginTop: 50,
   },
   badge: {
     fontSize: FontSizes.medium,
     textAlign: "center",
     marginBottom: 30,
   },
-  restartButton: {
-    padding: 16,
-    borderRadius: 8,
-    backgroundColor: "#D0EE30",
+  disabledNextButton: {
+    backgroundColor: "gray", // Gray out the button when disabled
   },
-  restartButtonText: {
-    fontSize: 16,
+  buttonWrapper: {
+    backgroundColor: "#000",
+    borderRadius: 15,
+    paddingRight: 2,
+    alignSelf: "center",
+  },
+  button: {
+    backgroundColor: "#CCFF33",
+    borderRadius: 15,
+    width: 260,
+    height: 50,
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 4,
+    borderWidth: 1,
+    flexDirection: "row",
+    paddingHorizontal: 30,
+    alignSelf: "center",
+  },
+  buttonText: {
+    fontSize: 18,
     fontWeight: "bold",
-    color: "#000",
+    color: "#000000",
   },
 });

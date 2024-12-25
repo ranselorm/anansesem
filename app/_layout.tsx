@@ -1,17 +1,38 @@
+import React, { useEffect, useState } from "react";
+import { Provider, useSelector } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 import { store } from "@/store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Stack } from "expo-router";
-import { Provider } from "react-redux";
-
+import { router, Stack } from "expo-router";
+import { Text } from "react-native";
+import { getUserData } from "@/utils";
 export default function RootLayout() {
+  const [isLoading, setIsLoading] = useState(true);
   const queryClient = new QueryClient();
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const user = await getUserData();
+      if (user) {
+        router.replace("/(tabs)/home");
+        console.log(user);
+      } else {
+        router.replace("/auth/login");
+        console.log("user not found");
+      }
+      setIsLoading(false);
+    };
+
+    checkUser();
+  }, []);
+
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="index" />
           <Stack.Screen name="welcome" />
-          <Stack.Screen name="register" />
+          {/* <Stack.Screen name="register" /> */}
           <Stack.Screen name="get-started" />
           <Stack.Screen name="create-profile" />
           <Stack.Screen name="interests" />
@@ -19,7 +40,6 @@ export default function RootLayout() {
           <Stack.Screen name="upload-picture" />
           <Stack.Screen name="profile" />
           <Stack.Screen name="settings" />
-          {/* Tab layout for authenticated users */}
           <Stack.Screen name="(tabs)" />
         </Stack>
       </QueryClientProvider>

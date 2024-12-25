@@ -9,16 +9,17 @@ import {
   Image,
   ScrollView,
   StatusBar,
-  Button,
   Alert,
   ActivityIndicator,
+  Button,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { Colors, Fonts, FontSizes } from "@/theme";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, Link, router } from "expo-router";
 import { useFetchDetails } from "@/hooks/useFetchDetails";
 import { Video, ResizeMode, AVPlaybackStatus } from "expo-av";
 import Spinner from "react-native-loading-spinner-overlay";
+// import Button from "@/components/ui/Button";
 
 const StoryPlayback: React.FC = () => {
   const { id } = useLocalSearchParams();
@@ -87,10 +88,21 @@ const StoryPlayback: React.FC = () => {
             {item?.description && item.description}
           </Text>
         </View>
-        <TouchableOpacity activeOpacity={1.0} style={styles.button}>
+        {/* <TouchableOpacity activeOpacity={1.0} style={styles.button}>
           <AntDesign name="download" size={20} color="black" />
           <Text style={styles.buttonText}>Download and save offline</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <Link
+          href={{
+            pathname: "/library/quiz",
+            params: {
+              questions: JSON.stringify(item?.questionsContent[0].content),
+            },
+          }}
+          style={styles.button}
+        >
+          Done? Take Quiz
+        </Link>
       </View>
     </View>
   );
@@ -174,7 +186,7 @@ const styles = StyleSheet.create({
   },
 
   body: {
-    marginTop: 15,
+    marginTop: 30,
   },
 
   bodyText: {
@@ -184,16 +196,17 @@ const styles = StyleSheet.create({
 
   button: {
     backgroundColor: Colors.yellow,
-    fontSize: FontSizes.small,
+    fontSize: FontSizes.medium,
     padding: 10,
     borderRadius: 50,
-    marginTop: 25,
+    marginTop: 130,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
     width: "100%",
     overflow: "hidden",
+    textAlign: "center",
   },
 
   buttonText: {

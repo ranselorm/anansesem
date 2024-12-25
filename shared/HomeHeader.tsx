@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
+  Image,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -21,7 +22,7 @@ interface HeaderProps {
 const HomeHeader: React.FC<HeaderProps> = ({
   title,
   isIcon = true,
-  isIconLeft,
+  isIconLeft = true,
 }) => {
   const handlePress = () => {
     router.push("/profile");
@@ -42,20 +43,26 @@ const HomeHeader: React.FC<HeaderProps> = ({
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         {isIcon ? (
-          <TouchableOpacity onPress={handlePress} activeOpacity={0.9}>
-            <View style={styles.placeholder}>
-              <MaterialIcons name="person" size={30} color="#FFBB00" />
-            </View>
-          </TouchableOpacity>
+          // <TouchableOpacity onPress={handlePress} activeOpacity={0.9}>
+          //   <View style={styles.placeholder}>
+          //     <MaterialIcons name="person" size={30} color="#FFBB00" />
+          //   </View>
+          // </TouchableOpacity>
+          <Image
+            source={require("../assets/images/logo.png")}
+            style={{ width: 90, height: 50, resizeMode: "contain" }}
+          />
         ) : (
           <TouchableOpacity activeOpacity={0.9} onPress={handleBackPress}>
             <Text style={{ opacity: 1, fontSize: 16 }}>Cancel</Text>
           </TouchableOpacity>
         )}
         <Text style={styles.title}>{title}</Text>
-        {isIconLeft ? (
-          <TouchableOpacity onPress={handleSettingsPress}>
-            <MaterialIcons name="settings" size={25} />
+        {true ? (
+          <TouchableOpacity onPress={handlePress} activeOpacity={0.9}>
+            <View style={styles.placeholder}>
+              <MaterialIcons name="person" size={30} color="#FFBB00" />
+            </View>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity>

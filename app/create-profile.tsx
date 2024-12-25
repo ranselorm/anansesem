@@ -18,9 +18,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
-
-const TOKEN =
-  "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlZYYVpDdnozeEN2RXJwZFctQk5pNSJ9.eyJuYW1lIjoiR2lkZW9uIEJlZHpyYWgiLCJlbWFpbCI6ImdiZWR6cmFoMUBnbWFpbC5jb20iLCJpc3MiOiJodHRwczovL2FuYW5zZXNlbS51cy5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8Njc2MDI0ZDBhOTE1ZmQ5MGMwZmMwZDI5IiwiYXVkIjpbImh0dHBzOi8vYW5hbnNlc2VtLWRldi1hcGkuYXp1cmV3ZWJzaXRlcy5uZXQvIiwiaHR0cHM6Ly9hbmFuc2VzZW0udXMuYXV0aDAuY29tL3VzZXJpbmZvIl0sImlhdCI6MTczNTAzODM5NSwiZXhwIjoxNzM1MTI0Nzk1LCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIiwiYXpwIjoiaGZHaTJiWWdHeUxLSnBPSnFMT0hGNTl4c1FuMTdaTGEiLCJwZXJtaXNzaW9ucyI6WyJjcmVhdGU6Y29udGVudCIsImRlbGV0ZTpjb250ZW50IiwicmVhZDpjb250ZW50IiwicmVhZDp1c2VycyIsInVwZGF0ZTpjb250ZW50Il19.hykUgaIn0TUY-QjoR-IINratn-kjdqNAMgOwCv0xx8RQGfIP_pdzs9b3jYvi5TIugLxyVRzwyUiasHUq2rKTULDGyQGheH0nmAsoeozvhJ4dUCy68WzlUKMlZg8R5j03H_XhrTEjxNSxBCUce7cj_hRvm_PCGFBJpRz5hHStM7Mh3GHbrExNLXUdA56sBXpHMJ5VpaO5Co4TsgcNofy8YWy2xUHdoxKivSDkFV_Afq9SBYGMK41IcmfWMFb1yvcaLU0VMwTltll7ctfTOpMtcDvuRNGIm8gWZT3ol7GI3jwu3xyaPDvRwwPxOwZCU06IcW_ef5SUh0TNV74krOuF4w";
+import { Colors } from "@/theme";
 
 const CreateProfile: React.FC = () => {
   const [fullname, setFullname] = useState("");
@@ -87,64 +85,6 @@ const CreateProfile: React.FC = () => {
       })
     : "dd/mm/yyyy";
 
-  const pickImageAsync = async () => {
-    try {
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        quality: 1,
-      });
-
-      if (!result.canceled) {
-        const imageUri = result.assets[0].uri;
-        console.log("Selected Image URI:", imageUri);
-
-        // Fetch the file to ensure it's valid
-        const response = await fetch(imageUri);
-        const blob = await response.blob();
-
-        // Prepare the FormData object
-        const formData = new FormData();
-        formData.append("containerName", "profile");
-        formData.append("reference", "random-string"); // Use a proper reference
-        formData.append("accessLevel", "blob");
-        formData.append("file", blob, "uploaded-image.jpg"); // Append Blob
-
-        console.log("FormData ready for upload.");
-
-        // Upload the file
-        const uploadResponse = await fetch(
-          "https://anansesem-dev-api.azurewebsites.net/api/upload",
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${TOKEN}`, // Use your token
-            },
-            body: formData,
-          }
-        );
-
-        const uploadResult = await uploadResponse.json();
-
-        if (uploadResponse.ok) {
-          console.log("Upload successful:", uploadResult);
-          Alert.alert("Success", "Image uploaded successfully!");
-        } else {
-          console.error("Upload failed:", uploadResult);
-          Alert.alert(
-            "Error",
-            uploadResult.message || "Failed to upload the image."
-          );
-        }
-      } else {
-        Alert.alert("No Image Selected", "You did not select any image.");
-      }
-    } catch (error) {
-      console.error("Error during image upload:", error);
-      Alert.alert("Error", "Something went wrong during the upload.");
-    }
-  };
-
   return (
     <View style={styles.screen}>
       <MainLayout title="Create your profile">
@@ -168,7 +108,6 @@ const CreateProfile: React.FC = () => {
               <TouchableOpacity
                 activeOpacity={1.2}
                 style={styles.addIconContainer}
-                onPress={pickImageAsync}
               >
                 <MaterialIcons name="add" size={15} color="#FFF" />
               </TouchableOpacity>
@@ -266,7 +205,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    // paddingHorizontal: 30,
+    paddingHorizontal: 10,
   },
   description: {
     fontSize: 16,
@@ -317,9 +256,9 @@ const styles = StyleSheet.create({
     height: 40,
     borderWidth: 1,
     borderColor: "#000",
-    borderRadius: 8,
+    borderRadius: 50,
     paddingHorizontal: 15,
-    backgroundColor: "#fff",
+    backgroundColor: Colors.yellow,
     marginBottom: 10,
     color: "black",
   },
@@ -327,11 +266,11 @@ const styles = StyleSheet.create({
     height: 40,
     borderWidth: 1,
     borderColor: "#000",
-    borderRadius: 8,
+    borderRadius: 50,
     paddingHorizontal: 15,
     justifyContent: "center",
-    backgroundColor: "#fff",
-    marginBottom: 20,
+    backgroundColor: Colors.yellow,
+    marginBottom: 10,
   },
   dateText: {
     fontSize: 16,
@@ -340,10 +279,10 @@ const styles = StyleSheet.create({
   pickerContainer: {
     borderWidth: 1,
     borderColor: "#000",
-    borderRadius: 8,
+    borderRadius: 50,
     marginBottom: 20,
     overflow: "hidden",
-    backgroundColor: "#fff",
+    backgroundColor: Colors.yellow,
     height: 40,
     justifyContent: "center",
   },

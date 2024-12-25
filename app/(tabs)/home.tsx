@@ -123,9 +123,9 @@ const Home: React.FC = () => {
     <View style={styles.screen}>
       <HomeLayout isIcon>
         <View style={styles.container}>
-          <View style={{ marginTop: -15, marginBottom: 30 }}>
+          <View style={styles.textContainer}>
             <Text style={styles.title}>Hi, {userResponse?.bio?.fullName}</Text>
-            <Text style={{ fontSize: 16 }}>
+            <Text style={{ fontSize: 16, textAlign: "center", marginTop: -10 }}>
               Let&apos;s learn something new today
             </Text>
           </View>
@@ -180,12 +180,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
+  textContainer: {
+    marginTop: 2,
+    marginBottom: 20,
+    textAlign: "center",
+    alignSelf: "center",
+    justifyContent: "center",
+  },
+
   title: {
     fontSize: 24,
     fontWeight: "bold",
     color: "#5D1889",
     marginBottom: 10,
     fontFamily: "heading",
+    textAlign: "center",
   },
   container: {
     flex: 1,

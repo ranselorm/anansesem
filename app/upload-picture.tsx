@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  Alert,
-} from "react-native";
+import { View, StyleSheet, Image, Alert } from "react-native";
 
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
@@ -15,6 +8,7 @@ import Button from "@/components/ui/Button";
 import { useSubmit } from "@/hooks/useSubmit";
 import { storeUserResponse } from "../store/userSlice";
 import { router } from "expo-router";
+import { saveUserData } from "@/utils";
 
 const UploadProfilePicture: React.FC = () => {
   const userState = useSelector((state: RootState) => state.user);
@@ -88,20 +82,38 @@ const UploadProfilePicture: React.FC = () => {
 
   // console.log(dataToSubmit, "DATA");
 
-  const handleSubmit = () => {
+  // const handleSubmit = () => {
+  //   console.log(dataToSubmit);
+  //   submitData(dataToSubmit, {
+  //     onSuccess: async (responseData) => {
+  //       await saveUserData(responseData?.data);
+  //       dispatch(storeUserResponse(responseData?.data));
+  //       router.replace("/(tabs)/home");
+  //     },
+  //     onError: (error: any) => {
+  //       Alert.alert("Error", error.message || "Failed to submit data.");
+  //     },
+  //   });
+  // };
+
+  const handleSubmit = async () => {
     console.log(dataToSubmit);
     submitData(dataToSubmit, {
-      onSuccess: (responseData) => {
-        // Alert.alert("Success");
-        dispatch(storeUserResponse(responseData?.data));
-        router.replace("/(tabs)/home");
+      onSuccess: async (responseData) => {
+        try {
+          await saveUserData(responseData?.data); // Save user data locally
+          dispatch(storeUserResponse(responseData?.data)); // Update Redux state
+          router.replace("/(tabs)/home");
+        } catch (error) {
+          console.error("Error saving data:", error);
+          Alert.alert("Error", "Failed to save user data locally.");
+        }
       },
       onError: (error: any) => {
         Alert.alert("Error", error.message || "Failed to submit data.");
       },
     });
   };
-
   return (
     <View style={styles.screen}>
       <MainLayout title="Submit profile">
