@@ -8,14 +8,21 @@ import {
   Alert,
 } from "react-native";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
 import MainLayout from "../shared/MainLayout";
 import Button from "@/components/ui/Button";
 import { useSubmit } from "@/hooks/useSubmit";
+import { storeUserResponse } from "../store/userSlice";
+import { router } from "expo-router";
 
 const UploadProfilePicture: React.FC = () => {
   const userState = useSelector((state: RootState) => state.user);
+  const userResponse = useSelector((state: any) => state.user.userResponse);
+
+  console.log(userResponse, "THIS IS THE USER RESPONSE");
+
+  const dispatch = useDispatch();
 
   const { mutate: submitData, isPending } = useSubmit();
 
@@ -82,20 +89,12 @@ const UploadProfilePicture: React.FC = () => {
   // console.log(dataToSubmit, "DATA");
 
   const handleSubmit = () => {
-    const payload = {
-      bio: {
-        ...userState.bio,
-      },
-      reference: userState.reference,
-      interests: userState.interests,
-      storyPreferences: userState.storyPreferences,
-      languageSkills: userState.languageSkills,
-    };
-
-    console.log("IN SUBMIT", dataToSubmit);
+    console.log(dataToSubmit);
     submitData(dataToSubmit, {
-      onSuccess: () => {
-        Alert.alert("Success");
+      onSuccess: (responseData) => {
+        // Alert.alert("Success");
+        dispatch(storeUserResponse(responseData?.data));
+        router.replace("/(tabs)/home");
       },
       onError: (error: any) => {
         Alert.alert("Error", error.message || "Failed to submit data.");
@@ -105,7 +104,7 @@ const UploadProfilePicture: React.FC = () => {
 
   return (
     <View style={styles.screen}>
-      <MainLayout title="Upload a profile picture">
+      <MainLayout title="Submit profile">
         <View style={styles.content}></View>
         <Button
           text={isPending ? "Submitting..." : "Submit"}

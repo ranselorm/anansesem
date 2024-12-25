@@ -9,16 +9,18 @@ import {
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useDispatch, useSelector } from "react-redux";
-import { updateInterests, updateStoryPreferences } from "@/store/userSlice";
+import {
+  updateInterests,
+  updateStoryPreferences,
+  updateReference,
+} from "@/store/userSlice";
 import MainLayout from "@/shared/MainLayout";
 import Button from "@/components/ui/Button";
 import { RootState } from "@/store";
-import { useNavigation } from "@react-navigation/native";
 import { router } from "expo-router";
 
 const Interests: React.FC = () => {
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   const userState = useSelector((state: RootState) => state.user);
 
   // Local states for form fields
@@ -39,13 +41,22 @@ const Interests: React.FC = () => {
     userState.storyPreferences.themeOfInterest || ""
   );
 
+  const generateReference = (): string => {
+    const timestamp = Date.now().toString(36);
+    const randomString = Math.random().toString(36).substring(2, 10);
+    return `REF-${timestamp}-${randomString}`;
+  };
+
+  const newReference = generateReference();
+
+  console.log(newReference);
+
   const colors = [
     { name: "Candy Red", value: "#FF0800" },
     { name: "Bubble Pink", value: "#FFC1CC" },
     { name: "Shine", value: "#FFD700" },
   ];
 
-  // Select color
   const selectColor = (color: string) => {
     setFavoriteColor(color === favoriteColor ? "" : color);
   };
@@ -63,7 +74,6 @@ const Interests: React.FC = () => {
       return;
     }
 
-    // Dispatch updated interests and story preferences to Redux
     dispatch(
       updateInterests({
         favoriteStoryGenre,
@@ -72,6 +82,9 @@ const Interests: React.FC = () => {
         favoriteColor,
       })
     );
+
+    dispatch(updateReference(newReference));
+
     dispatch(updateStoryPreferences({ mood, themeOfInterest }));
 
     Alert.alert("Success", "Your interests have been saved!");

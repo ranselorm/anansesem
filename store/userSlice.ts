@@ -32,6 +32,7 @@ interface UserState {
     themeOfInterest: string;
   };
   languageSkills: LanguageSkill[];
+  userResponse: any; // New state for storing user responses
 }
 
 const initialState: UserState = {
@@ -46,7 +47,7 @@ const initialState: UserState = {
     readingLevel: "",
     phoneNumber: "",
   },
-  reference: "testkskskluser2kksksksksjhfj2",
+  reference: "",
   interests: {
     favoriteStoryGenre: "",
     favoriteCharacter: "",
@@ -66,6 +67,7 @@ const initialState: UserState = {
       speaking: "INTERMEDIATE",
     },
   ],
+  userResponse: null,
 };
 
 const userSlice = createSlice({
@@ -93,6 +95,13 @@ const userSlice = createSlice({
     ) {
       state.languageSkills = action.payload;
     },
+    storeUserResponse(state, action: PayloadAction<any>) {
+      state.userResponse = action.payload;
+    },
+
+    updateReference(state, action: PayloadAction<string>) {
+      state.reference = action.payload;
+    },
   },
 });
 
@@ -101,6 +110,8 @@ export const {
   updateInterests,
   updateStoryPreferences,
   updateLanguageSkills,
+  storeUserResponse,
+  updateReference,
 } = userSlice.actions;
 
 export default userSlice.reducer;

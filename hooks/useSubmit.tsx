@@ -37,7 +37,7 @@ export const useSubmit = () => {
       console.log("Data sent successfully!");
     },
     onError: (error) => {
-      console.error("Error sending data:", error.name, error.cause);
+      console.error("Error sending data:");
     },
   });
 };
