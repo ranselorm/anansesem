@@ -71,6 +71,11 @@ const StoryPlayback: React.FC = () => {
       </View>
       <View style={styles.content}>
         <Text style={styles.title}>{item?.title}</Text>
+        <View style={styles.body}>
+          <Text style={styles.bodyText}>
+            {item?.description && item.description}
+          </Text>
+        </View>
         <View style={styles.info}>
           <Text style={styles.infoTime}>15mins</Text>
           <TouchableOpacity style={styles.infoSave}>
@@ -82,11 +87,7 @@ const StoryPlayback: React.FC = () => {
             </Text>
           ))}
         </View>
-        <View style={styles.body}>
-          <Text style={styles.bodyText}>
-            {item?.description && item.description}
-          </Text>
-        </View>
+
         {/* <Link
           href={{
             pathname: "/library/quiz",
@@ -179,7 +180,7 @@ const styles = StyleSheet.create({
   },
 
   body: {
-    marginTop: 30,
+    marginTop: 10,
   },
 
   bodyText: {
