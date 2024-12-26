@@ -5,17 +5,64 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import MainLayout from "../../shared/MainLayout";
 import { MaterialIcons } from "@expo/vector-icons";
-
 import { Colors, FontSizes } from "@/theme";
 import Socials from "@/components/Socials";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Button from "@/components/ui/Button";
+import { useLogin } from "@/hooks/useSubmit";
+import { saveUserData } from "@/utils";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "@/store/userSlice";
+import { jwtDecode } from "jwt-decode";
+import { RootState } from "@/store";
+import { router } from "expo-router";
 
 const Login: React.FC = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isChecked, setIsChecked] = useState(false);
+  const user = useSelector((state: RootState) => state.user.userResponse);
+  const dispatch = useDispatch();
+
+  const { mutate: submitData, isPending } = useLogin();
+
+  const dataToSubmit = {
+    email,
+    password,
+  };
+
+  const handleSubmit = async () => {
+    submitData(dataToSubmit, {
+      onSuccess: async (responseData) => {
+        try {
+          const decodedToken: any = jwtDecode(responseData?.data?.id_token);
+
+          const updatedUser = {
+            isLoggedIn: true,
+            name: `${decodedToken.name}`,
+            id: decodedToken.sub,
+            email: decodedToken.email,
+            picture: decodedToken.picture,
+            exp: decodedToken.exp,
+          };
+          dispatch(setUser(updatedUser));
+          await saveUserData(user);
+          router.replace("/(tabs)/home");
+        } catch (error) {
+          console.error("Error saving data:", error);
+          Alert.alert("Error", "Failed to save user data locally.");
+        }
+      },
+      onError: (error: any) => {
+        Alert.alert("Error", error.message || "Failed to submit data.");
+      },
+    });
+  };
 
   return (
     <View style={styles.screen}>
@@ -26,11 +73,18 @@ const Login: React.FC = () => {
           </View>
           <Text style={styles.text}>Login</Text>
           <View>
-            <TextInput style={styles.input} placeholder="Email/Phone number" />
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              value={email}
+              onChangeText={(val) => setEmail(val)}
+            />
             <TextInput
               style={styles.input}
               placeholder="Password"
               secureTextEntry
+              value={password}
+              onChangeText={(val) => setPassword(val)}
             />
           </View>
           <View style={styles.row}>
@@ -50,7 +104,11 @@ const Login: React.FC = () => {
               <Text style={styles.forgotPassword}>Forgot password?</Text>
             </TouchableOpacity>
           </View>
-          <Button text="Login" />
+          <Button
+            text={isPending ? "Please wait!" : "Login"}
+            onPress={handleSubmit}
+            // disabled
+          />
         </View>
       </MainLayout>
       <Socials />
@@ -131,6 +189,10 @@ const styles = StyleSheet.create({
   forgotPassword: {
     fontSize: 14,
     color: Colors.main,
+  },
+
+  disabled: {
+    backgroundColor: "red",
   },
 });
 

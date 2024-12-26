@@ -14,9 +14,15 @@ interface ButtonProps {
   subtext?: string;
   onPress?: (e: GestureResponderEvent) => void;
   absolute?: boolean;
+  disabled?: boolean;
 }
 
-const Button: React.FC<ButtonProps> = ({ text, onPress, absolute }) => {
+const Button: React.FC<ButtonProps> = ({
+  text,
+  onPress,
+  absolute,
+  disabled,
+}) => {
   return (
     <View
       style={[
@@ -28,7 +34,10 @@ const Button: React.FC<ButtonProps> = ({ text, onPress, absolute }) => {
       ]}
     >
       <TouchableOpacity
-        style={styles.button}
+        style={[
+          styles.button,
+          { backgroundColor: disabled ? "red" : "#CCFF33" },
+        ]}
         onPress={onPress}
         activeOpacity={0.9}
       >

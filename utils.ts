@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 
-export const saveUserData = async (userData: object) => {
+export const saveUserData = async (userData: any) => {
   try {
     await AsyncStorage.setItem("userData", JSON.stringify(userData));
   } catch (error) {
@@ -22,7 +22,7 @@ export const getUserData = async () => {
 export const clearUserData = async () => {
   try {
     await AsyncStorage.removeItem("userData");
-    router.replace("/welcome");
+    router.replace("/auth/login");
   } catch (error) {
     console.error("Error clearing user data:", error);
   }

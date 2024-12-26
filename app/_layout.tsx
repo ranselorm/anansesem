@@ -4,7 +4,6 @@ import { PersistGate } from "redux-persist/integration/react";
 import { store } from "@/store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { router, Stack } from "expo-router";
-import { Text } from "react-native";
 import { getUserData } from "@/utils";
 export default function RootLayout() {
   const [isLoading, setIsLoading] = useState(true);
@@ -16,7 +15,7 @@ export default function RootLayout() {
       if (user) {
         router.replace("/(tabs)/home");
       } else {
-        router.replace("/welcome");
+        router.replace("/auth/login");
       }
       setIsLoading(false);
     };

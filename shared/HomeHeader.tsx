@@ -60,9 +60,15 @@ const HomeHeader: React.FC<HeaderProps> = ({
         <Text style={styles.title}>{title}</Text>
         {true ? (
           <TouchableOpacity onPress={handlePress} activeOpacity={0.9}>
-            <View style={styles.placeholder}>
+            {/* <View style={styles.placeholder}>
               <MaterialIcons name="person" size={30} color="#FFBB00" />
-            </View>
+            </View> */}
+            <Image
+              source={{
+                uri: "https://s.gravatar.com/avatar/6e70d1f802061fa4736e32317217280f?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fzr.png",
+              }}
+              style={{ width: 40, height: 40, borderRadius: 50 }}
+            />
           </TouchableOpacity>
         ) : (
           <TouchableOpacity>

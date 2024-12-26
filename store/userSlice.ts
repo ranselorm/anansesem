@@ -32,7 +32,8 @@ interface UserState {
     themeOfInterest: string;
   };
   languageSkills: LanguageSkill[];
-  userResponse: Record<string, any> | null; // Refined type
+  userResponse: Record<string, any> | null;
+  isLoggedIn: boolean;
 }
 
 const initialState: UserState = {
@@ -68,6 +69,7 @@ const initialState: UserState = {
     },
   ],
   userResponse: null,
+  isLoggedIn: false,
 };
 
 const userSlice = createSlice({
@@ -98,10 +100,7 @@ const userSlice = createSlice({
     ) {
       state.languageSkills = [...action.payload];
     },
-    storeUserResponse(
-      state,
-      action: PayloadAction<Record<string, any> | null>
-    ) {
+    setUser(state, action: PayloadAction<Record<string, any> | null>) {
       state.userResponse = action.payload;
     },
     updateReference(state, action: PayloadAction<string>) {
@@ -118,7 +117,7 @@ export const {
   updateInterests,
   updateStoryPreferences,
   updateLanguageSkills,
-  storeUserResponse,
+  setUser,
   updateReference,
   resetState,
 } = userSlice.actions;

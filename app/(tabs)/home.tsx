@@ -65,8 +65,6 @@ const Home: React.FC = () => {
   const { data: stories = [], isLoading, error } = useFetchData();
   const userResponse = useSelector((state: any) => state.user.userResponse);
 
-  console.log(userResponse);
-
   const renderCategory = ({ item }: { item: (typeof categories)[0] }) => (
     <TouchableOpacity
       style={[styles.categoryCard, { backgroundColor: item.color }]}
@@ -124,7 +122,7 @@ const Home: React.FC = () => {
       <HomeLayout isIcon>
         <View style={styles.container}>
           <View style={styles.textContainer}>
-            <Text style={styles.title}>Hi, {userResponse?.bio?.fullName}</Text>
+            <Text style={styles.title}>Hi, {userResponse?.name}</Text>
             <Text style={{ fontSize: 16, textAlign: "center", marginTop: -10 }}>
               Let&apos;s learn something new today
             </Text>

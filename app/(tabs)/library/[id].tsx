@@ -69,7 +69,6 @@ const StoryPlayback: React.FC = () => {
           onPlaybackStatusUpdate={(status) => setStatus(() => status)}
         />
       </View>
-
       <View style={styles.content}>
         <Text style={styles.title}>{item?.title}</Text>
         <View style={styles.info}>
@@ -88,10 +87,6 @@ const StoryPlayback: React.FC = () => {
             {item?.description && item.description}
           </Text>
         </View>
-        {/* <TouchableOpacity activeOpacity={1.0} style={styles.button}>
-          <AntDesign name="download" size={20} color="black" />
-          <Text style={styles.buttonText}>Download and save offline</Text>
-        </TouchableOpacity> */}
         <Link
           href={{
             pathname: "/library/quiz",
@@ -111,7 +106,7 @@ const StoryPlayback: React.FC = () => {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: "#D9D9D9",
+    backgroundColor: "#fff",
   },
   media: {
     height: 330,
@@ -120,20 +115,18 @@ const styles = StyleSheet.create({
   video: {
     width: "100%",
     height: 300,
+    marginTop: -40,
   },
   image: {
-    height: "100%",
+    height: 330,
     width: "100%",
     resizeMode: "cover",
   },
   content: {
-    height: 420,
-    backgroundColor: "#fff",
-    marginTop: -30,
-    borderRadius: 40,
-    paddingVertical: 20,
-    // alignItems: "",
-    paddingHorizontal: 50,
+    // backgroundColor: "red",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginTop: -110,
   },
   title: {
     color: Colors.main,
