@@ -70,7 +70,10 @@ const StoryPlayback: React.FC = () => {
         />
       </View>
       <View style={styles.content}>
-        <Text style={styles.title}>{item?.title}</Text>
+        <View style={{ flexDirection: "row" }}>
+          <Text style={styles.title}>{item?.title}</Text>
+          <Text>d</Text>
+        </View>
         <View style={styles.body}>
           <Text style={styles.bodyText}>
             {item?.description && item.description}
