@@ -87,7 +87,7 @@ const StoryPlayback: React.FC = () => {
             {item?.description && item.description}
           </Text>
         </View>
-        <Link
+        {/* <Link
           href={{
             pathname: "/library/quiz",
             params: {
@@ -97,7 +97,7 @@ const StoryPlayback: React.FC = () => {
           style={styles.button}
         >
           Done? Take Quiz
-        </Link>
+        </Link> */}
       </View>
     </View>
   );
