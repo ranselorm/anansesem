@@ -27,13 +27,14 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState("");
   const [isChecked, setIsChecked] = useState(false);
   const user = useSelector((state: RootState) => state.user.userResponse);
+  console.log("User Object", user);
   const dispatch = useDispatch();
 
   const { mutate: submitData, isPending } = useLogin();
 
   const dataToSubmit = {
-    email,
-    password,
+    email: "gbedzrah1@gmail.com",
+    password: "p@ssw0rd123",
   };
 
   const handleSubmit = async () => {

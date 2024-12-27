@@ -1,20 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
   FlatList,
-  Image,
+  Animated,
+  Easing,
 } from "react-native";
-import {
-  MaterialIcons,
-  Entypo,
-  FontAwesome6,
-  Ionicons,
-} from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { Colors, Fonts, FontSizes } from "@/theme";
-import Button from "@/components/ui/Button";
 import { router, useLocalSearchParams } from "expo-router";
 
 export default function QuizScreen() {
@@ -30,87 +25,87 @@ export default function QuizScreen() {
   }>();
   const parsedQuestions = questions ? JSON.parse(questions) : [];
 
-  console.log(title && title);
+  // Animated progress bar setup
+  const progressAnim = useRef(new Animated.Value(0)).current;
+
+  // Reset state when a new quiz starts
+  useEffect(() => {
+    setCurrentQuestionIndex(0);
+    setSelectedOption(null);
+    setScore(0);
+    setIsQuizCompleted(false);
+
+    Animated.timing(progressAnim, {
+      toValue: 0,
+      duration: 500,
+      easing: Easing.inOut(Easing.ease),
+      useNativeDriver: false,
+    }).start();
+  }, [questions]);
+
+  useEffect(() => {
+    // Animate progress when the question index changes
+    const progress = currentQuestionIndex / parsedQuestions.length;
+    Animated.timing(progressAnim, {
+      toValue: progress,
+      duration: 500, // Duration for smooth transition
+      easing: Easing.inOut(Easing.ease),
+      useNativeDriver: false,
+    }).start();
+  }, [currentQuestionIndex]);
 
   const handleOptionSelect = (index: number, isCorrect: boolean) => {
     setSelectedOption(index);
     if (isCorrect) setScore((prevScore) => prevScore + 1);
 
-    // Automatically move to the next question after selecting an option
+    // Automatically move to the next question or show the score screen
     setTimeout(() => {
       if (currentQuestionIndex < parsedQuestions.length - 1) {
         setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-        setSelectedOption(null); // Reset selected option
+        setSelectedOption(null);
       } else {
-        setIsQuizCompleted(true); // Quiz completed
+        setIsQuizCompleted(true);
       }
-    }, 1000); // Delay for better UX
-  };
-
-  const handleDismiss = () => {
-    router.replace("/(tabs)/library");
+    }, 1000);
   };
 
   const renderProgressBar = () => {
-    const progress = (currentQuestionIndex / parsedQuestions.length) * 100; // Progress starts at 0%
+    const progress = isQuizCompleted
+      ? 1 // Full progress if the quiz is completed
+      : currentQuestionIndex / parsedQuestions.length;
+
+    const width: any = progress * 100 + "%"; // Convert progress to percentage
+
     return (
       <View style={styles.progressBarWrapper}>
-        <View style={[styles.progressBar, { width: `${progress}%` }]} />
+        <Animated.View style={[styles.progressBar, { width }]} />
       </View>
     );
   };
 
-  const renderScore = () => {
-    return (
-      <View style={styles.content}>
-        <Text
-          style={{
-            textAlign: "center",
-            fontSize: FontSizes.large,
-            fontFamily: Fonts.heading,
-          }}
-        >
-          Congratulations!
-        </Text>
-        <Text
-          style={{
-            textAlign: "center",
-            fontSize: FontSizes.large,
-            fontFamily: Fonts.heading,
-          }}
-        >
-          You scored
-        </Text>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            marginTop: 10,
-            marginBottom: 10,
-          }}
-        >
-          <Image
-            source={require("../../../assets/icons/star8.png")}
-            style={{ width: 40, height: 40, marginTop: 50 }}
+  const currentQuestion = parsedQuestions[currentQuestionIndex];
+
+  return (
+    <View style={styles.screen}>
+      <View style={styles.header}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>{title ? title : "Untitled story"}</Text>
+          <Ionicons
+            name="close-circle"
+            size={20}
+            color="black"
+            onPress={() => router.back()}
           />
-          <Text style={styles.score}>{score}</Text>
         </View>
-        <Text style={styles.badge}>
-          {score === parsedQuestions.length
-            ? "You unlocked the Science Genius Badge!"
-            : "Great effort! Try again to unlock the badge!"}
+        {renderProgressBar()}
+        <View style={styles.questionWrapper}>
+          <Text style={styles.question}>{currentQuestion?.question}</Text>
+        </View>
+        <Text style={{ textAlign: "center", marginVertical: 8, fontSize: 15 }}>
+          Select an answer below
         </Text>
-        <Button text="Dismiss" absolute onPress={handleDismiss} />
       </View>
-    );
-  };
-
-  const renderQuestions = () => {
-    const currentQuestion = parsedQuestions[currentQuestionIndex];
-    return (
-      <View style={styles.content}>
-        <Text style={styles.question}>{currentQuestion?.question}</Text>
+      <View style={styles.answersWrapper}>
         <FlatList
           data={currentQuestion.options}
           renderItem={({ item, index }) => (
@@ -128,36 +123,24 @@ export default function QuizScreen() {
                   {String.fromCharCode(65 + index)}
                 </Text>
               </View>
-              <Text style={styles.optionText}>{item.text}</Text>
-              {selectedOption === index ? (
-                <MaterialIcons
-                  name="check-circle"
-                  size={24}
-                  color="#000"
-                  style={styles.checkIcon}
-                />
-              ) : (
-                <Entypo name="circle" size={24} color="black" />
-              )}
+              <Text
+                style={[
+                  styles.optionText,
+                  selectedOption === index && styles.selectedOptionText,
+                ]}
+              >
+                {item.text}
+              </Text>
             </TouchableOpacity>
           )}
           keyExtractor={(item, index) => index.toString()}
         />
       </View>
-    );
-  };
-
-  return (
-    <View style={styles.screen}>
-      <View style={styles.header}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>{title ? title : "Untitled story"}</Text>
-          <Ionicons name="close-circle" size={20} color="black" />
+      {isQuizCompleted && (
+        <View style={styles.scoreButton}>
+          <Text style={styles.scoreText}>Score: {score} pts</Text>
         </View>
-        {renderProgressBar()}
-      </View>
-
-      {isQuizCompleted ? renderScore() : renderQuestions()}
+      )}
     </View>
   );
 }
@@ -175,58 +158,67 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     flexDirection: "row",
-    marginHorizontal: 10,
+    marginHorizontal: 8,
     justifyContent: "space-between",
-    backgroundColor: "red",
   },
   title: { fontSize: 14, color: Colors.main },
   progressBarWrapper: {
-    height: 5,
+    height: 7,
     width: "93%",
     backgroundColor: "#e0e0e0",
     marginHorizontal: 10,
-    marginTop: 10,
+    marginTop: 20,
     borderRadius: 10,
   },
   progressBar: {
     height: "100%",
     backgroundColor: Colors.main,
-    borderRadius: 10,
+    borderRadius: 50,
   },
-  content: {
-    height: 420,
-    backgroundColor: "#FFF3E0",
-    marginTop: -30,
-    borderRadius: 40,
-    paddingTop: 20,
-    paddingHorizontal: 10,
-    paddingBottom: 8,
+  questionWrapper: {
+    backgroundColor: Colors.main,
+    height: 150,
+    width: "100%",
+    marginTop: 20,
+    padding: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 20,
+  },
+  answersWrapper: {
+    marginTop: 160,
   },
   question: {
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: "bold",
     marginBottom: 20,
     fontFamily: Fonts.heading,
     textAlign: "center",
+    color: "white",
   },
   option: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 7,
+    justifyContent: "flex-start",
+    paddingHorizontal: 15,
     paddingVertical: 10,
-    marginVertical: 8,
-    borderRadius: 50,
-    backgroundColor: "transparent",
-    borderWidth: 1,
-    borderColor: "#000",
+    marginVertical: 10,
+    borderRadius: 10,
+    backgroundColor: Colors.purple,
+    gap: 20,
+    height: 70,
   },
   selectedOption: {
-    backgroundColor: Colors.purple,
+    backgroundColor: Colors.main,
+    color: "#fff",
+  },
+  selectedOptionText: {
+    color: "#fff",
   },
   optionText: {
-    fontSize: 14,
+    fontSize: 20,
     color: "#000",
+    fontWeight: "900",
   },
   span: {
     backgroundColor: "#000",
@@ -240,19 +232,15 @@ const styles = StyleSheet.create({
   spanText: {
     color: "white",
   },
-  checkIcon: {
-    marginLeft: 8,
+  scoreButton: {
+    backgroundColor: "#aa0000",
+    padding: 8,
+    width: 160,
+    alignSelf: "center",
+    marginTop: 15,
   },
-  score: {
-    fontSize: 60,
-    fontWeight: "bold",
-    color: "#442359",
-    marginLeft: 15,
-    marginTop: 50,
-  },
-  badge: {
-    fontSize: FontSizes.medium,
+  scoreText: {
+    color: "white",
     textAlign: "center",
-    marginBottom: 30,
   },
 });

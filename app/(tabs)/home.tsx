@@ -15,6 +15,7 @@ import { router } from "expo-router";
 import { useFetchData } from "@/hooks/usFetchData";
 import Spinner from "react-native-loading-spinner-overlay";
 import { useSelector } from "react-redux";
+// import Placeholder from "@/components/PlaceHolder";
 
 const categories: {
   label: string;
@@ -76,27 +77,29 @@ const Home: React.FC = () => {
   );
 
   const renderStory = ({ item }: { item: any }) => (
-    <View style={styles.storyCard}>
-      <Image source={{ uri: item?.thumbnail }} style={styles.storyImage} />
-      <View style={styles.overlay}>
-        <Text style={styles.storyTitle}>{item.title}</Text>
-        <View style={styles.storyFooter}>
-          <TouchableOpacity
-            style={styles.playButton}
-            onPress={() => router.push(`/library/${item.reference}`)}
-          >
-            <Text style={styles.playButtonText}>Play</Text>
-            <MaterialIcons
-              name="play-arrow"
-              size={18}
-              color="#FFF"
-              style={styles.icon}
-            />
-          </TouchableOpacity>
-          <Text style={styles.storyDuration}>{item.duration}</Text>
+    <>
+      <View style={styles.storyCard}>
+        <Image source={{ uri: item?.thumbnail }} style={styles.storyImage} />
+        <View style={styles.overlay}>
+          <Text style={styles.storyTitle}>{item.title}</Text>
+          <View style={styles.storyFooter}>
+            <TouchableOpacity
+              style={styles.playButton}
+              onPress={() => router.push(`/library/${item.reference}`)}
+            >
+              <Text style={styles.playButtonText}>Play</Text>
+              <MaterialIcons
+                name="play-arrow"
+                size={18}
+                color="#FFF"
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+            <Text style={styles.storyDuration}>{item.duration}</Text>
+          </View>
         </View>
       </View>
-    </View>
+    </>
   );
 
   if (isLoading) {
