@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 10,
     paddingVertical: 20,
     paddingHorizontal: 15,
-    height: 140,
+    height: 130,
   },
   storyTitle: {
     fontSize: 14,
