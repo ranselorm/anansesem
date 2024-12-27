@@ -19,7 +19,7 @@ import {
   Ionicons,
 } from "@expo/vector-icons";
 import { Video, ResizeMode, AVPlaybackStatus } from "expo-av";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams, Link } from "expo-router";
 import { Fonts, FontSizes } from "@/theme";
 import Spinner from "react-native-loading-spinner-overlay";
 import { useFetchDetails } from "@/hooks/useFetchDetails";
@@ -122,13 +122,11 @@ const StoryPlayback: React.FC = () => {
           ))}
         </View>
 
-        {/* Interactive Row */}
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.rowContainer}
         >
-          {/* Like/Dislike Button */}
           <View style={styles.likeDislikeContainer}>
             <TouchableOpacity onPress={handleLike} style={styles.button}>
               <AntDesign name="like2" size={20} color="black" />
@@ -141,7 +139,6 @@ const StoryPlayback: React.FC = () => {
             </TouchableOpacity>
           </View>
 
-          {/* Share Button */}
           <TouchableOpacity style={styles.button} onPress={handleShare}>
             <MaterialCommunityIcons
               name="share-outline"
@@ -166,7 +163,19 @@ const StoryPlayback: React.FC = () => {
           {/* Quiz Button */}
           <TouchableOpacity style={styles.button} onPress={handleQuiz}>
             <MaterialIcons name="quiz" size={20} color="black" />
-            <Text style={styles.label}>Quiz</Text>
+            <Link
+              href={{
+                pathname: "/library/quiz",
+                params: {
+                  questions: JSON.stringify(item?.questionsContent[0].content),
+                  title: item?.title,
+                },
+              }}
+              style={styles.button}
+            >
+              Quiz
+            </Link>
+            {/* <Text style={styles.label}>Quiz</Text> */}
           </TouchableOpacity>
         </ScrollView>
 
@@ -279,12 +288,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 6,
     borderRadius: 50,
+    alignItems: "center",
   },
   label: {
     fontSize: 12,
     marginTop: 4,
     color: "#333",
-    marginLeft: 5,
+    marginLeft: 3,
   },
   more: {
     fontFamily: Fonts.heading,

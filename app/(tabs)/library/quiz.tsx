@@ -5,10 +5,14 @@ import {
   TouchableOpacity,
   StyleSheet,
   FlatList,
-  Alert,
   Image,
 } from "react-native";
-import { MaterialIcons, Entypo, FontAwesome6 } from "@expo/vector-icons";
+import {
+  MaterialIcons,
+  Entypo,
+  FontAwesome6,
+  Ionicons,
+} from "@expo/vector-icons";
 import { Colors, Fonts, FontSizes } from "@/theme";
 import Button from "@/components/ui/Button";
 import { router, useLocalSearchParams } from "expo-router";
@@ -20,25 +24,40 @@ export default function QuizScreen() {
   const [isQuizCompleted, setIsQuizCompleted] = useState(false);
 
   // Fetching questions from route parameters
-  const { questions } = useLocalSearchParams<{ questions: string }>();
+  const { questions, title } = useLocalSearchParams<{
+    questions: string;
+    title: string;
+  }>();
   const parsedQuestions = questions ? JSON.parse(questions) : [];
+
+  console.log(title && title);
 
   const handleOptionSelect = (index: number, isCorrect: boolean) => {
     setSelectedOption(index);
     if (isCorrect) setScore((prevScore) => prevScore + 1);
-  };
 
-  const handleNextOrSubmit = () => {
-    if (currentQuestionIndex < parsedQuestions.length - 1) {
-      setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-      setSelectedOption(null); // Reset selected option
-    } else {
-      setIsQuizCompleted(true);
-    }
+    // Automatically move to the next question after selecting an option
+    setTimeout(() => {
+      if (currentQuestionIndex < parsedQuestions.length - 1) {
+        setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+        setSelectedOption(null); // Reset selected option
+      } else {
+        setIsQuizCompleted(true); // Quiz completed
+      }
+    }, 1000); // Delay for better UX
   };
 
   const handleDismiss = () => {
     router.replace("/(tabs)/library");
+  };
+
+  const renderProgressBar = () => {
+    const progress = (currentQuestionIndex / parsedQuestions.length) * 100; // Progress starts at 0%
+    return (
+      <View style={styles.progressBarWrapper}>
+        <View style={[styles.progressBar, { width: `${progress}%` }]} />
+      </View>
+    );
   };
 
   const renderScore = () => {
@@ -124,35 +143,18 @@ export default function QuizScreen() {
           )}
           keyExtractor={(item, index) => index.toString()}
         />
-        <View style={[styles.buttonWrapper]}>
-          <TouchableOpacity
-            style={[
-              styles.button,
-              selectedOption === null && styles.disabledNextButton,
-            ]}
-            activeOpacity={0.9}
-            onPress={handleNextOrSubmit}
-            disabled={selectedOption === null} // Disable button if no option selected
-          >
-            <Text style={styles.buttonText}>
-              {currentQuestionIndex === parsedQuestions.length - 1
-                ? "Submit"
-                : "Next"}
-            </Text>
-            <FontAwesome6 name="circle-arrow-right" size={24} />
-          </TouchableOpacity>
-        </View>
       </View>
     );
   };
 
   return (
     <View style={styles.screen}>
-      <View style={styles.media}>
-        <Image
-          source={require("../../../assets/images/story.png")}
-          style={styles.image}
-        />
+      <View style={styles.header}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>{title ? title : "Untitled story"}</Text>
+          <Ionicons name="close-circle" size={20} color="black" />
+        </View>
+        {renderProgressBar()}
       </View>
 
       {isQuizCompleted ? renderScore() : renderQuestions()}
@@ -163,16 +165,33 @@ export default function QuizScreen() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: "#D9D9D9",
+    backgroundColor: "#fff",
+    paddingHorizontal: 20,
   },
-  media: {
-    height: 330,
-    width: "100%",
+  header: {
+    height: 100,
+    paddingTop: 40,
+    marginBottom: 40,
   },
-  image: {
+  titleContainer: {
+    flexDirection: "row",
+    marginHorizontal: 10,
+    justifyContent: "space-between",
+    backgroundColor: "red",
+  },
+  title: { fontSize: 14, color: Colors.main },
+  progressBarWrapper: {
+    height: 5,
+    width: "93%",
+    backgroundColor: "#e0e0e0",
+    marginHorizontal: 10,
+    marginTop: 10,
+    borderRadius: 10,
+  },
+  progressBar: {
     height: "100%",
-    width: "100%",
-    resizeMode: "cover",
+    backgroundColor: Colors.main,
+    borderRadius: 10,
   },
   content: {
     height: 420,
@@ -235,32 +254,5 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.medium,
     textAlign: "center",
     marginBottom: 30,
-  },
-  disabledNextButton: {
-    backgroundColor: "gray", // Gray out the button when disabled
-  },
-  buttonWrapper: {
-    backgroundColor: "#000",
-    borderRadius: 15,
-    paddingRight: 2,
-    alignSelf: "center",
-  },
-  button: {
-    backgroundColor: "#CCFF33",
-    borderRadius: 15,
-    width: 260,
-    height: 50,
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 4,
-    borderWidth: 1,
-    flexDirection: "row",
-    paddingHorizontal: 30,
-    alignSelf: "center",
-  },
-  buttonText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#000000",
   },
 });
