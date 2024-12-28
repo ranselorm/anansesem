@@ -65,7 +65,7 @@ const UploadProfilePicture: React.FC = () => {
         }
       },
       onError: (error: any) => {
-        Alert.alert("Error", error.message || "Failed to submit data.");
+        Alert.alert("Oops, something went wrong. Please try again!");
       },
     });
   };

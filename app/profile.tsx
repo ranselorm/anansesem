@@ -1,12 +1,13 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import HomeLayout from "@/shared/HomeLayout";
 import ProfileLayout from "@/shared/ProfileLayout";
 import { Colors, Fonts, FontSizes } from "@/theme";
-import { router } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { clearUserData } from "@/utils";
+import { useSelector, useDispatch } from "react-redux";
+import { resetState } from "@/store/userSlice";
+import { router } from "expo-router";
+import { RootState } from "@/store";
 
 const settingsData = [
   { id: 1, label: "Audio settings", icon: "settings-voice" },
@@ -16,13 +17,24 @@ const settingsData = [
 ];
 
 const Profile: React.FC = () => {
+  const user = useSelector((state: RootState) => state.user.userResponse);
+  const dispatch = useDispatch();
+
+  const logout = () => {
+    dispatch(resetState());
+    // Alert.alert("LOGGED OUT!!!");
+    router.replace("/auth/login");
+  };
+
   return (
     <View style={styles.screen}>
       <ProfileLayout title="Profile" isIconLeft bgColor="#FFF3E0">
-        <View style={styles.placeholder}>
+        {/* <View style={styles.placeholder}>
           <MaterialIcons name="person" size={50} color="#FFBB00" />
-        </View>
-        <Text style={styles.title}>Elorm</Text>
+        </View> */}
+        {user && <Image source={{ uri: user?.picture }} style={styles.pic} />}
+        {/* <Text style={styles.title}>Elorm</Text> USE THIS LATER */}
+        <Text style={styles.title2}>{user?.email}</Text>
         <Text style={styles.span}>
           <MaterialIcons name="star" />
           232
@@ -36,8 +48,8 @@ const Profile: React.FC = () => {
           </View>
         </View>
       </ProfileLayout>
-      <TouchableOpacity style={styles.footerButton} onPress={clearUserData}>
-        <Text style={styles.footerText}>log out</Text>
+      <TouchableOpacity style={styles.footerButton} onPress={logout}>
+        <Text style={styles.footerText}>Log out</Text>
       </TouchableOpacity>
     </View>
   );
@@ -72,10 +84,25 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
 
+  pic: {
+    width: 80,
+    height: 80,
+    alignSelf: "center",
+    borderRadius: 50,
+  },
+
   title: {
     alignItems: "center",
     textAlign: "center",
     fontSize: FontSizes.large,
+    fontFamily: Fonts.heading,
+    marginTop: 7,
+    fontWeight: "bold",
+  },
+  title2: {
+    alignItems: "center",
+    textAlign: "center",
+    fontSize: FontSizes.medium,
     fontFamily: Fonts.heading,
     marginTop: 7,
     fontWeight: "bold",

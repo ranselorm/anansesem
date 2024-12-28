@@ -15,8 +15,7 @@ import { router } from "expo-router";
 import { useFetchData } from "@/hooks/usFetchData";
 import Spinner from "react-native-loading-spinner-overlay";
 import { useSelector } from "react-redux";
-// import Placeholder from "@/components/PlaceHolder";
-
+import { RootState } from "@/store";
 const categories: {
   label: string;
   icon?: ImageSourcePropType;
@@ -64,7 +63,8 @@ const featuredStories = [
 
 const Home: React.FC = () => {
   const { data: stories = [], isLoading, error } = useFetchData();
-  const userResponse = useSelector((state: any) => state.user.userResponse);
+  const user = useSelector((state: RootState) => state.user.userResponse);
+  console.log(user);
 
   const renderCategory = ({ item }: { item: (typeof categories)[0] }) => (
     <TouchableOpacity
@@ -125,7 +125,7 @@ const Home: React.FC = () => {
       <HomeLayout isIcon>
         <View style={styles.container}>
           <View style={styles.textContainer}>
-            <Text style={styles.title}>Hi, {userResponse?.name}</Text>
+            <Text style={styles.title}>Hi, {user?.name || "there"}</Text>
             <Text style={{ fontSize: 16, textAlign: "center", marginTop: -10 }}>
               Let&apos;s learn something new today
             </Text>

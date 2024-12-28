@@ -72,7 +72,7 @@ const Welcome: React.FC = () => {
       </TouchableOpacity> */}
       <Button
         text="I Agree"
-        onPress={() => router.push("/create-profile")}
+        onPress={() => router.push("/auth/login")}
         absolute
       />
 

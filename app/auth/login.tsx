@@ -111,8 +111,8 @@ const Login: React.FC = () => {
             // disabled
           />
         </View>
+        <Socials />
       </MainLayout>
-      <Socials />
     </View>
   );
 };

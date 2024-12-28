@@ -34,9 +34,11 @@ const styles = StyleSheet.create({
   },
 
   socialIconsContainer: {
-    position: "absolute",
-    bottom: 30,
+    // position: "absolute",
+    // bottom: 30,
     alignSelf: "center",
+    marginBottom: 20,
+    marginTop: 50,
   },
   socialIcons: {
     flexDirection: "row",
