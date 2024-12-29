@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useCallback } from "react";
 import {
   View,
   Text,
@@ -7,21 +7,20 @@ import {
   TouchableOpacity,
   Image,
   ImageSourcePropType,
+  ActivityIndicator,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import HomeLayout from "@/shared/HomeLayout";
 import { Colors } from "@/theme";
 import { router } from "expo-router";
 import { useFetchData } from "@/hooks/usFetchData";
-// import Spinner from "react-native-loading-spinner-overlay";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
-import { PlaceHolders } from "@/components/PlaceHolders";
 
 const categories: {
   label: string;
   icon?: ImageSourcePropType;
-  color: any;
+  color: string;
 }[] = [
   {
     label: "History",
@@ -43,20 +42,22 @@ const categories: {
 const Home: React.FC = () => {
   const { data: stories = [], isLoading, error } = useFetchData();
   const user = useSelector((state: RootState) => state.user.userResponse);
-  // console.log(user, "IN HOME FILE");
 
-  const renderCategory = ({ item }: { item: (typeof categories)[0] }) => (
-    <TouchableOpacity
-      style={[styles.categoryCard, { backgroundColor: item.color }]}
-      activeOpacity={1.2}
-    >
-      <Image source={item.icon} />
-      <Text style={styles.categoryText}>{item.label}</Text>
-    </TouchableOpacity>
+  const renderCategory = useCallback(
+    ({ item }: { item: (typeof categories)[0] }) => (
+      <TouchableOpacity
+        style={[styles.categoryCard, { backgroundColor: item.color }]}
+        activeOpacity={0.9}
+      >
+        <Image source={item.icon} />
+        <Text style={styles.categoryText}>{item.label}</Text>
+      </TouchableOpacity>
+    ),
+    []
   );
 
-  const renderStory = ({ item }: { item: any }) => (
-    <>
+  const renderStory = useCallback(
+    ({ item }: { item: any }) => (
       <View style={styles.storyCard}>
         <Image source={{ uri: item?.thumbnail }} style={styles.storyImage} />
         <View style={styles.overlay}>
@@ -74,18 +75,20 @@ const Home: React.FC = () => {
                 style={styles.icon}
               />
             </TouchableOpacity>
-            <Text style={styles.storyDuration}>{item.duration}</Text>
           </View>
         </View>
       </View>
-    </>
+    ),
+    []
   );
 
   if (error) {
     return (
-      <Text style={{ color: "red", textAlign: "center" }}>
-        Error fetching library data! {error.message}
-      </Text>
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>
+          Error fetching library data! {error.message}
+        </Text>
+      </View>
     );
   }
 
@@ -95,12 +98,11 @@ const Home: React.FC = () => {
         <View style={styles.container}>
           <View style={styles.textContainer}>
             <Text style={styles.title}>Hi, {user?.name || "there"}</Text>
-            <Text style={{ fontSize: 16, textAlign: "center", marginTop: -10 }}>
+            <Text style={styles.subtitle}>
               Let&apos;s learn something new today
             </Text>
           </View>
 
-          {/* Categories */}
           <Text style={styles.sectionTitle}>Categories</Text>
           <FlatList
             data={categories}
@@ -111,7 +113,6 @@ const Home: React.FC = () => {
             contentContainerStyle={styles.categoryList}
           />
 
-          {/* Featured Stories */}
           <View style={styles.featuredSection}>
             <Text style={styles.sectionTitle}>Featured Stories</Text>
             <TouchableOpacity
@@ -121,6 +122,7 @@ const Home: React.FC = () => {
               <Text style={styles.seeAllText}>See all</Text>
             </TouchableOpacity>
           </View>
+
           {!isLoading ? (
             <FlatList
               data={stories?.data?.library}
@@ -129,61 +131,34 @@ const Home: React.FC = () => {
               horizontal
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.featuredList}
+              initialNumToRender={10}
             />
           ) : (
-            <PlaceHolders />
+            <ActivityIndicator size="small" color={Colors.main} />
           )}
         </View>
       </HomeLayout>
-
-      {/* <BottomSheet ref={sheetRef} styles={{ zIndex: 9999 }}>
-        <View>
-          <Text>Anansesem Terms and Conditions</Text>
-          <Text>
-            Please read these Terms and Conditions carefully before using the
-            Anansesem app.
-          </Text>
-        </View>
-      </BottomSheet> */}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-  },
-
+  screen: { flex: 1 },
+  container: { flex: 1, paddingHorizontal: 10 },
   textContainer: {
-    marginTop: 2,
-    marginBottom: 20,
+    marginVertical: 20,
     textAlign: "center",
-    alignSelf: "center",
-    justifyContent: "center",
   },
-
   title: {
     fontSize: 24,
     fontWeight: "bold",
     color: "#5D1889",
     marginBottom: 10,
-    fontFamily: "heading",
     textAlign: "center",
   },
-  container: {
-    flex: 1,
-    paddingHorizontal: 10,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    color: "#000",
-    marginVertical: 10,
-  },
-
-  categoryList: {
-    paddingBottom: 10,
-  },
-
+  subtitle: { fontSize: 16, textAlign: "center" },
+  sectionTitle: { fontSize: 18, marginVertical: 10, color: "#000" },
+  categoryList: { paddingBottom: 10 },
   categoryCard: {
     height: 119,
     width: 131,
@@ -192,26 +167,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 15,
   },
-  categoryText: {
-    color: "#000",
-    fontSize: 16,
-    // fontWeight: "bold",
-    marginTop: 5,
-    textAlign: "center",
-  },
+  categoryText: { fontSize: 16, marginTop: 5, textAlign: "center" },
   featuredSection: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     marginVertical: 15,
-    // marginTop: -20,
   },
-  seeAllText: {
-    fontSize: 14,
-  },
-  featuredList: {
-    paddingBottom: 10,
-  },
+  seeAllText: { fontSize: 14 },
+  featuredList: { paddingBottom: 10 },
   storyCard: {
     width: 238,
     height: 250,
@@ -219,33 +183,26 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: "hidden",
   },
-  storyImage: {
-    height: "100%",
-    width: "100%",
-  },
+  storyImage: { height: "100%", width: "100%" },
   overlay: {
     position: "absolute",
     bottom: 0,
     width: "100%",
-    padding: 10,
+    paddingHorizontal: 17,
+    paddingVertical: 10,
     backgroundColor: "rgba(0, 0, 0, 0.6)",
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
-    paddingVertical: 20,
-    paddingHorizontal: 15,
-    height: 130,
+    height: 150,
   },
-  storyTitle: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#FFF",
-    marginBottom: 10,
-  },
+  storyTitle: { fontSize: 14, fontWeight: "bold", color: "#FFF" },
   storyFooter: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: 5,
+    position: "absolute",
+    bottom: 20,
+    // left: 15,
+    paddingHorizontal: 17,
+    paddingVertical: 10,
   },
   playButton: {
     flexDirection: "row",
@@ -255,27 +212,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
   },
-  playButtonText: {
-    color: "#000",
-    marginLeft: 5,
-    fontSize: 12,
-  },
-
-  icon: {
-    backgroundColor: "black",
-    marginLeft: 10,
-    borderRadius: 50,
-    padding: 2,
-  },
-  storyDuration: {
-    fontSize: 12,
-    color: "#FFF",
-    borderWidth: 1,
-    borderColor: "#fff",
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    borderRadius: 6,
-  },
+  playButtonText: { color: "#000", marginLeft: 5, fontSize: 12 },
+  icon: { marginLeft: 10 },
+  errorContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
+  errorText: { color: "red", textAlign: "center" },
 });
 
 export default Home;

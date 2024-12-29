@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -15,11 +15,15 @@ import Socials from "@/components/Socials";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Button from "@/components/ui/Button";
 import { useLogin } from "@/hooks/useSubmit";
-import { saveUserData } from "@/utils";
+import {
+  saveUserData,
+  saveLoginValues,
+  getLoginValues,
+  getUserData,
+} from "@/utils";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "@/store/userSlice";
 import { jwtDecode } from "jwt-decode";
-import { RootState } from "@/store";
 import { router } from "expo-router";
 
 const Login: React.FC = () => {
@@ -27,8 +31,87 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState("");
   const [isChecked, setIsChecked] = useState(false);
   const dispatch = useDispatch();
-
   const { mutate: submitData, isPending } = useLogin();
+
+  const updateUserSession = async (responseData: any) => {
+    try {
+      const decodedToken: any = jwtDecode(responseData?.data?.id_token);
+      const updatedUser = {
+        isLoggedIn: true,
+        name: `${decodedToken.name}`,
+        id: decodedToken.sub,
+        email: decodedToken.email,
+        picture: decodedToken.picture,
+        exp: decodedToken.exp,
+        token: responseData?.data?.access_token,
+      };
+      dispatch(setUser(updatedUser));
+      await saveUserData(updatedUser);
+    } catch (error) {
+      console.error("Error updating session:", error);
+      Alert.alert("Error", "Failed to update user session.");
+    }
+  };
+
+  const checkTokenAndReauthenticate = async () => {
+    try {
+      const userData = await getUserData();
+      const loginValues = await getLoginValues();
+      const currentTime = Math.floor(Date.now() / 1000);
+
+      if (userData?.exp <= currentTime && loginValues) {
+        // Token expired, perform silent re-login
+        await silentReLogin(loginValues.email, loginValues.password);
+      } else if (userData?.exp > currentTime) {
+        dispatch(setUser(userData));
+        router.replace("/(tabs)/home");
+      }
+    } catch (error) {
+      console.error("Error during token check:", error);
+    }
+  };
+
+  const silentReLogin = async (email: string, password: string) => {
+    submitData(
+      { email, password },
+      {
+        onSuccess: async (responseData) => {
+          await updateUserSession(responseData);
+        },
+        onError: (error: any) => {
+          console.error("Silent re-login failed:", error.message);
+        },
+      }
+    );
+  };
+
+  // const silentReLogin = (email: string, password: string) => {
+  //   submitData(
+  //     { email, password },
+  //     {
+  //       onSuccess: async (responseData) => {
+  //         const decodedToken: any = jwtDecode(responseData?.data?.id_token);
+  //         const updatedUser = {
+  //           isLoggedIn: true,
+  //           name: `${decodedToken.name}`,
+  //           id: decodedToken.sub,
+  //           email: decodedToken.email,
+  //           picture: decodedToken.picture,
+  //           exp: decodedToken.exp,
+  //           token: responseData?.data?.access_token,
+  //         };
+
+  //         dispatch(setUser(updatedUser));
+  //         await saveUserData(updatedUser);
+  //         console.log("Updated Redux User:", updatedUser);
+  //         router.replace("/(tabs)/home");
+  //       },
+  //       onError: (error: any) => {
+  //         console.error("Silent re-login failed:", error.message);
+  //       },
+  //     }
+  //   );
+  // };
 
   const dataToSubmit = {
     email: "gbedzrah1@gmail.com",
@@ -36,35 +119,31 @@ const Login: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    submitData(dataToSubmit, {
-      onSuccess: async (responseData) => {
-        console.log(responseData?.data, "RESPONSE OBJECT");
-        try {
-          const decodedToken: any = jwtDecode(responseData?.data?.id_token);
-          const updatedUser = {
-            isLoggedIn: true,
-            name: `${decodedToken.name}`,
-            id: decodedToken.sub,
-            email: decodedToken.email,
-            picture: decodedToken.picture,
-            exp: decodedToken.exp,
-            token: responseData?.data?.access_token,
-          };
-          dispatch(setUser(updatedUser));
-          console.log("Updated Redux User:", updatedUser);
-
-          // await saveUserData(updatedUser);
+    // if (!email || !password) {
+    //   Alert.alert("Validation Error", "Please enter both email and password.");
+    //   return;
+    // }
+    submitData(
+      // { email, password },
+      dataToSubmit,
+      {
+        onSuccess: async (responseData) => {
+          await updateUserSession(responseData);
+          if (isChecked) {
+            await saveLoginValues({ email, password });
+          }
           router.replace("/(tabs)/home");
-        } catch (error) {
-          console.error("Error saving data:", error);
-          Alert.alert("Error", "Failed to save user data locally.");
-        }
-      },
-      onError: (error: any) => {
-        Alert.alert("Error", error.message || "Failed to submit data.");
-      },
-    });
+        },
+        onError: (error: any) => {
+          Alert.alert("Error", error.message || "Failed to login.");
+        },
+      }
+    );
   };
+
+  useEffect(() => {
+    checkTokenAndReauthenticate();
+  }, []);
 
   return (
     <View style={styles.screen}>

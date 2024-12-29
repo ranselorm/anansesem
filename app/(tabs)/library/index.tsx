@@ -14,6 +14,7 @@ import { Colors } from "@/theme";
 import { useFetchData } from "../../../hooks/usFetchData";
 import { router } from "expo-router";
 import Spinner from "react-native-loading-spinner-overlay";
+import { ActivityIndicator } from "react-native";
 
 interface Category {
   label: string;
@@ -103,16 +104,6 @@ const Library: React.FC = () => {
     </View>
   );
 
-  if (isLoading) {
-    return (
-      <Spinner
-        visible={isLoading}
-        textContent={"Loading..."}
-        textStyle={{ color: "white" }}
-      />
-    );
-  }
-
   if (error) {
     return (
       <Text style={{ color: "red", textAlign: "center" }}>
@@ -123,37 +114,41 @@ const Library: React.FC = () => {
 
   return (
     <HomeLayout title="Library" isIcon>
-      <FlatList
-        data={stories?.data?.library || []}
-        renderItem={renderStoryCard}
-        keyExtractor={(item) => item.reference}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.flatListContent}
-        ListHeaderComponent={
-          <>
-            {/* Search Bar */}
-            <View style={styles.searchContainer}>
-              <MaterialIcons name="search" size={24} color="#000" />
-              <TextInput
-                style={styles.searchInput}
-                placeholder="Search stories"
-                placeholderTextColor="#000"
-              />
-              <MaterialIcons name="menu" size={24} color="#000" />
-            </View>
+      {!isLoading ? (
+        <FlatList
+          data={stories?.data?.library || []}
+          renderItem={renderStoryCard}
+          keyExtractor={(item) => item.reference}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.flatListContent}
+          ListHeaderComponent={
+            <>
+              {/* Search Bar */}
+              <View style={styles.searchContainer}>
+                <MaterialIcons name="search" size={24} color="#000" />
+                <TextInput
+                  style={styles.searchInput}
+                  placeholder="Search stories"
+                  placeholderTextColor="#000"
+                />
+                <MaterialIcons name="menu" size={24} color="#000" />
+              </View>
 
-            {/* Categories */}
-            <FlatList
-              data={categories}
-              renderItem={renderCategory}
-              keyExtractor={(item) => item.label}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.categoryList}
-            />
-          </>
-        }
-      />
+              {/* Categories */}
+              <FlatList
+                data={categories}
+                renderItem={renderCategory}
+                keyExtractor={(item) => item.label}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.categoryList}
+              />
+            </>
+          }
+        />
+      ) : (
+        <ActivityIndicator />
+      )}
     </HomeLayout>
   );
 };

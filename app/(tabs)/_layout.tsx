@@ -6,13 +6,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 
 export default function TabLayout() {
-  const userState = useSelector((state: RootState) => state.user);
-  console.log("USERRRRR", userState?.bio?.fullName);
-
-  // if (!userState?.bio?.fullName) {
-  //   return <Redirect href="/auth/login" />;
-  // }
-
   return (
     <Tabs
       screenOptions={{
