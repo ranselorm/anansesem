@@ -26,8 +26,6 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isChecked, setIsChecked] = useState(false);
-  const user = useSelector((state: RootState) => state.user.userResponse);
-  console.log("User Object", user);
   const dispatch = useDispatch();
 
   const { mutate: submitData, isPending } = useLogin();
@@ -40,9 +38,9 @@ const Login: React.FC = () => {
   const handleSubmit = async () => {
     submitData(dataToSubmit, {
       onSuccess: async (responseData) => {
+        console.log(responseData?.data, "RESPONSE OBJECT");
         try {
           const decodedToken: any = jwtDecode(responseData?.data?.id_token);
-
           const updatedUser = {
             isLoggedIn: true,
             name: `${decodedToken.name}`,
@@ -50,9 +48,12 @@ const Login: React.FC = () => {
             email: decodedToken.email,
             picture: decodedToken.picture,
             exp: decodedToken.exp,
+            token: responseData?.data?.access_token,
           };
           dispatch(setUser(updatedUser));
-          await saveUserData(user);
+          console.log("Updated Redux User:", updatedUser);
+
+          // await saveUserData(updatedUser);
           router.replace("/(tabs)/home");
         } catch (error) {
           console.error("Error saving data:", error);
@@ -111,6 +112,7 @@ const Login: React.FC = () => {
             // disabled
           />
         </View>
+        {/* <PlaceHolders /> */}
         <Socials />
       </MainLayout>
     </View>

@@ -22,7 +22,6 @@ export const getUserData = async () => {
 export const clearUserData = async () => {
   try {
     await AsyncStorage.removeItem("userData");
-    router.replace("/auth/login");
   } catch (error) {
     console.error("Error clearing user data:", error);
   }

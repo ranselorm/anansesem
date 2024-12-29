@@ -29,7 +29,7 @@ const HomeHeader: React.FC<HeaderProps> = ({
   };
 
   const handleBackPress = () => {
-    router.push("/(tabs)/home");
+    router.back();
   };
 
   const handleSettingsPress = () => {

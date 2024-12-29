@@ -22,6 +22,7 @@ const Profile: React.FC = () => {
 
   const logout = () => {
     dispatch(resetState());
+    clearUserData();
     // Alert.alert("LOGGED OUT!!!");
     router.replace("/auth/login");
   };

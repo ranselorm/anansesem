@@ -14,6 +14,7 @@ import OnboardingScreen from "../components/OnboardingScreen";
 import OnboardingDots from "../components/OnboardingDots";
 import { MaterialIcons } from "@expo/vector-icons";
 import Button from "@/components/ui/Button";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width } = Dimensions.get("window");
 
@@ -55,11 +56,17 @@ const OnboardingContainer: React.FC = ({}) => {
     setCurrentIndex(index);
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentIndex < onboardingData.length - 1) {
       flatListRef.current?.scrollToIndex({ index: currentIndex + 1 });
     } else {
-      router.push("/welcome");
+      // Save onboarding completion state and navigate
+      try {
+        await AsyncStorage.setItem("onboardingCompleted", "true");
+        router.push("/welcome"); // Redirect after onboarding completion
+      } catch (error) {
+        console.error("Error saving onboarding state:", error);
+      }
     }
   };
 

@@ -29,7 +29,6 @@ export default function RootLayout() {
 function AppContent() {
   const [isLoading, setIsLoading] = useState(true);
   const user = useSelector((state: any) => state.user.userResponse);
-  console.log("USER", user);
 
   useEffect(() => {
     const checkUser = async () => {

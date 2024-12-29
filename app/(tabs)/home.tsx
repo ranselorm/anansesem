@@ -13,9 +13,11 @@ import HomeLayout from "@/shared/HomeLayout";
 import { Colors } from "@/theme";
 import { router } from "expo-router";
 import { useFetchData } from "@/hooks/usFetchData";
-import Spinner from "react-native-loading-spinner-overlay";
+// import Spinner from "react-native-loading-spinner-overlay";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import { PlaceHolders } from "@/components/PlaceHolders";
+
 const categories: {
   label: string;
   icon?: ImageSourcePropType;
@@ -38,33 +40,10 @@ const categories: {
   },
 ];
 
-const featuredStories = [
-  {
-    title: "Araba's Dream",
-    duration: "15mins",
-    image: require("../../assets/images/home1.png"),
-  },
-  {
-    title: "Kivu in the Moonlight",
-    duration: "20mins",
-    image: require("../../assets/images/home2.png"),
-  },
-  {
-    title: "Kiivu in the Moonlight",
-    duration: "20mins",
-    image: require("../../assets/images/home2.png"),
-  },
-  {
-    title: "Kivu5 in the Moonlight",
-    duration: "20mins",
-    image: require("../../assets/images/home2.png"),
-  },
-];
-
 const Home: React.FC = () => {
   const { data: stories = [], isLoading, error } = useFetchData();
   const user = useSelector((state: RootState) => state.user.userResponse);
-  console.log(user);
+  // console.log(user, "IN HOME FILE");
 
   const renderCategory = ({ item }: { item: (typeof categories)[0] }) => (
     <TouchableOpacity
@@ -101,16 +80,6 @@ const Home: React.FC = () => {
       </View>
     </>
   );
-
-  if (isLoading) {
-    return (
-      <Spinner
-        visible={isLoading}
-        textContent={"Loading..."}
-        textStyle={{ color: "white" }}
-      />
-    );
-  }
 
   if (error) {
     return (
@@ -152,14 +121,18 @@ const Home: React.FC = () => {
               <Text style={styles.seeAllText}>See all</Text>
             </TouchableOpacity>
           </View>
-          <FlatList
-            data={stories?.data?.library}
-            renderItem={renderStory}
-            keyExtractor={(item) => item.title}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.featuredList}
-          />
+          {!isLoading ? (
+            <FlatList
+              data={stories?.data?.library}
+              renderItem={renderStory}
+              keyExtractor={(item) => item.title}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.featuredList}
+            />
+          ) : (
+            <PlaceHolders />
+          )}
         </View>
       </HomeLayout>
 

@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  ActivityIndicator,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import HomeLayout from "@/shared/HomeLayout";
@@ -127,7 +126,7 @@ const Library: React.FC = () => {
       <FlatList
         data={stories?.data?.library || []}
         renderItem={renderStoryCard}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.reference}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.flatListContent}
         ListHeaderComponent={
