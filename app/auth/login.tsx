@@ -113,19 +113,14 @@ const Login: React.FC = () => {
   //   );
   // };
 
-  const dataToSubmit = {
-    email,
-    password,
-  };
-
   const handleSubmit = async () => {
-    // if (!email || !password) {
-    //   Alert.alert("Validation Error", "Please enter both email and password.");
-    //   return;
-    // }
+    if (!email || !password) {
+      Alert.alert("Required fields", "Please enter both email and password.");
+      return;
+    }
     submitData(
-      // { email, password },
-      dataToSubmit,
+      { email, password },
+
       {
         onSuccess: async (responseData) => {
           await updateUserSession(responseData);
@@ -135,7 +130,7 @@ const Login: React.FC = () => {
           router.replace("/(tabs)/home");
         },
         onError: (error: any) => {
-          Alert.alert("Error", error.message || "Failed to login.");
+          Alert.alert("Oups 🤭", "Failed to login. Retry!");
         },
       }
     );
