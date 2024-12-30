@@ -3,308 +3,473 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   TextInput,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
+  TouchableOpacity,
+  FlatList,
+  Alert,
   ActivityIndicator,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { MaterialIcons } from "@expo/vector-icons";
-import Entypo from "@expo/vector-icons/Entypo";
-import HomeLayout from "../../../shared/HomeLayout";
-import { Colors, FontSizes } from "@/theme";
-import { router } from "expo-router";
-import { Image } from "react-native";
-import Button from "@/components/ui/Button";
+import CollapsibleCategory from "@/components/CollapsibleCategory";
+import HomeLayout from "@/shared/HomeLayout";
+import { Colors, Fonts, FontSizes } from "@/theme";
+import { Button } from "react-native";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import { RootState } from "@/store";
 
 const StoryCreator: React.FC = () => {
-  const [characters, setCharacters] = useState<string | null>("one");
-  const [voice, setVoice] = useState<string | null>("Julia (female)");
-  const [duration, setDuration] = useState<string | null>("5mins");
-  const [genre, setGenre] = useState<string | null>("Science");
-  const [title, setTitle] = useState<string>("");
-  const [isGenerating, setIsGenerating] = useState(false); // Overlay state
+  const [book, setBook] = useState({
+    title: "",
+    language: "",
+    numberOfPages: 0,
+    images: "",
+    readingLevel: "",
+    category: [] as string[],
+    ambientMusic: "",
+  });
 
-  const handleGenerateStory = () => {
-    // if (!title) {
-    //   alert("Please provide a story title!");
-    //   return;
-    // }
-    console.log({
-      characters,
-      voice,
-      duration,
-      genre,
-      title,
+  const [mainCharacter, setmainCharacter] = useState({
+    name: "",
+    gender: "",
+    age: 0,
+    species: "",
+    traits: "",
+  });
+
+  const [story, setStory] = useState({
+    prompt: "",
+    moral: "",
+  });
+  const [isCategoryCollapsed, setIsCategoryCollapsed] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  const toggleCategory = (category: string) => {
+    setBook((prev) => {
+      const updatedCategories = prev.category.includes(category)
+        ? prev.category.filter((item) => item !== category)
+        : [...prev.category, category];
+      return { ...prev, category: updatedCategories };
     });
-    // Proceed with the story generation logic
-    setIsGenerating(true);
-    setTimeout(() => {
-      setIsGenerating(false);
-      router.push("/(tabs)/story-creator/playback");
-    }, 3000);
   };
+
+  const { submitStory } = useSubmitStory();
+  const validateFields = () => {
+    if (
+      !book.title ||
+      !book.language ||
+      !book.numberOfPages ||
+      !book.images ||
+      !book.readingLevel ||
+      !book.ambientMusic ||
+      !book.category ||
+      !mainCharacter.name ||
+      !mainCharacter.gender ||
+      !mainCharacter.age ||
+      !mainCharacter.species ||
+      !mainCharacter.traits ||
+      !story.prompt ||
+      !story.moral
+    ) {
+      Alert.alert("Required Fields", "Please all fields are required.");
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = () => {
+    if (!validateFields()) return;
+    console.log({ book, mainCharacter, story });
+    setLoading(true);
+    submitStory({
+      book,
+      mainCharacter,
+      story,
+      reference: "testkhgfdkl12jj4kkw",
+    }).finally(() => setLoading(false));
+  };
+
+  const categories = ["ADVENTURE", "MYSTERY"];
+
+  const sections = [
+    {
+      key: "Book",
+      content: (
+        <View>
+          <Text style={styles.label}>Title</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter the title of the book"
+            value={book.title}
+            onChangeText={(text) => setBook({ ...book, title: text })}
+          />
+          <Text style={styles.label}>Language</Text>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={book.language}
+              style={styles.picker}
+              onValueChange={(itemValue) =>
+                setBook({ ...book, language: itemValue })
+              }
+            >
+              <Picker.Item label="Select" value={null} />
+              <Picker.Item label="English" value="English" />
+              <Picker.Item label="Spanish" value="Spanish" />
+            </Picker>
+          </View>
+          <Text style={styles.label}>Number of Pages</Text>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={book.numberOfPages.toString()}
+              style={styles.picker}
+              onValueChange={(itemValue) =>
+                setBook({
+                  ...book,
+                  numberOfPages: parseInt(itemValue),
+                })
+              }
+            >
+              <Picker.Item label="Select" value="" />
+              {[...Array(30)].map((_, i) => (
+                <Picker.Item
+                  key={i}
+                  label={`${i + 1} pages`}
+                  value={`${i + 1}`}
+                />
+              ))}
+            </Picker>
+          </View>
+          <Text style={styles.label}>Images</Text>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={book.images}
+              style={styles.picker}
+              onValueChange={(itemValue) =>
+                setBook({ ...book, images: itemValue })
+              }
+            >
+              <Picker.Item label="Select" value="" />
+              <Picker.Item label="Illustrations" value="illustrations" />
+              <Picker.Item label="Photos" value="photos" />
+            </Picker>
+          </View>
+          <Text style={styles.label}>Reading Level</Text>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={book.readingLevel}
+              style={styles.picker}
+              onValueChange={(itemValue) =>
+                setBook({ ...book, readingLevel: itemValue })
+              }
+            >
+              <Picker.Item label="Select" value="" />
+              <Picker.Item label="Emergent" value="Emergent" />
+              <Picker.Item label="Early Reader" value="Early Reader" />
+              <Picker.Item label="Beginner" value="Beginner" />
+              <Picker.Item
+                label="Transitional Reader"
+                value="Transitional Reader"
+              />
+              <Picker.Item label="Intermediate" value="Intermediate" />
+              <Picker.Item label="Fluent Reader" value="Fluent Reader" />
+              <Picker.Item label="Advanced" value="Advanced" />
+            </Picker>
+          </View>
+          <Text style={styles.label}>Ambient Music</Text>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={book.ambientMusic}
+              style={styles.picker}
+              onValueChange={(itemValue) =>
+                setBook({ ...book, ambientMusic: itemValue })
+              }
+            >
+              <Picker.Item label="Select" value="" />
+              <Picker.Item label="Calm" value="calm" />
+              <Picker.Item label="Dramatic" value="dramatic" />
+            </Picker>
+          </View>
+          <TouchableOpacity
+            onPress={() => setIsCategoryCollapsed(!isCategoryCollapsed)}
+            style={styles.categoryToggle}
+          >
+            <Text style={styles.label}>Category select</Text>
+          </TouchableOpacity>
+          {!isCategoryCollapsed && (
+            <FlatList
+              data={categories}
+              keyExtractor={(item) => item}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() => toggleCategory(item)}
+                  style={[
+                    styles.categoryOption,
+                    book.category.includes(item) && styles.categorySelected,
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.categoryText,
+                      book.category.includes(item) &&
+                        styles.categoryTextSelected,
+                    ]}
+                  >
+                    {item}
+                  </Text>
+                </TouchableOpacity>
+              )}
+            />
+          )}
+        </View>
+      ),
+    },
+    {
+      key: "Characters",
+      content: (
+        <View>
+          <Text style={styles.label}>Name</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter the character's name"
+            value={mainCharacter.name}
+            onChangeText={(text) =>
+              setmainCharacter({ ...mainCharacter, name: text })
+            }
+          />
+          <Text style={styles.label}>Gender</Text>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={mainCharacter.gender}
+              style={styles.picker}
+              onValueChange={(itemValue) =>
+                setmainCharacter({ ...mainCharacter, gender: itemValue })
+              }
+            >
+              <Picker.Item label="Select" value="" />
+              <Picker.Item label="Male" value="male" />
+              <Picker.Item label="Female" value="female" />
+            </Picker>
+          </View>
+          <Text style={styles.label}>Age</Text>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={mainCharacter.age.toString()}
+              style={styles.picker}
+              onValueChange={(itemValue) =>
+                setmainCharacter({
+                  ...mainCharacter,
+                  age: parseInt(itemValue),
+                })
+              }
+            >
+              {[...Array(100)].map((_, i) => (
+                <Picker.Item
+                  key={i}
+                  label={`${i + 1} years`}
+                  value={`${i + 1}`}
+                />
+              ))}
+            </Picker>
+          </View>
+          <Text style={styles.label}>Species</Text>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={mainCharacter.species}
+              style={styles.picker}
+              onValueChange={(itemValue) =>
+                setmainCharacter({ ...mainCharacter, species: itemValue })
+              }
+            >
+              <Picker.Item label="Select" value="" />
+              <Picker.Item label="Dwarf" value="dwarf" />
+              <Picker.Item label="Human" value="human" />
+              <Picker.Item label="Elf" value="elf" />
+              <Picker.Item label="Gnome" value="gnome" />
+              <Picker.Item label="Animal" value="animal" />
+            </Picker>
+          </View>
+          <Text style={styles.label}>Traits</Text>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={mainCharacter.traits}
+              style={styles.picker}
+              onValueChange={(itemValue) =>
+                setmainCharacter({ ...mainCharacter, traits: itemValue })
+              }
+            >
+              <Picker.Item label="Select" value={null} />
+              <Picker.Item label="Evil" value="evil" />
+              <Picker.Item label="Good" value="good" />
+              <Picker.Item label="Neutral" value="neutral" />
+            </Picker>
+          </View>
+        </View>
+      ),
+    },
+    {
+      key: "Story",
+      content: (
+        <View>
+          <Text style={styles.label}>Story Prompt</Text>
+          <TextInput
+            style={styles.inputMultiline}
+            multiline
+            placeholder="Write a brief description of your story here"
+            placeholderTextColor={"#fff"}
+            value={story.prompt}
+            onChangeText={(text) => setStory({ ...story, prompt: text })}
+          />
+          <Text style={styles.label}>Story Moral</Text>
+          <TextInput
+            style={styles.inputMultiline}
+            multiline
+            placeholder="e.g. the importance of telling the truth"
+            placeholderTextColor={"#fff"}
+            value={story.moral}
+            onChangeText={(text) => setStory({ ...story, moral: text })}
+          />
+        </View>
+      ),
+    },
+  ];
+
+  const renderHeader = () => (
+    <View style={styles.textContainer}>
+      <Text style={styles.description}>
+        Your story will be generated based on the options you select in the
+        following 3 categories.
+      </Text>
+    </View>
+  );
 
   return (
     <>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-          <View style={styles.screen}>
-            <HomeLayout title="AI Story Creator" isIcon>
-              <View style={styles.content}>
-                {/* Characters */}
-                <View style={styles.row}>
-                  <Text style={styles.label}>Characters</Text>
-                  <View style={styles.pickerContainer}>
-                    <Picker
-                      selectedValue={characters}
-                      onValueChange={(value) => setCharacters(value)}
-                      style={styles.picker}
-                    >
-                      <Picker.Item label="One" value="one" />
-                      <Picker.Item label="Two" value="two" />
-                      <Picker.Item label="Multiple" value="multiple" />
-                    </Picker>
-                  </View>
-                </View>
-
-                {/* Voice */}
-                <View style={styles.row}>
-                  <Text style={styles.label}>Voice</Text>
-                  <View style={styles.pickerContainer}>
-                    <Picker
-                      selectedValue={voice}
-                      onValueChange={(value) => setVoice(value)}
-                      style={styles.picker}
-                    >
-                      <Picker.Item
-                        label="Julia (female)"
-                        value="Julia (female)"
-                      />
-                      <Picker.Item label="Mark (male)" value="Mark (male)" />
-                      <Picker.Item
-                        label="Sophia (female)"
-                        value="Sophia (female)"
-                      />
-                    </Picker>
-                  </View>
-                </View>
-
-                {/* Duration */}
-                <View style={styles.row}>
-                  <Text style={styles.label}>Duration</Text>
-                  <View style={styles.pickerContainer}>
-                    <Picker
-                      selectedValue={duration}
-                      onValueChange={(value) => setDuration(value)}
-                      style={styles.picker}
-                    >
-                      <Picker.Item label="5mins" value="5mins" />
-                      <Picker.Item label="10mins" value="10mins" />
-                      <Picker.Item label="15mins" value="15mins" />
-                    </Picker>
-                  </View>
-                </View>
-
-                {/* Genre */}
-                <View style={styles.row}>
-                  <Text style={styles.label}>Genre</Text>
-                  <View style={styles.pickerContainer}>
-                    <Picker
-                      selectedValue={genre}
-                      onValueChange={(value) => setGenre(value)}
-                      style={styles.picker}
-                    >
-                      <Picker.Item label="Science" value="Science" />
-                      <Picker.Item label="Folklore" value="Folklore" />
-                      <Picker.Item label="Adventure" value="Adventure" />
-                    </Picker>
-                  </View>
-                </View>
-
-                {/* Upload Picture */}
-                <View style={styles.uploadContainer}>
-                  <Text style={styles.uploadText}>
-                    Upload picture reference (optional)
-                  </Text>
-                  <TouchableOpacity style={styles.uploadButton}>
-                    <Entypo name="circle-with-plus" size={40} color="black" />
-                  </TouchableOpacity>
-                </View>
-
-                {/* Story Title */}
-                <TextInput
-                  style={styles.input}
-                  placeholder="Type your title here"
-                  placeholderTextColor="#000"
-                  value={title}
-                  onChangeText={setTitle}
-                />
-              </View>
-            </HomeLayout>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-      {/* <TouchableOpacity style={styles.button} onPress={handleGenerateStory}>
-        <Text style={styles.buttonText}>Generate</Text>
-        <MaterialIcons
-          name="arrow-forward"
-          size={22}
-          color="white"
-          style={styles.icon}
-        />
-      </TouchableOpacity> */}
-
-      <Button text="Generate" onPress={handleGenerateStory} absolute />
-      {isGenerating && (
-        <View style={StyleSheet.absoluteFillObject}>
-          <View style={styles.overlay}>
-            <View
-              style={{
-                backgroundColor: "white",
-                width: 300,
-                height: 200,
-                justifyContent: "center",
-                alignItems: "center",
-                padding: 20,
-                borderRadius: 10,
-              }}
-            >
-              <Text style={styles.overlayText}>
-                Hang tight, while our magical AI weaves a tale just for you!
-              </Text>
-              <Image
-                source={require("../../../assets/icons/app-icon.png")}
-                style={{
-                  position: "absolute",
-                  width: 100,
-                  height: 100,
-                  top: -40,
-                }}
-              />
-              <ActivityIndicator
-                size="large"
-                color="#000"
-                style={{ marginTop: 10 }}
-              />
-            </View>
-          </View>
-        </View>
-      )}
+      <View style={styles.screen}>
+        <HomeLayout isIcon title="AI Story Creator">
+          <FlatList
+            data={sections}
+            keyExtractor={(item) => item.key}
+            renderItem={({ item }) => (
+              <CollapsibleCategory title={item.key} defaultOpen>
+                {item.content}
+              </CollapsibleCategory>
+            )}
+            contentContainerStyle={styles.flatListContainer}
+            ListHeaderComponent={renderHeader}
+          />
+          {loading ? (
+            <ActivityIndicator size="large" color={Colors.main} />
+          ) : (
+            <Button title="Generate" onPress={handleSubmit} />
+          )}
+        </HomeLayout>
+      </View>
     </>
   );
 };
 
+const useSubmitStory = () => {
+  const user = useSelector((state: RootState) => state.user.userResponse);
+
+  const submitStory = async (data: any) => {
+    try {
+      const response = await axios.post(
+        "https://anansesem-dev-api.azurewebsites.net/api/generate-story",
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+          },
+        }
+      );
+      console.log(response);
+      Alert.alert("Success", "Story submitted successfully!");
+    } catch (error) {
+      Alert.alert("Error", "Failed to submit the story.");
+    }
+  };
+
+  return { submitStory };
+};
+
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
+  screen: { backgroundColor: "#fff", flex: 1 },
+
+  textContainer: {},
+  title: {
+    textAlign: "center",
+    fontFamily: Fonts.heading,
+    color: Colors.main,
+    fontSize: FontSizes.title,
   },
-  content: {
-    flex: 1,
-    marginTop: 30,
-    paddingHorizontal: 10,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+  description: {
+    textAlign: "center",
+    marginTop: -10,
     marginBottom: 20,
   },
+
+  flatListContainer: {
+    padding: 10,
+    backgroundColor: "#fff",
+  },
   label: {
-    flex: 1,
-    fontSize: FontSizes.medium,
-    color: "#000",
+    marginBottom: 4,
+    fontSize: 15,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 16,
+    backgroundColor: "#d9d9d9",
+  },
+
+  inputMultiline: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 16,
+    height: 100,
+    textAlignVertical: "top",
+    backgroundColor: Colors.primary,
+    color: "#fff",
   },
   pickerContainer: {
-    flex: 2,
-    overflow: "hidden",
-    backgroundColor: "#D9D9D9",
-    height: 30,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    marginBottom: 16,
     justifyContent: "center",
   },
   picker: {
-    color: "#000",
-  },
-  uploadContainer: {
-    width: "100%",
-    height: 130,
-    padding: 20,
-    backgroundColor: Colors.primary,
-    marginTop: 30,
-    borderRadius: 6,
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#000",
-  },
-  uploadButton: {
-    alignItems: "center",
-    marginTop: 15,
-  },
-  uploadText: {
-    marginLeft: 10,
-    fontSize: 16,
-    color: "#000",
-  },
-  input: {
     height: 50,
-    borderWidth: 1,
-    borderColor: "#000",
+    width: "100%",
+  },
+  categoryToggle: {
+    marginBottom: 8,
+    padding: 8,
     borderRadius: 8,
-    paddingHorizontal: 15,
-    backgroundColor: Colors.primary,
-    marginTop: 30,
-    fontSize: 16,
+    borderWidth: 1,
+    borderColor: "#ddd",
   },
-  button: {
-    position: "absolute",
-    bottom: 10,
-    left: "20%",
-    right: "20%",
-    backgroundColor: "#D0EE30",
-    paddingVertical: 10,
-    paddingHorizontal: 25,
-    borderRadius: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 3,
+  categoryOption: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    marginBottom: 8,
   },
-  buttonText: {
-    color: "#000",
-    fontSize: 18,
+  categorySelected: {
+    backgroundColor: Colors.main,
+  },
+  categoryText: {
+    fontSize: 14,
+  },
+  categoryTextSelected: {
     fontWeight: "bold",
-  },
-  icon: {
-    backgroundColor: "#000",
-    borderRadius: 50,
-    padding: 5,
-  },
-
-  overlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.7)", // Semi-transparent black
-    zIndex: 1, // Ensure it appears above everything
-  },
-  overlayText: {
-    marginTop: 50,
-    color: "#000",
-    fontSize: 18,
-    textAlign: "center",
+    color: "#fff",
   },
 });
 

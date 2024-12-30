@@ -10,7 +10,7 @@ import {
 import Header from "./Header";
 
 interface MainLayoutProps {
-  title: string;
+  title?: string;
   showBackButton?: boolean;
   children: React.ReactNode;
 }

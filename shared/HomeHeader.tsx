@@ -43,11 +43,6 @@ const HomeHeader: React.FC<HeaderProps> = ({
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         {isIcon ? (
-          // <TouchableOpacity onPress={handlePress} activeOpacity={0.9}>
-          //   <View style={styles.placeholder}>
-          //     <MaterialIcons name="person" size={30} color="#FFBB00" />
-          //   </View>
-          // </TouchableOpacity>
           <Image
             source={require("../assets/images/logo.png")}
             style={{ width: 90, height: 50, resizeMode: "contain" }}
@@ -57,7 +52,6 @@ const HomeHeader: React.FC<HeaderProps> = ({
             <Text style={{ opacity: 1, fontSize: 16 }}>Cancel</Text>
           </TouchableOpacity>
         )}
-        <Text style={styles.title}>{title}</Text>
         {true ? (
           <TouchableOpacity onPress={handlePress} activeOpacity={0.9}>
             {/* <View style={styles.placeholder}>
@@ -76,6 +70,7 @@ const HomeHeader: React.FC<HeaderProps> = ({
           </TouchableOpacity>
         )}
       </View>
+      <Text style={styles.title}>{title}</Text>
     </SafeAreaView>
   );
 };
@@ -84,13 +79,17 @@ const styles = StyleSheet.create({
   safeArea: {
     backgroundColor: "transparent",
     zIndex: 99999,
+    marginBottom: 20,
   },
   container: {
     height: 60,
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 20,
+    // paddingHorizontal: 30,
     borderBottomColor: "#ccc",
+    justifyContent: "space-between",
+    // marginBottom: 100,
+    // backgroundColor: "yellow",
   },
 
   title: {
@@ -98,7 +97,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#5D1889",
     textAlign: "center",
-    flex: 1,
   },
 
   placeholder: {

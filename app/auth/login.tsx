@@ -147,7 +147,7 @@ const Login: React.FC = () => {
 
   return (
     <View style={styles.screen}>
-      <MainLayout title="Welcome back">
+      <MainLayout>
         <View style={styles.container}>
           <View style={styles.placeholder}>
             <MaterialIcons name="person" size={30} color="#FFBB00" />

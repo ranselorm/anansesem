@@ -53,7 +53,7 @@ function AppContent() {
       if (!onboardingCompleted) {
         router.push("/welcome");
       } else if (user) {
-        router.push("/create-profile"); //CHANGE THIS BACK TO (TABS)/HOME !!!
+        router.push("/(tabs)/home"); //CHANGE THIS BACK TO  !!!
       } else {
         router.push("/auth/login");
       }

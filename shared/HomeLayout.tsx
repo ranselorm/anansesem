@@ -44,12 +44,13 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: "#fff",
-    paddingTop: 40,
+    paddingTop: 30,
+    paddingHorizontal: 25,
   },
   contentContainer: {
     flexGrow: 1,
-    paddingHorizontal: 10,
-    paddingTop: 20,
+    // paddingHorizontal: 30,
+    // paddingTop: 20,
     paddingBottom: 60,
     justifyContent: "flex-start",
   },

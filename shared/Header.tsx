@@ -12,7 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Fonts, FontSizes } from "@/theme";
 
 interface HeaderProps {
-  title: string;
+  title?: string;
   showBackButton?: boolean;
 }
 
@@ -33,6 +33,7 @@ const Header: React.FC<HeaderProps> = ({ title, showBackButton = true }) => {
         <Text style={styles.title}>{title}</Text>
         {/* Optional right icon or actions can be added here */}
       </View>
+      <Text>Hello</Text>
     </SafeAreaView>
   );
 };

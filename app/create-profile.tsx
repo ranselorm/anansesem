@@ -13,14 +13,15 @@ import {
 import { Picker } from "@react-native-picker/picker";
 import MainLayout from "../shared/MainLayout";
 import { router } from "expo-router";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { updateBio } from "@/store/userSlice";
 import Button from "@/components/ui/Button";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/theme";
 import * as ImagePicker from "expo-image-picker";
-import { RootState } from "@/store";
+import mime from "mime";
+import { isPending } from "@reduxjs/toolkit";
 
 const CreateProfile: React.FC = () => {
   const [fullname, setFullname] = useState("");
@@ -32,11 +33,11 @@ const CreateProfile: React.FC = () => {
   const [readingLevel, setReadingLevel] = useState("");
   const [avatar, setAvatar] = useState("");
   const [pending, setPending] = useState<boolean>(false);
-  const user = useSelector((state: RootState) => state.user.userResponse);
-
-  console.log(user?.token);
 
   const dispatch = useDispatch();
+
+  const TOKEN =
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlZYYVpDdnozeEN2RXJwZFctQk5pNSJ9.eyJuYW1lIjoiR2lkZW9uIEJlZHpyYWgiLCJlbWFpbCI6ImdiZWR6cmFoMUBnbWFpbC5jb20iLCJpc3MiOiJodHRwczovL2FuYW5zZXNlbS51cy5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8Njc2MDI0ZDBhOTE1ZmQ5MGMwZmMwZDI5IiwiYXVkIjpbImh0dHBzOi8vYW5hbnNlc2VtLWRldi1hcGkuYXp1cmV3ZWJzaXRlcy5uZXQvIiwiaHR0cHM6Ly9hbmFuc2VzZW0udXMuYXV0aDAuY29tL3VzZXJpbmZvIl0sImlhdCI6MTczNTMyOTMyNCwiZXhwIjoxNzM1NDE1NzI0LCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIiwiYXpwIjoiaGZHaTJiWWdHeUxLSnBPSnFMT0hGNTl4c1FuMTdaTGEiLCJwZXJtaXNzaW9ucyI6WyJjcmVhdGU6Y29udGVudCIsImRlbGV0ZTpjb250ZW50IiwicmVhZDpjb250ZW50IiwicmVhZDp1c2VycyIsInVwZGF0ZTpjb250ZW50Il19.Wtb0A4gYf-lPp16b2D4UshwAXYfMfJpYkC64SKU5lCQCqFqlQbeB9ExGRIB7T2NPzGSqVuFpLAA3wIgpyfaY4VI70XgFbTjW8nodj0WokiXi2KjuSzFzUZ8I0eqjZ29HEcIX99_2HOuBlZTZV-6ZNF3spG4gJT8Lfo4MTbh9mL92dYq4fmhlm8dkD9HpKmvvWSKXtab2RjBWD2TVR8TF_zRqkZwKa0AV_i95UhUtaaWwkDNFL-sA2Z0VhDgcls5pTnlpVsE1WjL_vupfklqoE7fj-UJ7EhjsYUwL5yMUEV6LvHCzbrPgNB0ilzD4jkqGEXmlHGdVAC3i7ZfUpwpkuw";
 
   const pickImageAsync = async () => {
     try {
@@ -71,7 +72,7 @@ const CreateProfile: React.FC = () => {
           {
             method: "POST",
             headers: {
-              Authorization: `Bearer ${user?.token}`,
+              Authorization: `Bearer ${TOKEN}`,
             },
             body: formData,
           }
@@ -86,6 +87,8 @@ const CreateProfile: React.FC = () => {
 
         const { data } = await response?.json();
         setAvatar(data.url);
+
+        console.log("Upload Successful:", data.url);
       } else {
         Alert.alert("You did not select any image.");
       }
@@ -106,7 +109,7 @@ const CreateProfile: React.FC = () => {
       !readingLevel ||
       !avatar
     ) {
-      alert("Please fill out all fields including the picture!");
+      alert("Please fill out all fields!");
       return;
     }
 

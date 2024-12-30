@@ -43,8 +43,9 @@ const ProfileLayout: React.FC<ProfileLayoutProps> = ({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#fff",
-    paddingTop: 40,
+    backgroundColor: "transparent",
+    paddingTop: 30,
+    paddingHorizontal: 25,
   },
   contentContainer: {
     flexGrow: 1,
