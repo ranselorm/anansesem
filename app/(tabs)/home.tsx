@@ -41,7 +41,7 @@ const categories: {
 ];
 
 const Home: React.FC = () => {
-  const { data: stories = [], isLoading, error } = useFetchData();
+  const { data: stories = [], isLoading, error, refetch } = useFetchData();
   const user = useSelector((state: RootState) => state.user.userResponse);
 
   const renderCategory = useCallback(
@@ -83,17 +83,6 @@ const Home: React.FC = () => {
     []
   );
 
-  // if (error) {
-  //   return (
-  //     // <View style={styles.errorContainer}>
-  //     //   <Text style={styles.errorText}>
-  //     //     Error fetching library data! {error.message}
-  //     //   </Text>
-  //     // </View>
-  //     <Error title="Error has occureed" />
-  //   );
-  // }
-
   return (
     <View style={styles.screen}>
       <HomeLayout isIcon>
@@ -125,13 +114,14 @@ const Home: React.FC = () => {
             </TouchableOpacity>
           </View>
 
-          {isLoading ? (
-            !error ? (
+          {!isLoading ? (
+            error ? (
               <View style={styles.errorContainer}>
-                <Text style={styles.errorText}>Failed to load stories</Text>
+                <Text style={styles.errorText}>Oups 🤭</Text>
+                <Text style={styles.errorText}>Something went wrong</Text>
                 <TouchableOpacity
                   style={styles.retryButton}
-                  onPress={() => {}} // refetch
+                  onPress={() => refetch()} // refetch
                 >
                   <Text style={styles.retryText}>Retry</Text>
                 </TouchableOpacity>

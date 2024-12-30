@@ -54,9 +54,6 @@ const HomeHeader: React.FC<HeaderProps> = ({
         )}
         {true ? (
           <TouchableOpacity onPress={handlePress} activeOpacity={0.9}>
-            {/* <View style={styles.placeholder}>
-              <MaterialIcons name="person" size={30} color="#FFBB00" />
-            </View> */}
             <Image
               source={{
                 uri: "https://s.gravatar.com/avatar/6e70d1f802061fa4736e32317217280f?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fzr.png",

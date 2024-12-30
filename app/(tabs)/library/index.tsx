@@ -39,7 +39,7 @@ const categories: Category[] = [
 ];
 
 const Library: React.FC = () => {
-  const { data: stories = [], isLoading, error } = useFetchData();
+  const { data: stories = [], isLoading, error, refetch } = useFetchData();
 
   const [selectedCategory, setSelectedCategory] = useState<string>(
     categories.length > 0 ? categories[0].label : ""
@@ -104,50 +104,55 @@ const Library: React.FC = () => {
     </View>
   );
 
-  if (error) {
-    return (
-      <Text style={{ color: "red", textAlign: "center" }}>
-        Error fetching library data! {error.message}
-      </Text>
-    );
-  }
-
   return (
     <HomeLayout title="Library" isIcon>
       {!isLoading ? (
-        <FlatList
-          data={stories?.data?.library || []}
-          renderItem={renderStoryCard}
-          keyExtractor={(item) => item.reference}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.flatListContent}
-          ListHeaderComponent={
-            <>
-              {/* Search Bar */}
-              <View style={styles.searchContainer}>
-                <MaterialIcons name="search" size={24} color="#000" />
-                <TextInput
-                  style={styles.searchInput}
-                  placeholder="Search stories"
-                  placeholderTextColor="#000"
-                />
-                <MaterialIcons name="menu" size={24} color="#000" />
-              </View>
+        error ? (
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>Oups 🤭</Text>
+            <Text style={styles.errorText}>Somethig went wrong</Text>
+            <TouchableOpacity
+              style={styles.retryButton}
+              onPress={() => refetch()}
+            >
+              <Text style={styles.retryText}>Retry</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <FlatList
+            data={stories?.data?.library || []}
+            renderItem={renderStoryCard}
+            keyExtractor={(item) => item.reference}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.flatListContent}
+            ListHeaderComponent={
+              <>
+                {/* Search Bar */}
+                <View style={styles.searchContainer}>
+                  <MaterialIcons name="search" size={24} color="#000" />
+                  <TextInput
+                    style={styles.searchInput}
+                    placeholder="Search stories"
+                    placeholderTextColor="#000"
+                  />
+                  <MaterialIcons name="menu" size={24} color="#000" />
+                </View>
 
-              {/* Categories */}
-              <FlatList
-                data={categories}
-                renderItem={renderCategory}
-                keyExtractor={(item) => item.label}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.categoryList}
-              />
-            </>
-          }
-        />
+                {/* Categories */}
+                <FlatList
+                  data={categories}
+                  renderItem={renderCategory}
+                  keyExtractor={(item) => item.label}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.categoryList}
+                />
+              </>
+            }
+          />
+        )
       ) : (
-        <ActivityIndicator />
+        <ActivityIndicator size="large" color={Colors.primary} />
       )}
     </HomeLayout>
   );
@@ -244,6 +249,29 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#FFF",
     borderRadius: 4,
+  },
+
+  errorContainer: {
+    height: 100,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorText: {
+    color: "#FF8D6A",
+    fontSize: 16,
+    textAlign: "center",
+    marginBottom: 10,
+  },
+  retryButton: {
+    backgroundColor: Colors.pink,
+    paddingVertical: 6,
+    paddingHorizontal: 16,
+    borderRadius: 5,
+  },
+  retryText: {
+    color: "#FFF",
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
 
