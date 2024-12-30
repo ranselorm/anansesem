@@ -1,48 +1,41 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { Skeleton } from "@rneui/themed";
+import { createShimmerPlaceholder } from "react-native-shimmer-placeholder";
+import { LinearGradient } from "expo-linear-gradient";
 
-export const PlaceHolders = () => {
-  const skeletonStyle = {
-    borderRadius: 6,
-    backgroundColor: "#F0F0F0",
-  };
+const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
+export default function Placeholder() {
   return (
     <View style={styles.container}>
-      {[...Array(2)].map((_, index) => (
-        <Skeleton
-          key={index}
-          width={238}
-          height={200}
-          style={skeletonStyle}
-          animation="pulse"
-        />
-      ))}
+      <ShimmerPlaceHolder style={styles.shimmer} />
+      <ShimmerPlaceHolder style={styles.shimmer} />
+      {/* <ShimmerPlaceHolder style={styles.shimmer} duration={1200} /> */}
+      {/* <ShimmerPlaceHolder style={styles.shimmer} />
+      <ShimmerPlaceHolder
+        style={styles.shimmer}
+        duration={5000} // Very slow animation
+      /> */}
     </View>
   );
-};
-
-export const VideoPlaceHolder = () => {
-  return (
-    <View>
-      <Skeleton width={200} height={300} />
-    </View>
-  );
-};
-export const IconsPlaceHolder = () => {
-  return (
-    <View>
-      <Skeleton width={200} height={100} />
-    </View>
-  );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    gap: 20, // For spacing between placeholders
+    // padding: 16,
+    backgroundColor: "#f5f5f5",
+    // flexDirection: "row",
+  },
+  shimmer: {
+    height: 30,
+    width: "100%",
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  shimmer1: {
+    height: 30,
+    width: "100%",
+    borderRadius: 5,
+    // marginBottom: 10,
   },
 });

@@ -1,5 +1,12 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Alert,
+} from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import ProfileLayout from "@/shared/ProfileLayout";
 import { Colors, Fonts, FontSizes } from "@/theme";
@@ -8,6 +15,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { resetState } from "@/store/userSlice";
 import { router } from "expo-router";
 import { RootState } from "@/store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const settingsData = [
   { id: 1, label: "Audio settings", icon: "settings-voice" },
@@ -20,9 +28,18 @@ const Profile: React.FC = () => {
   const user = useSelector((state: RootState) => state.user.userResponse);
   const dispatch = useDispatch();
 
+  const removeOnboarding = async () => {
+    try {
+      await AsyncStorage.removeItem("onboardingCompleted");
+      Alert.alert("Success");
+    } catch (error) {
+      console.error("Error clearing user data:", error);
+    }
+  };
+
   const logout = () => {
-    dispatch(resetState());
-    clearUserData();
+    // dispatch(resetState());
+    removeOnboarding();
     // Alert.alert("LOGGED OUT!!!");
     router.replace("/auth/login");
   };

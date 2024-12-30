@@ -16,7 +16,7 @@ import { router } from "expo-router";
 import { useFetchData } from "@/hooks/usFetchData";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
-import Error from "@/components/Error";
+import Placeholder from "@/components/PlaceHolders";
 
 const categories: {
   label: string;
@@ -85,10 +85,9 @@ const Home: React.FC = () => {
 
   return (
     <View style={styles.screen}>
-      <HomeLayout isIcon>
+      <HomeLayout isIcon title={`Hi, ${user?.name}`}>
         <View style={styles.container}>
           <View style={styles.textContainer}>
-            <Text style={styles.title}>Hi, {user?.name || "there"}</Text>
             <Text style={styles.subtitle}>
               Let&apos;s learn something new today
             </Text>
@@ -114,32 +113,34 @@ const Home: React.FC = () => {
             </TouchableOpacity>
           </View>
 
-          {!isLoading ? (
-            error ? (
-              <View style={styles.errorContainer}>
-                <Text style={styles.errorText}>Oups 🤭</Text>
-                <Text style={styles.errorText}>Something went wrong</Text>
-                <TouchableOpacity
-                  style={styles.retryButton}
-                  onPress={() => refetch()} // refetch
-                >
-                  <Text style={styles.retryText}>Retry</Text>
-                </TouchableOpacity>
-              </View>
+          <View>
+            {!isLoading ? (
+              error ? (
+                <View style={styles.errorContainer}>
+                  <Text style={styles.errorText}>Oups 🤭</Text>
+                  <Text style={styles.errorText}>Something went wrong</Text>
+                  <TouchableOpacity
+                    style={styles.retryButton}
+                    onPress={() => refetch()} // refetch
+                  >
+                    <Text style={styles.retryText}>Retry</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <FlatList
+                  data={stories?.data?.library}
+                  renderItem={renderStory}
+                  keyExtractor={(item) => item.title}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.featuredList}
+                  initialNumToRender={10}
+                />
+              )
             ) : (
-              <FlatList
-                data={stories?.data?.library}
-                renderItem={renderStory}
-                keyExtractor={(item) => item.title}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.featuredList}
-                initialNumToRender={10}
-              />
-            )
-          ) : (
-            <ActivityIndicator size="small" color={Colors.main} />
-          )}
+              <Placeholder />
+            )}
+          </View>
         </View>
       </HomeLayout>
     </View>
@@ -148,9 +149,9 @@ const Home: React.FC = () => {
 
 const styles = StyleSheet.create({
   screen: { flex: 1 },
-  container: { flex: 1, paddingHorizontal: 10 },
+  container: { flex: 1, paddingHorizontal: 0 },
   textContainer: {
-    marginVertical: 20,
+    marginBottom: 20,
     textAlign: "center",
   },
   title: {
@@ -176,10 +177,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginVertical: 15,
+    marginTop: 20,
   },
   seeAllText: { fontSize: 14 },
-  featuredList: { paddingBottom: 10 },
+  featuredList: { paddingBottom: 2 },
   storyCard: {
     width: 238,
     height: 250,

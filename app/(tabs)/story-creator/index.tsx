@@ -8,15 +8,19 @@ import {
   FlatList,
   Alert,
   ActivityIndicator,
+  // Button,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import CollapsibleCategory from "@/components/CollapsibleCategory";
 import HomeLayout from "@/shared/HomeLayout";
 import { Colors, Fonts, FontSizes } from "@/theme";
-import { Button } from "react-native";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { RootState } from "@/store";
+import Button from "@/components/ui/Button";
+import { useSubmitStory } from "@/hooks/useSubmitStory";
 
 const StoryCreator: React.FC = () => {
   const [book, setBook] = useState({
@@ -42,7 +46,8 @@ const StoryCreator: React.FC = () => {
     moral: "",
   });
   const [isCategoryCollapsed, setIsCategoryCollapsed] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const { mutate: submitStory, isPending } = useSubmitStory();
+  const reference = "ref" + Date.now() + Math.floor(Math.random() * 40);
 
   const toggleCategory = (category: string) => {
     setBook((prev) => {
@@ -53,7 +58,7 @@ const StoryCreator: React.FC = () => {
     });
   };
 
-  const { submitStory } = useSubmitStory();
+  // const { submitStory } = useSubmitStory();
   const validateFields = () => {
     if (
       !book.title ||
@@ -79,14 +84,15 @@ const StoryCreator: React.FC = () => {
 
   const handleSubmit = () => {
     if (!validateFields()) return;
-    console.log({ book, mainCharacter, story });
-    setLoading(true);
-    submitStory({
+    const storyData = {
       book,
       mainCharacter,
       story,
-      reference: "testkhgfdkl12jj4kkw",
-    }).finally(() => setLoading(false));
+      reference,
+    };
+
+    submitStory(storyData);
+    // console.log(storyData);
   };
 
   const categories = ["ADVENTURE", "MYSTERY"];
@@ -130,7 +136,7 @@ const StoryCreator: React.FC = () => {
               }
             >
               <Picker.Item label="Select" value="" />
-              {[...Array(30)].map((_, i) => (
+              {[...Array(6)].map((_, i) => (
                 <Picker.Item
                   key={i}
                   label={`${i + 1} pages`}
@@ -262,11 +268,11 @@ const StoryCreator: React.FC = () => {
                 })
               }
             >
-              {[...Array(100)].map((_, i) => (
+              {[...Array(11)].map((_, i) => (
                 <Picker.Item
-                  key={i}
-                  label={`${i + 1} years`}
-                  value={`${i + 1}`}
+                  key={i + 6}
+                  label={`${i + 6} years`}
+                  value={`${i + 6}`}
                 />
               ))}
             </Picker>
@@ -342,8 +348,18 @@ const StoryCreator: React.FC = () => {
     </View>
   );
 
+  const renderFooter = () => (
+    <Button
+      text={isPending ? "Generating..." : "Generate"}
+      onPress={handleSubmit}
+    />
+  );
+
   return (
-    <>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
       <View style={styles.screen}>
         <HomeLayout isIcon title="AI Story Creator">
           <FlatList
@@ -354,43 +370,39 @@ const StoryCreator: React.FC = () => {
                 {item.content}
               </CollapsibleCategory>
             )}
-            contentContainerStyle={styles.flatListContainer}
             ListHeaderComponent={renderHeader}
+            ListFooterComponent={renderFooter}
+            contentContainerStyle={styles.flatListContainer}
           />
-          {loading ? (
-            <ActivityIndicator size="large" color={Colors.main} />
-          ) : (
-            <Button title="Generate" onPress={handleSubmit} />
-          )}
         </HomeLayout>
       </View>
-    </>
+    </KeyboardAvoidingView>
   );
 };
 
-const useSubmitStory = () => {
-  const user = useSelector((state: RootState) => state.user.userResponse);
+// const useSubmitStory = () => {
+//   const user = useSelector((state: RootState) => state.user.userResponse);
 
-  const submitStory = async (data: any) => {
-    try {
-      const response = await axios.post(
-        "https://anansesem-dev-api.azurewebsites.net/api/generate-story",
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${user?.token}`,
-          },
-        }
-      );
-      console.log(response);
-      Alert.alert("Success", "Story submitted successfully!");
-    } catch (error) {
-      Alert.alert("Error", "Failed to submit the story.");
-    }
-  };
+//   const submitStory = async (data: any) => {
+//     try {
+//       const response = await axios.post(
+//         "https://anansesem-dev-api.azurewebsites.net/api/generate-story",
+//         data,
+//         {
+//           headers: {
+//             Authorization: `Bearer ${user?.token}`,
+//           },
+//         }
+//       );
+//       console.log(response);
+//       Alert.alert("Success", "Story submitted successfully!");
+//     } catch (error) {
+//       Alert.alert("Error", "Failed to submit the story.");
+//     }
+//   };
 
-  return { submitStory };
-};
+//   return { submitStory };
+// };
 
 const styles = StyleSheet.create({
   screen: { backgroundColor: "#fff", flex: 1 },
@@ -411,6 +423,7 @@ const styles = StyleSheet.create({
   flatListContainer: {
     padding: 10,
     backgroundColor: "#fff",
+    paddingBottom: 50, // Prevents content from being cut off
   },
   label: {
     marginBottom: 4,
@@ -470,6 +483,10 @@ const styles = StyleSheet.create({
   categoryTextSelected: {
     fontWeight: "bold",
     color: "#fff",
+  },
+
+  buttonContainer: {
+    marginTop: 100,
   },
 });
 

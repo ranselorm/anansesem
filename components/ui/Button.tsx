@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     // position: "absolute",
     // bottom: 20,
+    marginBottom: 20,
   },
   button: {
     backgroundColor: "#CCFF33",

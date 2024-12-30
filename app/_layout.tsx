@@ -44,7 +44,7 @@ function AppContent() {
   useEffect(() => {
     if (!isLoading) {
       if (!onboardingCompleted) {
-        router.push("/welcome");
+        router.push("/onboarding");
       } else if (user) {
         router.push("/(tabs)/home");
       } else {
@@ -62,9 +62,11 @@ function AppContent() {
       <Stack.Screen name="index" />
       <Stack.Screen name="onboarding" />
       <Stack.Screen name="welcome" />
-      <Stack.Screen name="get-started" />
       <Stack.Screen name="register" />
-      <Stack.Screen name="auth/login" />
+      <Stack.Screen name="create-profile" />
+
+      <Stack.Screen name="get-started" />
+      <Stack.Screen name="login" />
       <Stack.Screen name="(tabs)" />
     </Stack>
   );
