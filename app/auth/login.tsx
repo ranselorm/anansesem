@@ -114,8 +114,8 @@ const Login: React.FC = () => {
   // };
 
   const dataToSubmit = {
-    email: "gbedzrah1@gmail.com",
-    password: "p@ssw0rd123",
+    email,
+    password,
   };
 
   const handleSubmit = async () => {
@@ -149,6 +149,7 @@ const Login: React.FC = () => {
     <View style={styles.screen}>
       <MainLayout>
         <View style={styles.container}>
+          <Text style={styles.title}>Welcome back to Anansesem</Text>
           <View style={styles.placeholder}>
             <MaterialIcons name="person" size={30} color="#FFBB00" />
           </View>
@@ -207,6 +208,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingHorizontal: 30,
     gap: 40,
+  },
+
+  title: {
+    textAlign: "center",
+    fontSize: FontSizes.title,
+    color: Colors.main,
   },
 
   placeholder: {
