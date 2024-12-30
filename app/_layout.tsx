@@ -20,6 +20,7 @@ export default function RootLayout() {
     </Provider>
   );
 }
+
 function AppContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [onboardingCompleted, setOnboardingCompleted] = useState(false);
@@ -29,31 +30,23 @@ function AppContent() {
     const initialize = async () => {
       try {
         const completed = await AsyncStorage.getItem("onboardingCompleted");
-
         setOnboardingCompleted(completed === "true");
-
-        if (!completed) {
-          setIsLoading(false);
-        } else if (user) {
-          setIsLoading(false);
-        } else {
-          setIsLoading(false);
-        }
       } catch (error) {
         console.error("Error during initialization:", error);
-        setIsLoading(false); // Ensure the app doesn't stay stuck
+      } finally {
+        setIsLoading(false);
       }
     };
 
     initialize();
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     if (!isLoading) {
       if (!onboardingCompleted) {
         router.push("/welcome");
       } else if (user) {
-        router.push("/(tabs)/home"); //CHANGE THIS BACK TO  !!!
+        router.push("/(tabs)/home");
       } else {
         router.push("/auth/login");
       }
@@ -67,6 +60,7 @@ function AppContent() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
+      <Stack.Screen name="onboarding" />
       <Stack.Screen name="welcome" />
       <Stack.Screen name="get-started" />
       <Stack.Screen name="register" />
