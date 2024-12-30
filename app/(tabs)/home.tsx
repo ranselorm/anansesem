@@ -16,6 +16,7 @@ import { router } from "expo-router";
 import { useFetchData } from "@/hooks/usFetchData";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import Error from "@/components/Error";
 
 const categories: {
   label: string;
@@ -82,15 +83,16 @@ const Home: React.FC = () => {
     []
   );
 
-  if (error) {
-    return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>
-          Error fetching library data! {error.message}
-        </Text>
-      </View>
-    );
-  }
+  // if (error) {
+  //   return (
+  //     // <View style={styles.errorContainer}>
+  //     //   <Text style={styles.errorText}>
+  //     //     Error fetching library data! {error.message}
+  //     //   </Text>
+  //     // </View>
+  //     <Error title="Error has occureed" />
+  //   );
+  // }
 
   return (
     <View style={styles.screen}>
@@ -123,16 +125,28 @@ const Home: React.FC = () => {
             </TouchableOpacity>
           </View>
 
-          {!isLoading ? (
-            <FlatList
-              data={stories?.data?.library}
-              renderItem={renderStory}
-              keyExtractor={(item) => item.title}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.featuredList}
-              initialNumToRender={10}
-            />
+          {isLoading ? (
+            !error ? (
+              <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>Failed to load stories</Text>
+                <TouchableOpacity
+                  style={styles.retryButton}
+                  onPress={() => {}} // refetch
+                >
+                  <Text style={styles.retryText}>Retry</Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <FlatList
+                data={stories?.data?.library}
+                renderItem={renderStory}
+                keyExtractor={(item) => item.title}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.featuredList}
+                initialNumToRender={10}
+              />
+            )
           ) : (
             <ActivityIndicator size="small" color={Colors.main} />
           )}
@@ -214,8 +228,29 @@ const styles = StyleSheet.create({
   },
   playButtonText: { color: "#000", marginLeft: 5, fontSize: 12 },
   icon: { marginLeft: 10 },
-  errorContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
-  errorText: { color: "red", textAlign: "center" },
+
+  errorContainer: {
+    height: 100,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 16,
+    textAlign: "center",
+    marginBottom: 10,
+  },
+  retryButton: {
+    backgroundColor: Colors.pink,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 5,
+  },
+  retryText: {
+    color: "#FFF",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
 });
 
 export default Home;
