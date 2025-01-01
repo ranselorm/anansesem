@@ -6,7 +6,6 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Animated,
   LayoutAnimation,
   Platform,
   UIManager,
