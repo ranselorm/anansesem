@@ -7,7 +7,7 @@ import { RootState } from "@/store";
 
 export default function TabLayout() {
   const user = useSelector((state: RootState) => state.user.userResponse);
-  if (!user?.isLoggedIn) return <Redirect href="/auth/login" />;
+  // if (!user?.isLoggedIn) return <Redirect href="/auth/login" />;
 
   return (
     <Tabs

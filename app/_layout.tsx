@@ -3,7 +3,7 @@ import { Provider, useSelector } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor, RootState } from "@/store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Redirect, router, Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SplashScreen from "@/components/SplashScreen";
 
@@ -44,11 +44,11 @@ function AppContent() {
   useEffect(() => {
     if (!isLoading) {
       if (!onboardingCompleted) {
-        <Redirect href="/onboarding" />;
+        router.replace("/onboarding");
       } else if (user?.isLoggedIn) {
-        <Redirect href="/(tabs)/home" />;
+        router.replace("/(tabs)/home");
       } else if (!user) {
-        <Redirect href="/auth/login" />;
+        router.replace("/auth/login");
       }
     }
   }, [isLoading, onboardingCompleted, user]);
