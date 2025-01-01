@@ -3,6 +3,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { Alert } from "react-native";
+import { router } from "expo-router";
 
 const API_URL =
   "https://anansesem-dev-api.azurewebsites.net/api/generate-story";
@@ -25,7 +26,8 @@ export const useSubmitStory = () => {
     },
     onSuccess: (data) => {
       console.log("Story submitted successfully:", data);
-      Alert.alert("Success", "Story submitted successfully!");
+      // Alert.alert("Success", "Story submitted successfully!");
+      router.replace("/(tabs)/home");
     },
     onError: (error) => {
       console.error("Error submitting story:", error);

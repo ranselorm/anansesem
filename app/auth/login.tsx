@@ -85,34 +85,6 @@ const Login: React.FC = () => {
     );
   };
 
-  // const silentReLogin = (email: string, password: string) => {
-  //   submitData(
-  //     { email, password },
-  //     {
-  //       onSuccess: async (responseData) => {
-  //         const decodedToken: any = jwtDecode(responseData?.data?.id_token);
-  //         const updatedUser = {
-  //           isLoggedIn: true,
-  //           name: `${decodedToken.name}`,
-  //           id: decodedToken.sub,
-  //           email: decodedToken.email,
-  //           picture: decodedToken.picture,
-  //           exp: decodedToken.exp,
-  //           token: responseData?.data?.access_token,
-  //         };
-
-  //         dispatch(setUser(updatedUser));
-  //         await saveUserData(updatedUser);
-  //         console.log("Updated Redux User:", updatedUser);
-  //         router.replace("/(tabs)/home");
-  //       },
-  //       onError: (error: any) => {
-  //         console.error("Silent re-login failed:", error.message);
-  //       },
-  //     }
-  //   );
-  // };
-
   const handleSubmit = async () => {
     if (!email || !password) {
       Alert.alert("Required fields", "Please enter both email and password.");
@@ -130,7 +102,7 @@ const Login: React.FC = () => {
           router.replace("/(tabs)/home");
         },
         onError: (error: any) => {
-          Alert.alert("Oups 🤭", "Failed to login. Retry!");
+          Alert.alert("Oups 🤭", "Failed to login. Try again");
         },
       }
     );

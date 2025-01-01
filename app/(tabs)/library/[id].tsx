@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -10,19 +10,26 @@ import {
   Image,
 } from "react-native";
 import {
-  FontAwesome,
   Feather,
   MaterialIcons,
   AntDesign,
   MaterialCommunityIcons,
   FontAwesome5,
   Ionicons,
+  Entypo,
 } from "@expo/vector-icons";
-import { Video, ResizeMode, AVPlaybackStatus } from "expo-av";
+import {
+  Video,
+  ResizeMode,
+  Audio,
+  AVPlaybackStatus,
+  AVPlaybackStatusSuccess,
+} from "expo-av";
 import { router, useLocalSearchParams, Link } from "expo-router";
-import { Fonts, FontSizes } from "@/theme";
+import { Fonts } from "@/theme";
 import Spinner from "react-native-loading-spinner-overlay";
 import { useFetchDetails } from "@/hooks/useFetchDetails";
+import { useLikeStory } from "@/hooks/useLike";
 
 const relatedStories = [
   {
@@ -43,22 +50,116 @@ const StoryPlayback: React.FC = () => {
   const { id } = useLocalSearchParams();
   const video = useRef<Video>(null);
   const [status, setStatus] = useState<AVPlaybackStatus | null>(null);
+  const [audio, setAudio] = useState<Audio.Sound | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoadingAudio, setIsLoadingAudio] = useState(false);
 
   const { data, isLoading, error } = useFetchDetails(id as string);
-  const item = data?.data || {};
-  // const relatedStories = item?.relatedStories || [];
+  const { mutate: likeStoryMutation, isPending: isLiking } = useLikeStory();
 
-  const [likeCount, setLikeCount] = useState(item?.likes || 5500);
+  const item = data?.data || {};
+  const [likeCount, setLikeCount] = useState(item?.likes || 0);
   const [dislikeCount, setDislikeCount] = useState(item?.dislikes || 0);
 
-  const handleLike = () => setLikeCount((prev: any) => prev + 1);
-  const handleDislike = () => setDislikeCount((prev: any) => prev + 1);
-  const handleShare = () => Alert.alert("Shared!");
-  const handleRead = () => Alert.alert("Read initiated!");
-  const handleListen = () => Alert.alert("Listening started!");
-  const handleQuiz = () => Alert.alert("Quiz started!");
+  const videoUrl =
+    item?.videoContent?.length > 0 ? item?.videoContent[0]?.url : null;
 
-  // Loading State
+  const audioUrl =
+    item?.audioContent?.length > 0 ? item.audioContent[0].url : null;
+
+  // Cleanup audio on component unmount
+  // useEffect(() => {
+  //   return () => {
+  //     if (audio) {
+  //       audio.unloadAsync();
+  //     }
+  //   };
+  // }, [audio]);
+
+  // Cleanup audio when the story changes
+  useEffect(() => {
+    const cleanupAudio = async () => {
+      if (audio) {
+        await audio.unloadAsync();
+        setAudio(null);
+        setIsPlaying(false);
+      }
+    };
+
+    cleanupAudio();
+  }, [id]); // Trigger this effect whenever `id` (story reference) changes
+
+  useEffect(() => {
+    return () => {
+      if (audio) {
+        audio.unloadAsync();
+      }
+    };
+  }, [audio]);
+
+  const handleListen = async () => {
+    if (!audioUrl) {
+      Alert.alert("Error", "No audio file available for this story.");
+      return;
+    }
+
+    try {
+      if (isPlaying) {
+        // Pause the audio if it's currently playing
+        await audio?.pauseAsync();
+        setIsPlaying(false);
+        return;
+      }
+
+      setIsLoadingAudio(true);
+
+      if (!audio) {
+        // Load the audio if it hasn't been loaded yet
+        const { sound } = await Audio.Sound.createAsync({ uri: audioUrl });
+        setAudio(sound);
+
+        sound.setOnPlaybackStatusUpdate((status: AVPlaybackStatus) => {
+          if ((status as AVPlaybackStatusSuccess).isPlaying) {
+            setIsPlaying(true);
+          } else if ((status as AVPlaybackStatusSuccess).didJustFinish) {
+            setIsPlaying(false);
+          }
+        });
+
+        await sound.playAsync();
+        setIsPlaying(true);
+      } else {
+        // Play the audio if it's already loaded
+        await audio.playAsync();
+        setIsPlaying(true);
+      }
+    } catch (error) {
+      console.error("Error playing audio:", error);
+      Alert.alert("Error", "Failed to play the audio.");
+    } finally {
+      setIsLoadingAudio(false);
+    }
+  };
+
+  const handleLike = () => {
+    if (!item?.reference) {
+      Alert.alert("Error", "Story reference is missing!");
+      return;
+    }
+
+    likeStoryMutation(item.reference, {
+      onSuccess: () => {
+        setLikeCount((prev: any) => prev + 1);
+      },
+      onError: (error) => {
+        console.error("Error while liking the story:", error);
+        setLikeCount((prev: any) => prev);
+      },
+    });
+  };
+
+  const handleDislike = () => setDislikeCount((prev: any) => prev + 1);
+
   if (isLoading) {
     return (
       <Spinner
@@ -69,7 +170,6 @@ const StoryPlayback: React.FC = () => {
     );
   }
 
-  // Error State
   if (error) {
     return (
       <Text style={{ color: "red", textAlign: "center" }}>
@@ -77,10 +177,6 @@ const StoryPlayback: React.FC = () => {
       </Text>
     );
   }
-
-  // Video URL handling
-  const videoUrl =
-    item?.videoContent?.length > 0 ? item?.videoContent[0]?.url : null;
 
   return (
     <View style={styles.screen}>
@@ -130,7 +226,7 @@ const StoryPlayback: React.FC = () => {
           <View style={styles.likeDislikeContainer}>
             <TouchableOpacity onPress={handleLike} style={styles.button}>
               <AntDesign name="like2" size={20} color="black" />
-              <Text style={styles.label}>{likeCount}</Text>
+              <Text>{likeCount}</Text>
             </TouchableOpacity>
             <View style={styles.divider} />
             <TouchableOpacity onPress={handleDislike} style={styles.button}>
@@ -139,7 +235,7 @@ const StoryPlayback: React.FC = () => {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity style={styles.button} onPress={handleShare}>
+          <TouchableOpacity style={styles.button}>
             <MaterialCommunityIcons
               name="share-outline"
               size={22}
@@ -149,19 +245,24 @@ const StoryPlayback: React.FC = () => {
           </TouchableOpacity>
 
           {/* Read Button */}
-          <TouchableOpacity style={styles.button} onPress={handleRead}>
+          <TouchableOpacity style={styles.button}>
             <FontAwesome5 name="readme" size={18} color="black" />
             <Text style={styles.label}>Read</Text>
           </TouchableOpacity>
 
           {/* Listen Button */}
           <TouchableOpacity style={styles.button} onPress={handleListen}>
-            <Ionicons name="musical-note-outline" size={20} color="black" />
-            <Text style={styles.label}>Listen</Text>
+            {isPlaying ? (
+              <Ionicons name="pause-circle-outline" size={20} color="black" />
+            ) : (
+              <Ionicons name="play-circle-outline" size={20} color="black" />
+            )}
+
+            <Text style={styles.label}>{isPlaying ? "Playing" : "Listen"}</Text>
           </TouchableOpacity>
 
           {/* Quiz Button */}
-          <TouchableOpacity style={styles.button} onPress={handleQuiz}>
+          <TouchableOpacity style={styles.button}>
             <MaterialIcons name="quiz" size={20} color="black" />
             <Link
               href={{

@@ -12,6 +12,8 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { FontSizes } from "@/theme";
 import { router } from "expo-router";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 interface HeaderProps {
   title?: string;
@@ -38,6 +40,7 @@ const HomeHeader: React.FC<HeaderProps> = ({
   const handleDonePress = () => {
     router.push("/profile");
   };
+  const user = useSelector((state: RootState) => state.user.userResponse);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -56,7 +59,7 @@ const HomeHeader: React.FC<HeaderProps> = ({
           <TouchableOpacity onPress={handlePress} activeOpacity={0.9}>
             <Image
               source={{
-                uri: "https://s.gravatar.com/avatar/6e70d1f802061fa4736e32317217280f?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fzr.png",
+                uri: user?.picture || "",
               }}
               style={{ width: 40, height: 40, borderRadius: 50 }}
             />

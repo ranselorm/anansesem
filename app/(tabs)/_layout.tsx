@@ -6,9 +6,13 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 
 export default function TabLayout() {
+  const user = useSelector((state: RootState) => state.user.userResponse);
+  if (!user?.isLoggedIn) return <Redirect href="/auth/login" />;
+
   return (
     <Tabs
       screenOptions={{
+        tabBarHideOnKeyboard: true,
         tabBarInactiveTintColor: "#000",
         tabBarActiveTintColor: "#000",
         tabBarStyle: {

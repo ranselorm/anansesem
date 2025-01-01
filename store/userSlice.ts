@@ -13,6 +13,7 @@ interface UserState {
     fullName: string;
     nickName: string;
     email: string;
+    password: string;
     dateOfBirth: string;
     gender: string;
     preferredLanguage: string;
@@ -41,6 +42,7 @@ const initialState: UserState = {
     fullName: "",
     nickName: "selooo",
     email: "",
+    password: "",
     dateOfBirth: "",
     gender: "",
     preferredLanguage: "ENGLISH",

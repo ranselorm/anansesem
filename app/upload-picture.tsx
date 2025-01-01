@@ -21,6 +21,7 @@ const UploadProfilePicture: React.FC = () => {
     bio: {
       fullName: userState.bio.fullName,
       nickName: userState.bio.nickName,
+      password: userState.bio.password,
       email: userState.bio.email,
       dateOfBirth: userState.bio.dateOfBirth,
       gender: userState.bio.gender,

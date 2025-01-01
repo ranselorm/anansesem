@@ -1,22 +1,11 @@
-import { RootState } from "@/store";
 import { useQuery } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
 
 const API_URL = "https://anansesem-dev-api.azurewebsites.net/api/nickname";
 
-export const fetchNicknames = async (
-  name: string,
-  token: string
-): Promise<string[]> => {
-  if (!token) {
-    throw new Error("Token is missing");
-  }
-
+export const fetchNicknames = async (name: string): Promise<string[]> => {
   const response = await fetch(`${API_URL}?name=${encodeURIComponent(name)}`, {
     method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
   });
 
   if (!response.ok) {
@@ -31,13 +20,23 @@ export const fetchNicknames = async (
 };
 
 export const useNickname = (name: string) => {
-  const user = useSelector((state: RootState) => state.user.userResponse);
-  const token = user?.token;
+  // Debounce the API call to reduce frequency
+  const [debouncedName, setDebouncedName] = useState(name);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedName(name);
+    }, 300); // Wait 300ms before triggering
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [name]);
 
   return useQuery({
-    queryKey: ["nicknameSuggestions", name],
-    queryFn: () => fetchNicknames(name, token),
-    enabled: !!name && !!token,
+    queryKey: ["nicknameSuggestions", debouncedName],
+    queryFn: () => fetchNicknames(debouncedName),
+    enabled: !!debouncedName, // Only fetch when there's a name
     staleTime: 60000,
   });
 };

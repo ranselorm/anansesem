@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   Image,
   ImageSourcePropType,
-  ActivityIndicator,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import HomeLayout from "@/shared/HomeLayout";
@@ -130,7 +129,7 @@ const Home: React.FC = () => {
                 <FlatList
                   data={stories?.data?.library}
                   renderItem={renderStory}
-                  keyExtractor={(item) => item.title}
+                  keyExtractor={(item) => item?.id}
                   horizontal
                   showsHorizontalScrollIndicator={false}
                   contentContainerStyle={styles.featuredList}

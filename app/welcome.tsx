@@ -57,22 +57,9 @@ const Welcome: React.FC = () => {
         </View>
       </View>
 
-      {/* <TouchableOpacity
-        style={styles.button}
-        activeOpacity={1.2}
-        onPress={() => router.push("/register")}
-      >
-        <Text style={styles.buttonText}>I Agree</Text>
-        <MaterialIcons
-          name="arrow-forward"
-          size={22}
-          color="white"
-          style={styles.icon}
-        />
-      </TouchableOpacity> */}
       <Button
         text="I Agree"
-        onPress={() => router.push("/auth/login")}
+        onPress={() => router.push("/register")}
         absolute
       />
 

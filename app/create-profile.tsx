@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -19,13 +19,13 @@ import Button from "@/components/ui/Button";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/theme";
+import { useNickname } from "@/hooks/useNickname";
 import * as ImagePicker from "expo-image-picker";
-import mime from "mime";
-import { isPending } from "@reduxjs/toolkit";
 
 const CreateProfile: React.FC = () => {
   const [fullname, setFullname] = useState("");
-  const [email, setEmail] = useState("");
+  const [selectedNickname, setSelectedNickname] = useState<string | null>(null);
+  const [nicknames, setNicknames] = useState<string[]>([]);
   const [phone, setPhone] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -36,8 +36,29 @@ const CreateProfile: React.FC = () => {
 
   const dispatch = useDispatch();
 
-  const TOKEN =
-    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlZYYVpDdnozeEN2RXJwZFctQk5pNSJ9.eyJuYW1lIjoiR2lkZW9uIEJlZHpyYWgiLCJlbWFpbCI6ImdiZWR6cmFoMUBnbWFpbC5jb20iLCJpc3MiOiJodHRwczovL2FuYW5zZXNlbS51cy5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8Njc2MDI0ZDBhOTE1ZmQ5MGMwZmMwZDI5IiwiYXVkIjpbImh0dHBzOi8vYW5hbnNlc2VtLWRldi1hcGkuYXp1cmV3ZWJzaXRlcy5uZXQvIiwiaHR0cHM6Ly9hbmFuc2VzZW0udXMuYXV0aDAuY29tL3VzZXJpbmZvIl0sImlhdCI6MTczNTMyOTMyNCwiZXhwIjoxNzM1NDE1NzI0LCJzY29wZSI6Im9wZW5pZCBwcm9maWxlIGVtYWlsIiwiYXpwIjoiaGZHaTJiWWdHeUxLSnBPSnFMT0hGNTl4c1FuMTdaTGEiLCJwZXJtaXNzaW9ucyI6WyJjcmVhdGU6Y29udGVudCIsImRlbGV0ZTpjb250ZW50IiwicmVhZDpjb250ZW50IiwicmVhZDp1c2VycyIsInVwZGF0ZTpjb250ZW50Il19.Wtb0A4gYf-lPp16b2D4UshwAXYfMfJpYkC64SKU5lCQCqFqlQbeB9ExGRIB7T2NPzGSqVuFpLAA3wIgpyfaY4VI70XgFbTjW8nodj0WokiXi2KjuSzFzUZ8I0eqjZ29HEcIX99_2HOuBlZTZV-6ZNF3spG4gJT8Lfo4MTbh9mL92dYq4fmhlm8dkD9HpKmvvWSKXtab2RjBWD2TVR8TF_zRqkZwKa0AV_i95UhUtaaWwkDNFL-sA2Z0VhDgcls5pTnlpVsE1WjL_vupfklqoE7fj-UJ7EhjsYUwL5yMUEV6LvHCzbrPgNB0ilzD4jkqGEXmlHGdVAC3i7ZfUpwpkuw";
+  const { data: nicknameSuggestions, isLoading: isLoadingNicknames } =
+    useNickname(fullname);
+
+  useEffect(() => {
+    if (nicknameSuggestions) {
+      setNicknames(nicknameSuggestions);
+    }
+  }, [nicknameSuggestions]);
+
+  const handleDateChange = (event: any, selectedDate?: Date) => {
+    setShowDatePicker(false);
+    if (selectedDate) {
+      setDateOfBirth(selectedDate);
+    }
+  };
+
+  const formattedDate = dateOfBirth
+    ? dateOfBirth.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : "dd/mm/yyyy";
 
   const pickImageAsync = async () => {
     try {
@@ -71,9 +92,6 @@ const CreateProfile: React.FC = () => {
           "https://anansesem-dev-api.azurewebsites.net/api/upload",
           {
             method: "POST",
-            headers: {
-              Authorization: `Bearer ${TOKEN}`,
-            },
             body: formData,
           }
         );
@@ -102,12 +120,12 @@ const CreateProfile: React.FC = () => {
   const handleSubmit = () => {
     if (
       !fullname ||
-      !email ||
       !phone ||
       !dateOfBirth ||
       !gender ||
       !readingLevel ||
-      !avatar
+      !avatar ||
+      !selectedNickname
     ) {
       alert("Please fill out all fields!");
       return;
@@ -116,32 +134,64 @@ const CreateProfile: React.FC = () => {
     dispatch(
       updateBio({
         fullName: fullname,
-        email,
         phoneNumber: phone,
         dateOfBirth: dateOfBirth.toISOString(),
         gender,
         readingLevel,
         avatar,
+        nickName: selectedNickname,
       })
     );
-
     router.push("/interests");
   };
 
-  const handleDateChange = (event: any, selectedDate?: Date) => {
-    setShowDatePicker(false);
-    if (selectedDate) {
-      setDateOfBirth(selectedDate);
-    }
-  };
+  // const pickImageAsync = async () => {
+  //   try {
+  //     const result = await ImagePicker.launchImageLibraryAsync({
+  //       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  //       allowsEditing: true,
+  //       quality: 1,
+  //     });
 
-  const formattedDate = dateOfBirth
-    ? dateOfBirth.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
-    : "dd/mm/yyyy";
+  //     if (!result.canceled) {
+  //       const image = result.assets[0];
+  //       const formData = new FormData();
+  //       formData.append("file", {
+  //         uri: image.uri,
+  //         name: "profile-picture.jpg",
+  //         type: "image/jpeg",
+  //       } as any);
+
+  //       setPending(true);
+
+  //       const response = await fetch(
+  //         "https://anansesem-dev-api.azurewebsites.net/api/upload",
+  //         {
+  //           method: "POST",
+  //           headers: {
+  //             "Content-Type": "multipart/form-data",
+  //           },
+  //           body: formData,
+  //         }
+  //       );
+
+  //       if (!response.ok) {
+  //         const errorMessage = await response.text();
+  //         throw new Error(
+  //           `Upload failed: ${response.status} - ${errorMessage}`
+  //         );
+  //       }
+
+  //       const { data } = await response.json();
+  //       setAvatar(data.url);
+  //       Alert.alert("Success", "Profile picture uploaded successfully!");
+  //     }
+  //   } catch (error) {
+  //     Alert.alert("Error", "An error occurred while uploading the picture.");
+  //   } finally {
+  //     setPending(false);
+  //   }
+  // };
 
   return (
     <View style={styles.screen}>
@@ -152,45 +202,27 @@ const CreateProfile: React.FC = () => {
               To customize your adventure, please tell us a little about
               yourself
             </Text>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 10,
-              }}
-            >
-              <TouchableOpacity onPress={pickImageAsync} disabled={pending}>
-                <View style={styles.imageContainer}>
-                  <>
-                    <View style={styles.placeholder}>
-                      <MaterialIcons name="person" size={40} color="#FFBB00" />
-                    </View>
-                    {!avatar ? (
-                      <Ionicons
-                        name="add-circle"
-                        size={30}
-                        color="#5D1889"
-                        style={styles.addIconContainer}
-                      />
-                    ) : (
-                      <Ionicons
-                        name="checkmark-done-circle"
-                        size={30}
-                        color="green"
-                        style={styles.addIconContainer}
-                      />
-                    )}
-                  </>
-                </View>
-              </TouchableOpacity>
-              <Text>
-                {!avatar
-                  ? "Upload profile picture"
-                  : "Profile picture uploaded!"}
-              </Text>
-              {pending && <ActivityIndicator size="small" color="#5D1889" />}
-            </View>
-            <View style={{ marginTop: 20 }}>
+            <TouchableOpacity onPress={pickImageAsync} disabled={pending}>
+              <View style={styles.imageContainer}>
+                <MaterialIcons name="person" size={50} color="#FFBB00" />
+                {avatar ? (
+                  <Ionicons
+                    name="checkmark-done-circle"
+                    size={30}
+                    color="green"
+                    style={styles.addIconContainer}
+                  />
+                ) : (
+                  <Ionicons
+                    name="add-circle"
+                    size={30}
+                    color="#5D1889"
+                    style={styles.addIconContainer}
+                  />
+                )}
+              </View>
+            </TouchableOpacity>
+            <View>
               <Text style={styles.label}>Full name</Text>
               <TextInput
                 style={styles.input}
@@ -198,15 +230,40 @@ const CreateProfile: React.FC = () => {
                 value={fullname}
                 onChangeText={setFullname}
               />
-            </View>
-            <View>
-              <Text style={styles.label}>Email</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="e.g. jerry@example.com"
-                value={email}
-                onChangeText={setEmail}
-              />
+              {isLoadingNicknames ? (
+                <ActivityIndicator size="small" color="#5D1889" />
+              ) : (
+                nicknames.length > 0 && (
+                  <View style={styles.suggestionsContainer}>
+                    <View style={styles.row}>
+                      <Text style={styles.suggestionsLabel}>
+                        Here are some suggestions
+                      </Text>
+                      <Ionicons
+                        name="sparkles-outline"
+                        color={Colors.main}
+                        size={16}
+                      />
+                    </View>
+
+                    <View style={styles.nickContainer}>
+                      {nicknames.map((nickname) => (
+                        <TouchableOpacity
+                          key={nickname}
+                          style={[
+                            styles.suggestionItem,
+                            selectedNickname === nickname &&
+                              styles.selectedItem,
+                          ]}
+                          onPress={() => setSelectedNickname(nickname)}
+                        >
+                          <Text>{nickname}</Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </View>
+                )
+              )}
             </View>
             <View>
               <Text style={styles.label}>Phone number</Text>
@@ -270,70 +327,47 @@ const CreateProfile: React.FC = () => {
             </View>
           </View>
         </ScrollView>
+        <Button text="Next" onPress={handleSubmit} />
       </MainLayout>
-      <Button text="Next" onPress={handleSubmit} absolute />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-  },
-  content: {
-    flex: 1,
-    paddingHorizontal: 10,
-  },
+  screen: { flex: 1 },
+  content: { flex: 1, paddingHorizontal: 10 },
   description: {
     fontSize: 16,
     textAlign: "left",
     color: "#000",
     marginBottom: 20,
-    // marginTop: 50,
   },
-
   imageContainer: {
-    height: 60,
-    width: 60,
-    borderRadius: 50,
-    backgroundColor: "#FBCB46",
-    justifyContent: "center",
     alignItems: "center",
-  },
-  placeholder: {
-    height: "100%",
-    width: "100%",
-    borderRadius: 75,
-    backgroundColor: "#FF8D6A",
     justifyContent: "center",
-    alignItems: "center",
-  },
-  profileImage: {
-    height: "100%",
-    width: "100%",
-    borderRadius: 50,
-    resizeMode: "cover",
+    // marginVertical: 10,
+    paddingHorizontal: 10,
   },
   addIconContainer: {
     position: "absolute",
-    bottom: -2,
-    right: -4,
-    justifyContent: "center",
-    alignItems: "center",
+    bottom: 2,
+    right: 140,
   },
-  label: {
-    marginBottom: 2,
+  suggestionsContainer: { marginVertical: 4 },
+  row: {
+    flexDirection: "row",
+    paddingHorizontal: 2,
+    justifyContent: "space-between",
   },
-  input: {
-    height: 40,
-    borderWidth: 1,
-    borderColor: "#000",
-    borderRadius: 50,
-    paddingHorizontal: 15,
-    backgroundColor: Colors.yellow,
-    marginBottom: 10,
-    color: "black",
+  suggestionsLabel: { fontSize: 12 },
+  nickContainer: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+  suggestionItem: {
+    marginVertical: 5,
+    borderRadius: 5,
+    paddingVertical: 4,
+    paddingHorizontal: 6,
   },
+  selectedItem: { backgroundColor: Colors.yellow, fontWeight: 900 },
   datePickerInput: {
     height: 40,
     borderWidth: 1,
@@ -344,10 +378,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.yellow,
     marginBottom: 10,
   },
-  dateText: {
-    fontSize: 16,
-    color: "#000",
-  },
+  dateText: { fontSize: 16, color: "#000" },
   pickerContainer: {
     borderWidth: 1,
     borderColor: "#000",
@@ -358,9 +389,20 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: "center",
   },
-  picker: {
-    height: 50,
-    color: "#000",
+  picker: { height: 50, color: "#000" },
+  input: {
+    height: 40,
+    borderWidth: 1,
+    borderColor: "#000",
+    borderRadius: 50,
+    paddingHorizontal: 15,
+    backgroundColor: Colors.yellow,
+    marginBottom: 25,
+    color: "black",
+  },
+
+  label: {
+    marginBottom: 2,
   },
 });
 

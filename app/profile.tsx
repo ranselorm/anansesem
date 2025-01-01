@@ -31,25 +31,21 @@ const Profile: React.FC = () => {
   const removeOnboarding = async () => {
     try {
       await AsyncStorage.removeItem("onboardingCompleted");
-      Alert.alert("Success");
+      Alert.alert("Onboarding deleted");
     } catch (error) {
       console.error("Error clearing user data:", error);
     }
   };
 
   const logout = () => {
-    // dispatch(resetState());
-    removeOnboarding();
-    // Alert.alert("LOGGED OUT!!!");
+    dispatch(resetState());
+    clearUserData();
     router.replace("/auth/login");
   };
 
   return (
     <View style={styles.screen}>
       <ProfileLayout title="Profile" isIconLeft bgColor="#FFF3E0">
-        {/* <View style={styles.placeholder}>
-          <MaterialIcons name="person" size={50} color="#FFBB00" />
-        </View> */}
         {user && <Image source={{ uri: user?.picture }} style={styles.pic} />}
         {/* <Text style={styles.title}>Elorm</Text> USE THIS LATER */}
         <Text style={styles.title2}>{user?.email}</Text>

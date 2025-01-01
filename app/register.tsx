@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -8,46 +8,77 @@ import {
   Alert,
 } from "react-native";
 import MainLayout from "../shared/MainLayout";
-import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import BottomSheet, { BottomSheetMethods } from "@devvie/bottom-sheet";
-import { OtpInput } from "react-native-otp-entry";
-import { router } from "expo-router";
-import { useDispatch } from "react-redux"; // Redux dispatch hook
-import { updateBio } from "@/store/userSlice"; // Redux action
+import * as Yup from "yup";
 import Button from "@/components/ui/Button";
+import { router } from "expo-router";
+import { useDispatch } from "react-redux";
+import { updateBio } from "@/store/userSlice";
+
+// Validation schema using Yup
+const validationSchema = Yup.object({
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  password: Yup.string()
+    .min(8, "Password must be at least 8 characters")
+    .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .required("Password is required"),
+  retypePassword: Yup.string()
+    .oneOf([Yup.ref("password")], "Passwords must match")
+    .required("Please retype your password"),
+});
 
 const Register: React.FC = () => {
-  const sheetRef = useRef<BottomSheetMethods>(null);
   const dispatch = useDispatch();
 
-  // Local state for inputs
+  // Local state for inputs and errors
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [retypePassword, setRetypePassword] = useState("");
-  const [otp, setOtp] = useState("");
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  const handleValidation = () => {
-    // if (!email || !phone || !password || !retypePassword) {
-    //   Alert.alert("All fields are required");
-    //   return;
-    // }
-    sheetRef.current?.open();
+  // Validate individual field
+  const validateField = async (field: string, value: string) => {
+    try {
+      await validationSchema.validateAt(field, {
+        email,
+        password,
+        retypePassword,
+        [field]: value, // Update the field dynamically
+      });
+      setErrors((prevErrors) => ({ ...prevErrors, [field]: "" })); // Clear error
+    } catch (error: any) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [field]: error.message, // Set error message for the field
+      }));
+    }
   };
 
-  const handlePress = () => {
-    if (otp.length === 6) {
+  const handleRegister = async () => {
+    // Validate the entire form
+    try {
+      await validationSchema.validate(
+        { email, password, retypePassword },
+        { abortEarly: false }
+      );
+      setErrors({});
+
       dispatch(
         updateBio({
           email,
-          phoneNumber: phone,
+          password,
         })
       );
-      router.push("/get-started");
-    } else {
-      console.log("Invalid OTP");
+      router.push("/create-profile");
+    } catch (validationErrors: any) {
+      const formattedErrors: { [key: string]: string } = {};
+      validationErrors.inner.forEach((error: any) => {
+        formattedErrors[error.path] = error.message;
+      });
+      setErrors(formattedErrors);
     }
   };
 
@@ -55,89 +86,75 @@ const Register: React.FC = () => {
     <View style={styles.screen}>
       <MainLayout title="Register">
         <View style={styles.container}>
-          <View>
-            <TextInput
-              style={[styles.input, styles.emailInput]}
-              placeholder="Email"
-              value={email}
-              onChangeText={setEmail}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Phone Number"
-              value={phone}
-              onChangeText={setPhone}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Password"
-              secureTextEntry
-              value={password}
-              onChangeText={setPassword}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Re-type Password"
-              secureTextEntry
-              value={retypePassword}
-              onChangeText={setRetypePassword}
-            />
-          </View>
-          <View>
-            <Button text="Next" onPress={handleValidation} />
+          <TextInput
+            style={[styles.input, styles.emailInput]}
+            placeholder="Email"
+            value={email}
+            onChangeText={(value) => {
+              setEmail(value);
+              validateField("email", value);
+            }}
+          />
+          {errors.email ? (
+            <Text style={styles.errorText}>{errors.email}</Text>
+          ) : (
+            <Text style={styles.placeholder}>Placeholder</Text>
+          )}
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            secureTextEntry
+            value={password}
+            onChangeText={(value) => {
+              setPassword(value);
+              validateField("password", value);
+            }}
+          />
+          {errors.password ? (
+            <Text style={styles.errorText}>{errors.password}</Text>
+          ) : (
+            <Text style={styles.placeholder}>Placeholder</Text>
+          )}
 
-            <Text style={styles.signInText}>
-              Already have an account?
-              <TouchableOpacity onPress={() => router.replace("/auth/login")}>
-                <Text style={styles.signInLink}>Sign in</Text>
-              </TouchableOpacity>
-            </Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Re-type Password"
+            secureTextEntry
+            value={retypePassword}
+            onChangeText={(value) => {
+              setRetypePassword(value);
+              validateField("retypePassword", value);
+            }}
+          />
+          {errors.retypePassword ? (
+            <Text style={styles.errorText}>{errors.retypePassword}</Text>
+          ) : (
+            <Text style={styles.placeholder}>Placeholder</Text>
+          )}
 
-            <Text style={{ textAlign: "center", marginTop: 8 }}>Sign in</Text>
-            <View style={styles.socialIconsContainer}>
-              <TouchableOpacity style={styles.iconWrapper}>
-                <FontAwesome name="facebook" size={24} color="black" />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.iconWrapper}>
-                <Text>
-                  <AntDesign name="google" size={24} color="black" />{" "}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.iconWrapper}>
-                <FontAwesome name="apple" size={24} color="#000000" />
-              </TouchableOpacity>
-            </View>
+          <Button text="Next" onPress={handleRegister} />
+          <Text style={styles.signInText}>
+            Already have an account?
+            <TouchableOpacity onPress={() => router.replace("/auth/login")}>
+              <Text style={styles.signInLink}>Sign in</Text>
+            </TouchableOpacity>
+          </Text>
+
+          <View style={styles.socialIconsContainer}>
+            <TouchableOpacity style={styles.iconWrapper}>
+              <FontAwesome name="facebook" size={24} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconWrapper}>
+              <Text>
+                <AntDesign name="google" size={24} color="black" />{" "}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconWrapper}>
+              <FontAwesome name="apple" size={24} color="#000000" />
+            </TouchableOpacity>
           </View>
         </View>
       </MainLayout>
-      <BottomSheet ref={sheetRef} style={styles.bottomSheet}>
-        <Text style={{ textAlign: "center", fontSize: 16, marginBottom: 20 }}>
-          Please enter the 6-digit code sent to your phone
-        </Text>
-        <OtpInput
-          numberOfDigits={6}
-          focusColor="green"
-          autoFocus={false}
-          hideStick={false}
-          placeholder="******"
-          blurOnFilled={true}
-          disabled={false}
-          type="numeric"
-          secureTextEntry={false}
-          focusStickBlinkingDuration={500}
-          onFocus={() => console.log("Focused")}
-          onBlur={() => console.log("Blurred")}
-          onTextChange={(text) => setOtp(text)}
-          onFilled={(text) => setOtp(text)}
-          textInputProps={{
-            accessibilityLabel: "One-Time Password",
-          }}
-          theme={{
-            containerStyle: styles.otpContainer,
-          }}
-        />
-        <Button text="Submit" onPress={handlePress} />
-      </BottomSheet>
     </View>
   );
 };
@@ -148,16 +165,16 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    marginTop: 20,
-    paddingHorizontal: 30,
+    marginTop: 50,
+    paddingHorizontal: 20,
     justifyContent: "center",
-    gap: 40,
+    // gap: 20,
   },
   input: {
     backgroundColor: "#FBCB46",
     borderRadius: 50,
-    marginBottom: 30,
-    padding: 15,
+    // marginBottom: 10,
+    padding: 12,
     fontSize: 16,
     borderWidth: 1,
     borderColor: "#000",
@@ -165,30 +182,16 @@ const styles = StyleSheet.create({
   emailInput: {
     backgroundColor: "#C4A1FF",
   },
-  button: {
-    backgroundColor: "#D0EE30",
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 3,
-    marginTop: 40,
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    // marginBottom: 10,
+    marginLeft: 10,
+    marginVertical: 8,
   },
-  buttonText: {
-    color: "#000",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  icon: {
-    backgroundColor: "#000",
-    borderRadius: 50,
-    padding: 5,
+  placeholder: {
+    opacity: 0,
+    marginVertical: 8,
   },
   signInText: {
     textAlign: "center",
@@ -204,7 +207,7 @@ const styles = StyleSheet.create({
   socialIconsContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 20,
+    marginTop: 150,
   },
   iconWrapper: {
     marginHorizontal: 10,
@@ -215,16 +218,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center",
-  },
-  bottomSheet: {
-    padding: 60,
-  },
-  otpContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "80%",
-    height: 50,
-    marginBottom: 80,
   },
 });
 

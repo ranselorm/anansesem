@@ -11,6 +11,7 @@ import {
   // Button,
   KeyboardAvoidingView,
   Platform,
+  Image,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import CollapsibleCategory from "@/components/CollapsibleCategory";
@@ -21,6 +22,8 @@ import axios from "axios";
 import { RootState } from "@/store";
 import Button from "@/components/ui/Button";
 import { useSubmitStory } from "@/hooks/useSubmitStory";
+import Spinner from "react-native-loading-spinner-overlay";
+import { router } from "expo-router";
 
 const StoryCreator: React.FC = () => {
   const [book, setBook] = useState({
@@ -92,7 +95,6 @@ const StoryCreator: React.FC = () => {
     };
 
     submitStory(storyData);
-    // console.log(storyData);
   };
 
   const categories = ["ADVENTURE", "MYSTERY"];
@@ -268,6 +270,7 @@ const StoryCreator: React.FC = () => {
                 })
               }
             >
+              <Picker.Item label="Select" value="" />
               {[...Array(11)].map((_, i) => (
                 <Picker.Item
                   key={i + 6}
@@ -361,6 +364,22 @@ const StoryCreator: React.FC = () => {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <View style={styles.screen}>
+        <Spinner
+          visible={isPending}
+          customIndicator={
+            <View style={styles.spinnerContainer}>
+              <Image
+                source={require("@/assets/icons/app-icon.png")}
+                style={styles.icon}
+              />
+              <Text style={styles.spinnerText}>
+                Hang tight, while our magical AI weaves a tale just for you!
+              </Text>
+              <ActivityIndicator size="small" style={{ marginTop: 20 }} />
+            </View>
+          }
+        />
+        ;
         <HomeLayout isIcon title="AI Story Creator">
           <FlatList
             data={sections}
@@ -379,30 +398,6 @@ const StoryCreator: React.FC = () => {
     </KeyboardAvoidingView>
   );
 };
-
-// const useSubmitStory = () => {
-//   const user = useSelector((state: RootState) => state.user.userResponse);
-
-//   const submitStory = async (data: any) => {
-//     try {
-//       const response = await axios.post(
-//         "https://anansesem-dev-api.azurewebsites.net/api/generate-story",
-//         data,
-//         {
-//           headers: {
-//             Authorization: `Bearer ${user?.token}`,
-//           },
-//         }
-//       );
-//       console.log(response);
-//       Alert.alert("Success", "Story submitted successfully!");
-//     } catch (error) {
-//       Alert.alert("Error", "Failed to submit the story.");
-//     }
-//   };
-
-//   return { submitStory };
-// };
 
 const styles = StyleSheet.create({
   screen: { backgroundColor: "#fff", flex: 1 },
@@ -423,7 +418,7 @@ const styles = StyleSheet.create({
   flatListContainer: {
     padding: 10,
     backgroundColor: "#fff",
-    paddingBottom: 50, // Prevents content from being cut off
+    paddingBottom: 50,
   },
   label: {
     marginBottom: 4,
@@ -487,6 +482,28 @@ const styles = StyleSheet.create({
 
   buttonContainer: {
     marginTop: 100,
+  },
+
+  spinnerContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    width: 300,
+    height: 150,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+  },
+  spinnerText: {
+    fontSize: 16,
+    color: "#000",
+    marginTop: 10,
+    textAlign: "center",
+  },
+
+  icon: {
+    width: 90,
+    height: 90,
+    marginTop: -80,
   },
 });
 

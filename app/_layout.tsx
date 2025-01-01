@@ -44,11 +44,11 @@ function AppContent() {
   useEffect(() => {
     if (!isLoading) {
       if (!onboardingCompleted) {
-        router.push("/onboarding");
-      } else if (user) {
-        router.push("/(tabs)/home");
-      } else {
-        router.push("/auth/login");
+        router.replace("/onboarding");
+      } else if (user?.isLoggedIn) {
+        router.replace("/(tabs)/home");
+      } else if (!user) {
+        router.replace("/auth/login");
       }
     }
   }, [isLoading, onboardingCompleted, user]);
@@ -64,10 +64,7 @@ function AppContent() {
       <Stack.Screen name="welcome" />
       <Stack.Screen name="register" />
       <Stack.Screen name="create-profile" />
-
       <Stack.Screen name="get-started" />
-      <Stack.Screen name="login" />
-      <Stack.Screen name="(tabs)" />
     </Stack>
   );
 }
