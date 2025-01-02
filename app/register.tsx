@@ -16,7 +16,6 @@ import { router } from "expo-router";
 import { useDispatch } from "react-redux";
 import { updateBio } from "@/store/userSlice";
 
-// Validation schema using Yup
 const validationSchema = Yup.object({
   email: Yup.string()
     .email("Invalid email address")
@@ -33,26 +32,24 @@ const validationSchema = Yup.object({
 const Register: React.FC = () => {
   const dispatch = useDispatch();
 
-  // Local state for inputs and errors
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [retypePassword, setRetypePassword] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  // Validate individual field
   const validateField = async (field: string, value: string) => {
     try {
       await validationSchema.validateAt(field, {
         email,
         password,
         retypePassword,
-        [field]: value, // Update the field dynamically
+        [field]: value,
       });
-      setErrors((prevErrors) => ({ ...prevErrors, [field]: "" })); // Clear error
+      setErrors((prevErrors) => ({ ...prevErrors, [field]: "" }));
     } catch (error: any) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        [field]: error.message, // Set error message for the field
+        [field]: error.message,
       }));
     }
   };

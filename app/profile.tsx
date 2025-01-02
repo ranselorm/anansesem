@@ -40,6 +40,7 @@ const Profile: React.FC = () => {
   const logout = () => {
     dispatch(resetState());
     clearUserData();
+    removeOnboarding();
     router.replace("/auth/login");
   };
 

@@ -60,13 +60,7 @@ const OnboardingContainer: React.FC = ({}) => {
     if (currentIndex < onboardingData.length - 1) {
       flatListRef.current?.scrollToIndex({ index: currentIndex + 1 });
     } else {
-      // Save onboarding completion state and navigate
-      try {
-        await AsyncStorage.setItem("onboardingCompleted", "true");
-        router.push("/welcome"); // Redirect after onboarding completion
-      } catch (error) {
-        console.error("Error saving onboarding state:", error);
-      }
+      router.push("/welcome");
     }
   };
 

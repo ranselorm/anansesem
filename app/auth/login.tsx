@@ -22,9 +22,10 @@ import {
   getUserData,
 } from "@/utils";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "@/store/userSlice";
+import { setLoading, setUser } from "@/store/userSlice";
 import { jwtDecode } from "jwt-decode";
 import { router } from "expo-router";
+import { RootState } from "@/store";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -32,6 +33,8 @@ const Login: React.FC = () => {
   const [isChecked, setIsChecked] = useState(false);
   const dispatch = useDispatch();
   const { mutate: submitData, isPending } = useLogin();
+  const loading = useSelector((state: RootState) => state.user.isLoading);
+  console.log(loading, "IN LOGGING FILE");
 
   const updateUserSession = async (responseData: any) => {
     try {
@@ -90,6 +93,7 @@ const Login: React.FC = () => {
       Alert.alert("Required fields", "Please enter both email and password.");
       return;
     }
+    dispatch(setLoading(true));
     submitData(
       { email, password },
 
@@ -99,9 +103,11 @@ const Login: React.FC = () => {
           if (isChecked) {
             await saveLoginValues({ email, password });
           }
+          dispatch(setLoading(false));
           router.replace("/(tabs)/home");
         },
         onError: (error: any) => {
+          dispatch(setLoading(false));
           Alert.alert("Oups 🤭", "Failed to login. Try again");
         },
       }
@@ -111,6 +117,14 @@ const Login: React.FC = () => {
   useEffect(() => {
     checkTokenAndReauthenticate();
   }, []);
+
+  if (isPending) {
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator size="large" color={Colors.main} />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.screen}>
@@ -249,6 +263,12 @@ const styles = StyleSheet.create({
 
   disabled: {
     backgroundColor: "red",
+  },
+
+  loading: {
+    justifyContent: "center",
+    flex: 1,
+    backgroundColor: "#fff",
   },
 });
 

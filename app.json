@@ -34,10 +34,10 @@
     },
     "android": {
       "package": "com.anansesem.yourapp",
-      "newArchEnabled": false
+      "newArchEnabled": true
     },
     "ios": {
-      "newArchEnabled": false
+      "newArchEnabled": true
     },
     "extra": {
       "router": {

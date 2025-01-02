@@ -60,3 +60,11 @@ export const removeLoginValues = async () => {
     throw new Error("Failed to remove login values.");
   }
 };
+
+export const OnboardingCompleted = async () => {
+  try {
+    await AsyncStorage.setItem("onboardingCompleted", "true");
+  } catch (error) {
+    console.error("Error saving onboarding state:", error);
+  }
+};

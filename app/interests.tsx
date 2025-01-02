@@ -11,19 +11,14 @@ import {
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  updateInterests,
-  updateStoryPreferences,
-  updateReference,
-  setUser,
-} from "@/store/userSlice";
+import { setUser } from "@/store/userSlice";
 import MainLayout from "@/shared/MainLayout";
 import Button from "@/components/ui/Button";
 import { RootState } from "@/store";
 import { router } from "expo-router";
 import { Colors } from "@/theme";
 import { useSubmit } from "@/hooks/useSubmit";
-import { saveUserData } from "@/utils";
+import { saveUserData, OnboardingCompleted } from "@/utils";
 import { jwtDecode } from "jwt-decode";
 import Spinner from "react-native-loading-spinner-overlay";
 
@@ -138,8 +133,8 @@ const Interests: React.FC = () => {
       onSuccess: async (responseData) => {
         try {
           await updateUserSession(responseData);
+          await OnboardingCompleted();
           router.replace("/(tabs)/home");
-          console.log(responseData);
           Alert.alert("REGISTRATION SUCCESSFUL", "USER CREATED");
         } catch (error) {
           console.error("Error saving data:", error);

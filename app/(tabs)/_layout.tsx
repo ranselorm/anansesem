@@ -7,7 +7,9 @@ import { RootState } from "@/store";
 
 export default function TabLayout() {
   const user = useSelector((state: RootState) => state.user.userResponse);
-  // if (!user?.isLoggedIn) return <Redirect href="/auth/login" />;
+  const loading = useSelector((state: RootState) => state.user.isLoading);
+  console.log(loading, "IN TABS");
+  if (!loading && !user?.isLoggedIn) return <Redirect href="/auth/login" />;
 
   return (
     <Tabs
@@ -60,13 +62,6 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="sparkles-outline" color={Colors.main} size={size} />
           ),
-        }}
-        listeners={{
-          tabPress: (e) => {
-            e.preventDefault();
-            router.replace("/(tabs)/story-creator");
-            console.log("Story Creator tab pressed");
-          },
         }}
       />
       <Tabs.Screen

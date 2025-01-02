@@ -35,6 +35,7 @@ interface UserState {
   languageSkills: LanguageSkill[];
   userResponse: Record<string, any> | null;
   isLoggedIn: boolean;
+  isLoading: boolean;
 }
 
 const initialState: UserState = {
@@ -72,6 +73,7 @@ const initialState: UserState = {
   ],
   userResponse: null,
   isLoggedIn: false,
+  isLoading: false,
 };
 
 const userSlice = createSlice({
@@ -108,6 +110,9 @@ const userSlice = createSlice({
     updateReference(state, action: PayloadAction<string>) {
       state.reference = action.payload;
     },
+    setLoading(state, action: PayloadAction<boolean>) {
+      state.isLoading = action.payload;
+    },
     resetState() {
       return initialState;
     },
@@ -121,6 +126,7 @@ export const {
   updateLanguageSkills,
   setUser,
   updateReference,
+  setLoading,
   resetState,
 } = userSlice.actions;
 
